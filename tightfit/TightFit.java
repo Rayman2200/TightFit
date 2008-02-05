@@ -11,16 +11,46 @@
 
 package tightfit;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 /**
  * Main Class
  *
  */
 public class TightFit {
 
+    private JFrame      appFrame;
+    
+    private static final int APP_WIDTH = 800;
+    private static final int APP_HEIGHT = 600;
+    
+    public TightFit() {
+        appFrame = new JFrame(Resources.getString("dialog.main.title"));
+        appFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        appFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                exitAction.actionPerformed(null);
+            }
+        });
+        appFrame.setContentPane(createContentPane());
+        createMenuBar();
+        appFrame.setJMenuBar(menuBar);
+        appFrame.setSize(APP_WIDTH, APP_HEIGHT);
+    }
+    
+    private JPanel createContentPane() {
+        return null;
+    }
     
     private void initDatabase() {
         
     }
+    
+    
     
     /**
      * @param args

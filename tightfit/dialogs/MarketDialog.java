@@ -15,9 +15,12 @@ public class MarketDialog extends JDialog {
         createNodes(top);
         
         marketTree = new JTree(top);
+        
+        
     }
 
     private void createNodes(DefaultMutableTreeNode top) {
-        
+        //TODO: query categories, spin thru, 
+        //      query modules
     }
 }
