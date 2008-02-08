@@ -16,7 +16,12 @@ import java.util.Hashtable;
 import tightfit.item.Item;
 
 public class Module extends Item {
-    
+
+	public static int LOW_SLOT = 1;
+	public static int MID_SLOT = 2;
+	public static int HI_SLOT = 3;
+	public static int RIG_SLOT = 4;
+	
     public int slotRequirement;
 
     public Module() {

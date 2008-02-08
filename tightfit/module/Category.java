@@ -11,7 +11,10 @@
 
 package tightfit.module;
 
+import java.awt.Image;
+
 public class Category {
     public String name;
     public int catId;
+    public Image catImage;
 }

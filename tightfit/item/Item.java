@@ -16,6 +16,8 @@ import java.util.Hashtable;
 
 import javax.swing.Icon;
 
+import tightfit.module.Category;
+
 public class Item {
     protected Icon icon;
     
@@ -25,7 +27,7 @@ public class Item {
     public double mass;
     public double volume;
     public double capacity;
-    public int catId;
+    public Category category;
     public int typeId;
     public int groupId;
     

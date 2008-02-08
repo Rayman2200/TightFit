@@ -11,6 +11,7 @@
 
 package tightfit;
 
+import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -38,8 +39,11 @@ public class TightFit {
         });
         appFrame.setContentPane(createContentPane());
         createMenuBar();
+        appFrame.setBackground(new Color(.4f, .5f, .6f));  //grey, the color of insanity
         appFrame.setJMenuBar(menuBar);
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
+        
+        appFrame.setVisible(true);
     }
     
     private JPanel createContentPane() {
@@ -56,8 +60,9 @@ public class TightFit {
      * @param args
      */
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
+        TightFit fit = new TightFit();
+        
+        
     }
 
 }
