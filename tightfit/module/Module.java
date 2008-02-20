@@ -1,19 +1,16 @@
 /*
- *  TightFit (c) 2008 Adam Turk
+ *  TightFit (c) 2008 The TightFit Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  Adam Turk <aturk@biggeruniverse.com>
  */
 
 package tightfit.module;
 
-import java.util.Hashtable;
-
-import tightfit.item.Item;
+import tightfit.item.*;
 
 public class Module extends Item {
 
@@ -22,9 +19,29 @@ public class Module extends Item {
 	public static int HI_SLOT = 3;
 	public static int RIG_SLOT = 4;
 	
-    public int slotRequirement;
-
+    private int slotRequirement;
+    
+    private boolean bActive = false;
+    
+    private Ammo charge;
+    
     public Module() {
         
+    }
+    
+    public Ammo getCharge() {
+    	return charge;
+    }
+    
+    public float getCpuUsage() {
+    	if(attributes.contains("cpu"))
+    		return Float.parseFloat((String)attributes.get("cpu"));
+    	return 0.0f;
+    }
+    
+    public float getPowerUsage() {
+    	if(attributes.contains("power"))
+    		return Float.parseFloat((String)attributes.get("power"));
+    	return 0.0f;
     }
 }

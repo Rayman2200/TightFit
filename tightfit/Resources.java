@@ -1,12 +1,11 @@
 /*
- *  TightFit (c) 2008
+ *  TightFit (c) 2008 The TightFit Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  Adam Turk <aturk@biggeruniverse.com>
  */
 
 package tightfit;
@@ -14,6 +13,8 @@ package tightfit;
 import java.util.ResourceBundle;
 import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
+
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -77,5 +78,9 @@ public final class Resources {
             System.out.println("Failed to load resource: " + filename);
         }
         return null;
+    }
+    
+    public static InputStream getResource(String filename) {
+    	return Resources.class.getResourceAsStream("resources/" + filename);
     }
 }

@@ -1,16 +1,16 @@
 /*
- *  TightFit (c) 2008 Adam Turk
+ *  TightFit (c) 2008 The TightFit Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  Adam Turk <aturk@biggeruniverse.com>
  */
 
 package tightfit.ship;
 
+import tightfit.item.Ammo;
 import tightfit.item.Item;
 import tightfit.module.Module;
 
@@ -29,6 +29,11 @@ public class Ship extends Item {
     private int launcherHardpoints;
     private int turretHardpoints;
     
+    private float cpu;
+    private float cpuMax;
+    private float grid;
+    private float gridMax;
+    
     private Item myType;
     
     public Ship(Item type) {
@@ -43,9 +48,40 @@ public class Ship extends Item {
     	turretHardpoints = Integer.getInteger((String)type.attributes.get("turretHardpoints")).intValue();
     }
     
-    public float calculateDps() {
-        
-        return 0.0f;
+    /**
+     * Calculates the generic DPS of the ship, does not account for ranges or damage types.
+     * This number will almost always be higher than actual DPS.
+     * 
+     * @return the generic DPS
+     */
+    public float calculateGenericDps() {
+    	float dps = 0.0f;
+        for(int i=0;i<hiSlots.length;i++) {
+        	float multiplier = Float.parseFloat(((String)hiSlots[i].attributes.get("damageMultiplier")));
+        	float baseDmg = hiSlots[i].getCharge().getTotalDamage();
+        	float rate = Float.parseFloat(((String)hiSlots[i].attributes.get("speed")));
+        	
+        	dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
+        }
+        return dps;
+    }
+    
+    public float[] calculateSpecificDps() {
+    	float dps[] = new float[4];
+    	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
+    	
+    	for(int i=0;i<hiSlots.length;i++) {
+        	float multiplier = Float.parseFloat(((String)hiSlots[i].attributes.get("damageMultiplier")));
+        	Ammo charge = hiSlots[i].getCharge();
+        	float rate = Float.parseFloat(((String)hiSlots[i].attributes.get("speed")));
+        	
+        	dps[0] += (charge.getEmDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+        	dps[1] += (charge.getKineticDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+        	dps[2] += (charge.getThermalDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+        	dps[3] += (charge.getExplosiveDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+        }
+    	
+    	return dps;
     }
     
     public boolean putModule(Module m, int slotType, int slot) {
@@ -63,6 +99,8 @@ public class Ship extends Item {
     	
     	if(slot < rack.length && rack[slot] == null) {
     		rack[slot] = m;
+    		cpu -= m.getCpuUsage();
+    		grid -= m.getPowerUsage();
     		return true;
     	}
     	
@@ -82,11 +120,25 @@ public class Ship extends Item {
      		rack = rigSlots;
      	}
     	
-    	rack[slot] = null;
+    	
+    	if(slot <= rack.length) {
+	    	Module m = rack[slot];
+	    	if(m != null) {
+		    	cpu += m.getCpuUsage();
+				grid += m.getPowerUsage();
+	    	}
+	    	rack[slot] = null;
+    	}
     }
     
     public float getMaxPower() {
-    	return 0.0f;
+    	float output = Float.parseFloat((String)attributes.get("powerOutput"));
+    	
+    	for(int i=0;i<lowSlots.length;i++) {
+    		//TODO: grab power bonuses
+    	}
+    	
+    	return output;
     }
     
     public float getRemainingPower() {
@@ -95,5 +147,9 @@ public class Ship extends Item {
     
     public float calculateMaxCapacity() {
         return 0.0f;
+    }
+    
+    private float calcFireRateBonus(Ammo charge) {
+    	return charge.getRateBonus();
     }
 }
