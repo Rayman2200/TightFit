@@ -26,11 +26,18 @@ public class Item {
     public double mass;
     public double volume;
     public double capacity;
-    public Category category;
     public int typeId;
     public int groupId;
     public int marketGroupId;
     
     public Hashtable attributes;
-    
+ 
+    public int getCategory() {
+    	try {
+    		return Database.getInstance().getGroup(groupId).catId;
+    	} catch (Exception e) {
+    	}
+    	
+    	return -1;
+    }
 }

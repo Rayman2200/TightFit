@@ -39,13 +39,16 @@ public class Ship extends Item {
     public Ship(Item type) {
     	myType = type;             //OMG, you're just my type! What's your sign?
     	
-    	lowSlots = new Module[Integer.getInteger((String)type.attributes.get("lowSlots")).intValue()];
-    	midSlots = new Module[Integer.getInteger((String)type.attributes.get("midSlots")).intValue()];
-    	hiSlots = new Module[Integer.getInteger((String)type.attributes.get("hiSlots")).intValue()];
-    	rigSlots = new Module[Integer.getInteger((String)type.attributes.get("rigSlots")).intValue()];
+    	lowSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("lowSlots"))];
+    	midSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("midSlots"))];
+    	hiSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("hiSlots"))];
+    	rigSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("rigSlots"))];
     	
-    	launcherHardpoints = Integer.getInteger((String)type.attributes.get("launcherHardpoints")).intValue();
-    	turretHardpoints = Integer.getInteger((String)type.attributes.get("turretHardpoints")).intValue();
+    	launcherHardpoints = (int)Float.parseFloat((String)type.attributes.get("launcherHardpoints"));
+    	turretHardpoints = (int)Float.parseFloat((String)type.attributes.get("turretHardpoints"));
+    	
+    	cpu = cpuMax = Float.parseFloat((String)type.attributes.get("cpu"));
+    	grid = gridMax = Float.parseFloat((String)type.attributes.get("powerOutput"));
     }
     
     /**

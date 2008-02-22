@@ -29,6 +29,10 @@ public class Module extends Item {
         
     }
     
+    public Module(Item type) {
+    	//TODO: this
+    }
+    
     public Ammo getCharge() {
     	return charge;
     }

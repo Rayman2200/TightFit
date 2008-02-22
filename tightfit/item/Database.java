@@ -25,6 +25,8 @@ import tightfit.ship.Ship;
 
 public class Database {
 
+	private static Database instance;
+	
 	private Hashtable cache = new Hashtable();
 	private LinkedList groups = new LinkedList();
 	
@@ -55,7 +57,7 @@ public class Database {
         NodeList l = doc.getElementsByTagName("type");
         for (int i = 0; (item = l.item(i)) != null; i++) {
         	Item type = unmarshalType(item);
-        	switch(item.getCategory()) {
+        	switch(type.getCategory()) {
         		case 6:
         		{
         			//It's a ship...
@@ -73,8 +75,26 @@ public class Database {
         			//It's ammo! \o/
         			
         		}break;
+        		default:
+        		break;
         	}
         }
+	}
+	
+	public static Database getInstance() throws Exception {
+		if(instance == null)
+			instance = new Database("dbEve.xml");
+		return instance;
+	}
+	
+	public Group getGroup(int id) {
+		Iterator itr = groups.iterator();
+		while(itr.hasNext()) {
+			Group g = (Group) itr.next();
+			if(g.groupId == id)
+				return g;
+		}
+		return null;
 	}
 	
 	private static String getAttributeValue(Node node, String attribname) {
