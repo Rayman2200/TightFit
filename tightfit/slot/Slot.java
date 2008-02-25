@@ -10,9 +10,11 @@
 
 package tightfit.slot;
 
+import javax.swing.JPanel;
+
 import tightfit.module.Module;
 
-public class Slot {
+public class Slot extends JPanel {
     /* -- slot types -- */
     /** NO_SLOT */
     public static int NO_SLOT = -1;

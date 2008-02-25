@@ -97,6 +97,10 @@ public class Database {
 		return null;
 	}
 	
+	public Iterator getGroups() {
+		return groups.iterator();
+	}
+	
 	private static String getAttributeValue(Node node, String attribname) {
         NamedNodeMap attributes = node.getAttributes();
         String att = null;

@@ -19,7 +19,7 @@ public class Module extends Item {
 	public static int HI_SLOT = 3;
 	public static int RIG_SLOT = 4;
 	
-    private int slotRequirement;
+    public int slotRequirement;
     
     private boolean bActive = false;
     
@@ -30,7 +30,13 @@ public class Module extends Item {
     }
     
     public Module(Item type) {
-    	//TODO: this
+    	
+    }
+    
+    public Module(Module m) {
+    	charge = m.charge;
+    	slotRequirement = m.slotRequirement;
+    	
     }
     
     public Ammo getCharge() {
@@ -38,14 +44,28 @@ public class Module extends Item {
     }
     
     public float getCpuUsage() {
+    	//TODO: also calc bonus for skills
     	if(attributes.contains("cpu"))
     		return Float.parseFloat((String)attributes.get("cpu"));
     	return 0.0f;
     }
     
     public float getPowerUsage() {
+    	//TODO: also calc bonus for skills
     	if(attributes.contains("power"))
     		return Float.parseFloat((String)attributes.get("power"));
     	return 0.0f;
+    }
+    
+    public boolean isActive() {
+    	return bActive;
+    }
+    
+    public void activate() {
+    	bActive = true;
+    }
+    
+    public void deactivate() {
+    	bActive = false;
     }
 }

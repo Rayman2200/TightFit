@@ -15,8 +15,6 @@ import java.util.Hashtable;
 
 import javax.swing.Icon;
 
-import tightfit.module.Category;
-
 public class Item {
     protected Icon icon;
     
@@ -32,6 +30,21 @@ public class Item {
     
     public Hashtable attributes;
  
+    public Item() {
+    }
+    
+    public Item(Item type) {
+    	name = type.name;
+    	mass = type.mass;
+    	volume = type.volume;
+    	capacity = type.capacity;
+    	typeId = type.typeId;
+    	groupId = type.groupId;
+    	marketGroupId = type.marketGroupId;
+    	
+    	attributes = (Hashtable)type.attributes.clone();
+    }
+    
     public int getCategory() {
     	try {
     		return Database.getInstance().getGroup(groupId).catId;

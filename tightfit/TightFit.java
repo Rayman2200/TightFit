@@ -13,9 +13,12 @@ package tightfit;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+
+import tightfit.ship.Ship;
+import tightfit.widget.*;
 
 /**
  * Main Class
@@ -25,42 +28,56 @@ public class TightFit {
 
     private JFrame      appFrame;
     
+    private Ship myShip;
+    
     private static final int APP_WIDTH = 800;
     private static final int APP_HEIGHT = 600;
     
-    public TightFit() {
+    public TightFit() throws IllegalArgumentException, IOException {
         appFrame = new JFrame(Resources.getString("dialog.main.title"));
         appFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         appFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                exitAction.actionPerformed(null);
+                //FIXME: exitAction.actionPerformed(null);
             }
         });
         appFrame.setContentPane(createContentPane());
-        createMenuBar();
-        appFrame.setBackground(new Color(.4f, .5f, .6f));  //grey, the color of insanity
-        appFrame.setJMenuBar(menuBar);
+        appFrame.setBackground(new Color(.4f, .5f, .6f));  //blue-grey
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
         
+        appFrame.pack();
         appFrame.setVisible(true);
     }
     
-    private JPanel createContentPane() {
-        return null;
+    private JPanel createContentPane() throws IllegalArgumentException, IOException {
+    	JPanel main = new JPanel();
+    	main.setLayout(new OverlayLayout(main));
+    	
+    	main.add(new FitPanel(this));
+    	//build drag-n-drop slots, put them in the right places
+    	
+    	
+        return main;
     }
     
     private void initDatabase() {
         
     }
     
-    
+    public void setShip(Ship s) {
+    	myShip = s;
+    	//TODO: fire an event
+    }
     
     /**
      * @param args
      */
     public static void main(String[] args) {
-        TightFit fit = new TightFit();
-        
+    	try{
+    		TightFit fit = new TightFit();
+    	} catch(Throwable e) {
+    		e.printStackTrace();
+    	}
         
     }
 
