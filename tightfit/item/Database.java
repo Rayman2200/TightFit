@@ -83,7 +83,7 @@ public class Database {
 	
 	public static Database getInstance() throws Exception {
 		if(instance == null)
-			instance = new Database("dbEve.xml");
+			instance = new Database("eveDb.xml");
 		return instance;
 	}
 	
@@ -101,6 +101,10 @@ public class Database {
 		return groups.iterator();
 	}
 	
+    public Item getType(String name) {
+        return (Item)cache.get(name);
+    }
+    
 	private static String getAttributeValue(Node node, String attribname) {
         NamedNodeMap attributes = node.getAttributes();
         String att = null;

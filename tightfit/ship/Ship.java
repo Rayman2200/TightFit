@@ -37,6 +37,11 @@ public class Ship extends Item {
     
     private Item myType;
     
+    public Ship() {
+        super();
+        rigSlots = new Module[0];
+    }
+    
     public Ship(Item type) {
     	myType = type;             //OMG, you're just my type! What's your sign?
     	
@@ -51,6 +56,18 @@ public class Ship extends Item {
     	cpu = cpuMax = Float.parseFloat((String)type.attributes.get("cpu"));
     	grid = gridMax = Float.parseFloat((String)type.attributes.get("powerOutput"));
     	outputMax = Float.parseFloat((String)attributes.get("powerOutput"));
+    }
+
+    public int countLauncherHardpoints() {
+        return launcherHardpoints;
+    }
+    
+    public int countTurretHardpoints() {
+        return turretHardpoints;
+    }
+    
+    public int countRigSlots() {
+        return rigSlots.length;
     }
     
     /**

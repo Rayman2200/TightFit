@@ -41,6 +41,7 @@
       <fileset dir="./tightfit/resources">
 	<include name="*.png" />
         <include name="*.xml" />
+	<include name="*.ttf" />
         <include name="*.properties" />
         <include name="dbEve.dtd" />
       </fileset>
@@ -52,9 +53,7 @@
 	deprecation="on"/>
     <copy todir="${build}/tightfit/resources">
       <fileset dir="./tightfit/resources">
-	<include name="*.png" />
-        <include name="*.xml" />
-        <include name="dbEve.dtd" />
+	<include name="*.*" />
       </fileset>
     </copy>
   </target>
@@ -65,7 +64,6 @@
       jarfile="${dist}/tightfit.jar"
       manifest="MANIFEST.MF"
       basedir="${build}"
-      excludes="tightfit/plugins/**"
       />
   </target>
 

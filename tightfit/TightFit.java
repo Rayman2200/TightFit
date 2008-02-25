@@ -19,6 +19,7 @@ import javax.swing.*;
 
 import tightfit.ship.Ship;
 import tightfit.widget.*;
+import tightfit.item.*;
 
 /**
  * Main Class
@@ -27,11 +28,12 @@ import tightfit.widget.*;
 public class TightFit {
 
     private JFrame      appFrame;
+    private FitPanel    thePanel;
     
     private Ship myShip;
     
-    private static final int APP_WIDTH = 800;
-    private static final int APP_HEIGHT = 600;
+    private static final int APP_WIDTH = 680;
+    private static final int APP_HEIGHT = 500;
     
     public TightFit() throws IllegalArgumentException, IOException {
         appFrame = new JFrame(Resources.getString("dialog.main.title"));
@@ -45,27 +47,42 @@ public class TightFit {
         appFrame.setBackground(new Color(.4f, .5f, .6f));  //blue-grey
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
         
+        appFrame.setUndecorated(true);
+        appFrame.setResizable(false); 
+        
+        appFrame.setLocationRelativeTo(null);
+        
         appFrame.pack();
         appFrame.setVisible(true);
+        
+        try {
+            initDatabase();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     
     private JPanel createContentPane() throws IllegalArgumentException, IOException {
-    	JPanel main = new JPanel();
-    	main.setLayout(new OverlayLayout(main));
-    	
-    	main.add(new FitPanel(this));
+    	thePanel = new FitPanel(this);
     	//build drag-n-drop slots, put them in the right places
     	
     	
-        return main;
+        return thePanel;
     }
     
-    private void initDatabase() {
+    private void initDatabase() throws Exception {
+        Database.getInstance();
         
+        setShip((Ship)Database.getInstance().getType("myrmidon"));
     }
     
     public void setShip(Ship s) {
+        if(myShip != null) {
+            //TODO: ask to save fit
+        }
+        
     	myShip = s;
+        thePanel.setShip(s);
     	//TODO: fire an event
     }
     
