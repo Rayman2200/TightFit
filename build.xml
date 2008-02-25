@@ -1,0 +1,109 @@
+<project name="TightFit" default="dist">
+  <description>
+    A Fit Tool for Eve Online
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="."/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="nightly" location="nightly"/>
+  <property name="javadoc" location="docs/api"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="release_bin" depends="clean,dist" description="Build binary release">
+    <mkdir dir="releases"/>
+    <zip destfile="releases/tightfit-${version}-bin.zip">
+      <zipfileset prefix="tightfit-${version}" dir="."
+        includes="README COPYING INSTALL CHANGES TODO"/>
+      <zipfileset fullpath="tightfit-${version}/tightfit.jar" dir="dist"
+        includes="tightfit.jar"/>
+    </zip>
+  </target>
+
+  <target name="release_src" depends="clean" description="Build source release">
+    <mkdir dir="releases"/>
+    <zip destfile="releases/tightfit-${version}-src.zip">
+      <zipfileset prefix="tightfit-${version}/tightfit" dir="tightfit"/>
+      <zipfileset prefix="tightfit-${version}" dir="."
+        includes="README COPYING CHANGES TODO build.xml MANIFEST.MF"/>
+    </zip>
+  </target>
+
+  <target name="compile" depends="init" description="Compile the source">
+    <javac source="1.4" target="1.4" srcdir="${src}" destdir="${build}"/>
+    <copy todir="${build}/tightfit/resources">
+      <fileset dir="./tightfit/resources">
+	<include name="*.png" />
+        <include name="*.xml" />
+        <include name="*.properties" />
+        <include name="dbEve.dtd" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile_dep" depends="init" description="Compile the source">
+    <javac source="1.4" target="1.4" srcdir="${src}" destdir="${build}" 
+	deprecation="on"/>
+    <copy todir="${build}/tightfit/resources">
+      <fileset dir="./tightfit/resources">
+	<include name="*.png" />
+        <include name="*.xml" />
+        <include name="dbEve.dtd" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="dist" depends="compile" description="Generate the distribution">
+    <mkdir dir="${dist}"/>
+    <jar
+      jarfile="${dist}/tightfit.jar"
+      manifest="MANIFEST.MF"
+      basedir="${build}"
+      excludes="tightfit/plugins/**"
+      />
+  </target>
+
+  <target name="dist_dep" depends="compile_dep"
+    description="Generate the distribution and warn about deprecation">
+    <mkdir dir="${dist}"/>
+    <jar
+      jarfile="${dist}/tightfit.jar"
+      manifest="MANIFEST.MF"
+      basedir="${build}"
+      />
+  </target>
+
+  <target name="nightly" depends="compile" description="Generate a nightly build">
+    <mkdir dir="${nightly}"/>
+    <jar
+      jarfile="${nightly}/tightfit-${DSTAMP}.jar"
+      manifest="MANIFEST.MF"
+      basedir="${build}"
+      />
+  </target>
+
+  <target name="clean" description="Clean up the build directory" >
+    <delete dir="${build}"/>
+    <ant dir="${plugins}" target="clean" inheritAll="false"/>
+  </target>
+
+  <target name="javadoc" description="Generate Javadoc">
+    <!-- Clean up previous Javadoc files -->
+    <delete dir="${javadoc}"/>
+
+    <!-- Generate Javadoc -->
+    <javadoc
+      packagenames="tightfit.*"
+      sourcepath="."
+      destdir="${javadoc}"
+      windowtitle="TightFit"
+      />
+  </target>
+
+</project>
