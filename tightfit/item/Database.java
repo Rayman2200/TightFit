@@ -34,6 +34,8 @@ public class Database {
 		
 		InputStream in = Resources.getResource(resource);
 		
+        System.out.println("building DB...");
+        
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document doc;
         try {
@@ -50,25 +52,29 @@ public class Database {
 		
         Node dbNode = doc.getDocumentElement();
         if (!"database".equals(dbNode.getNodeName())) {
-            throw new Exception("not a value TightFit database");
+            throw new Exception("not a valid TightFit database");
         }
         
+        System.out.println("building types...");
         Node item;
         NodeList l = doc.getElementsByTagName("type");
         for (int i = 0; (item = l.item(i)) != null; i++) {
         	Item type = unmarshalType(item);
+            System.out.print("type "+type.name+" ");
         	switch(type.getCategory()) {
         		case 6:
         		{
         			//It's a ship...
         			Ship ship = new Ship(type);
             		cache.put(ship.name, ship);
+                    System.out.println("add ship: "+type.name);
         		}break;
         		case 7:
         		{
         			//It's a module
             		Module module = new Module(type);
             		cache.put(module.name, module);
+                    System.out.println("add module: "+type.name);
         		}break;
         		case 8:
         		{
@@ -79,6 +85,7 @@ public class Database {
         		break;
         	}
         }
+        System.out.println("DONE");
 	}
 	
 	public static Database getInstance() throws Exception {
@@ -156,14 +163,16 @@ public class Database {
     private static void readAttributes(NodeList children, Item item) {
     	for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
-            if ("attribute".equalsIgnoreCase(child.getNodeName())) {
-            	item.attributes.put(getAttributeValue(child, "name"),
-                        getAttributeValue(child, "value"));
+            if(child != null) {
+                if ("attribute".equalsIgnoreCase(child.getNodeName())) {
+                    item.attributes.put(getAttributeValue(child, "name"),
+                            getAttributeValue(child, "value"));
+                }
+                if("description".equalsIgnoreCase(child.getNodeName())) {
+                    item.attributes.put("description", child.getFirstChild().getNodeValue());
+                }
             }
-            if("description".equalsIgnoreCase(child.getNodeName())) {
-            	item.attributes.put("description", child.getFirstChild().getNodeValue());
-            }
-    	}
+        }
     }
     
     private Item unmarshalType(Node t) {

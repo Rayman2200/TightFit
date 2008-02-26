@@ -89,7 +89,8 @@ public class FitPanel extends JPanel {
         g2d.drawLine(393, 101, 672, 101);
         g2d.drawLine(393, 133, 672, 133);
         g2d.drawLine(424, 38, 424, 167);
-        //g2d.drawLine(424, 38, 424, 167);
+        g2d.drawLine(532, 38, 532, 133);
+        g2d.drawLine(564, 38, 564, 133);
         
         for(int i=0,x=65, r=ship.countRigSlots();i<8;i++,x+=34,r--) {
             g2d.drawRect(x, 450, 32, 32);
@@ -106,12 +107,12 @@ public class FitPanel extends JPanel {
         
         //draw icons
         g2d.drawImage(lnchrImg, 393, 37, null);
-        g2d.drawImage(turImg, 530, 37, null);
+        g2d.drawImage(turImg, 532, 37, null);
         g2d.drawImage(rigImg, 393, 69, null);
         g2d.drawImage(scanImg, 393, 101, null);
         g2d.drawImage(sigRadImg, 393, 133, null);
-        g2d.drawImage(maxTarImg, 530, 69, null);
-        g2d.drawImage(maxRanImg, 530, 101, null);
+        g2d.drawImage(maxTarImg, 532, 69, null);
+        g2d.drawImage(maxRanImg, 532, 101, null);
         
         //draw all the labels
         //bigger font
