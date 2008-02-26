@@ -29,11 +29,11 @@ public class Ship extends Item {
     private int launcherHardpoints;
     private int turretHardpoints;
     
-    private float cpu;
-    private float cpuMax;
-    private float grid;
-    private float gridMax;
+    private float cpu, cpuMax;
+    private float grid, gridMax;
     
+    private float scanRes;
+    private float sigRadius;
     //private Item myType;
     
     public Ship() {
@@ -57,6 +57,9 @@ public class Ship extends Item {
     	
     	cpu = cpuMax = Float.parseFloat(type.getAttribute("cpuOutput"));
     	grid = gridMax = Float.parseFloat(type.getAttribute("powerOutput"));
+    	
+    	scanRes = Float.parseFloat(type.getAttribute("scanResolution"));
+    	sigRadius = Float.parseFloat(type.getAttribute("signatureRadius"));
     }
 
     public int countLauncherHardpoints() {
@@ -126,6 +129,14 @@ public class Ship extends Item {
     	}
     	
     	return dps;
+    }
+    
+    public float calculateScanResolution() {
+    	return scanRes;
+    }
+    
+    public float calculateRadius() {
+    	return sigRadius;
     }
     
     public boolean putModule(Module m, int slotType, int slot) {

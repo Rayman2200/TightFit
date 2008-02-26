@@ -165,6 +165,7 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, ""+ship.countLauncherHardpoints(), 432, 60, dullWhite);
         drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, dullWhite);
         drawShadowedString(g2d, ""+ship.countRigSlots(), 432, 92, dullWhite);
-        //drawShadowedString(
+        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, dullWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+"m", 432, 156, dullWhite);
     }
 }
