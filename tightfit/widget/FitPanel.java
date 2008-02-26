@@ -17,8 +17,8 @@ public class FitPanel extends JPanel {
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg;
     
-	private Font bigFont;
-	private Font smallFont;
+	private Font bigFont, smallFont,
+				shipTypeFont;
 	
     private Color brightWhite, dullWhite, shadow;
     
@@ -35,8 +35,9 @@ public class FitPanel extends JPanel {
         maxRanImg = Resources.getImage("icon22_15.png");
         
 		try {
-			bigFont = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
-            bigFont = bigFont.deriveFont(8f);
+			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
+            bigFont = big.deriveFont(8f);
+            shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
 			smallFont = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_55.ttf"));
             smallFont = smallFont.deriveFont(6f);
 		} catch (FontFormatException e) {
@@ -52,7 +53,7 @@ public class FitPanel extends JPanel {
         dullWhite = new Color(.9f,.9f,1f,.85f);
         shadow = new Color(.3f,.3f,.3f,.95f);
         
-        setSize(680,500);
+        setPreferredSize(new Dimension(680,500));
         
         setLayout(new OverlayLayout(this));
 	}
@@ -75,22 +76,35 @@ public class FitPanel extends JPanel {
         g2d.setComposite(AlphaComposite.SrcAtop);
                             
         //let the drawing begin!
+        g2d.setColor(new Color(0.4f, 0.5f, 0.6f));
+        g2d.fillRect(0,0,680,500);
         g2d.drawImage(panelImg, 0, 0, null);
         
         //draw lines
         g2d.setColor(brightWhite);
         g2d.drawRect(392, 37, 280, 130);
+        g2d.drawRect(392, 172, 280, 84);
+        g2d.drawRect(392, 263, 280, 66);
+        g2d.drawRect(392, 335, 280, 66);
         
         g2d.setColor(dullWhite);
         g2d.draw3DRect(0, 0, 679, 499, true);
         g2d.draw3DRect(1, 1, 677, 497, true);
         g2d.drawLine(2,15,678,15);
+        g2d.drawLine(75,64,325,64);
         g2d.drawLine(393, 69, 672, 69);
         g2d.drawLine(393, 101, 672, 101);
         g2d.drawLine(393, 133, 672, 133);
         g2d.drawLine(424, 38, 424, 167);
         g2d.drawLine(532, 38, 532, 133);
         g2d.drawLine(564, 38, 564, 133);
+        
+        g2d.drawLine(393, 237, 672, 237);
+        g2d.drawLine(456, 173, 456, 237);
+        g2d.drawLine(564, 173, 564, 237);
+        
+        g2d.drawLine(456, 263, 456, 328);
+        g2d.drawLine(564, 263, 564, 328);
         
         for(int i=0,x=65, r=ship.countRigSlots();i<8;i++,x+=34,r--) {
             g2d.drawRect(x, 450, 32, 32);
@@ -130,6 +144,9 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
         drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
         drawShadowedString(g2d, "SIGNATURE RADIUS", 430, 142, Color.white);
+        
+        g2d.setFont(shipTypeFont);
+        drawShadowedString(g2d, ship.name.toUpperCase(), 172, 60, Color.white);
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);

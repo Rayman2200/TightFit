@@ -55,13 +55,13 @@ public class Database {
             throw new Exception("not a valid TightFit database");
         }
         
-        System.out.println("building types...");
+        System.out.print("building types...");
         Node item;
         NodeList l = doc.getElementsByTagName("type");
         for (int i = 0; (item = l.item(i)) != null; i++) {
         	Item type = unmarshalType(item);
-            System.out.print("type "+type.name+" ");
-        	switch(type.getCategory()) {
+            //System.out.print("type "+type.name+" ");
+        	/*switch(type.getCategory()) {
         		case 6:
         		{
         			//It's a ship...
@@ -83,7 +83,9 @@ public class Database {
         		}break;
         		default:
         		break;
-        	}
+        	}*/
+            cache.put(type.name.toLowerCase(), type);
+            //System.out.println(">>> added module");
         }
         System.out.println("DONE");
 	}
@@ -168,7 +170,7 @@ public class Database {
                     item.attributes.put(getAttributeValue(child, "name"),
                             getAttributeValue(child, "value"));
                 }
-                if("description".equalsIgnoreCase(child.getNodeName())) {
+                if("description".equalsIgnoreCase(child.getNodeName()) && child.getFirstChild() != null) {
                     item.attributes.put("description", child.getFirstChild().getNodeValue());
                 }
             }

@@ -73,7 +73,7 @@ public class TightFit {
     private void initDatabase() throws Exception {
         Database.getInstance();
         
-        setShip((Ship)Database.getInstance().getType("myrmidon"));
+        setShip(new Ship(Database.getInstance().getType("myrmidon")));
     }
     
     public void setShip(Ship s) {

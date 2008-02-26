@@ -33,29 +33,30 @@ public class Ship extends Item {
     private float cpuMax;
     private float grid;
     private float gridMax;
-    private float outputMax;
     
-    private Item myType;
+    //private Item myType;
     
     public Ship() {
         super();
         rigSlots = new Module[0];
+        name = "Shuttle";
     }
     
     public Ship(Item type) {
-    	myType = type;             //OMG, you're just my type! What's your sign?
+    	super(type);
+    	//myType = type;             //OMG, you're just my type! What's your sign?
+    	type.printAttributes();
     	
-    	lowSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("lowSlots"))];
-    	midSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("midSlots"))];
-    	hiSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("hiSlots"))];
-    	rigSlots = new Module[(int)Float.parseFloat((String)type.attributes.get("rigSlots"))];
+    	lowSlots = new Module[(int)Float.parseFloat(type.getAttribute("lowSlots"))];
+    	midSlots = new Module[(int)Float.parseFloat(type.getAttribute("medSlots"))];
+    	hiSlots = new Module[(int)Float.parseFloat(type.getAttribute("hiSlots"))];
+    	rigSlots = new Module[(int)Float.parseFloat(type.getAttribute("rigSlots"))];
     	
-    	launcherHardpoints = (int)Float.parseFloat((String)type.attributes.get("launcherHardpoints"));
-    	turretHardpoints = (int)Float.parseFloat((String)type.attributes.get("turretHardpoints"));
+    	launcherHardpoints = (int)Float.parseFloat(type.getAttribute("launcherHardpoints"));
+    	turretHardpoints = (int)Float.parseFloat(type.getAttribute("turretSlotsLeft"));
     	
-    	cpu = cpuMax = Float.parseFloat((String)type.attributes.get("cpu"));
-    	grid = gridMax = Float.parseFloat((String)type.attributes.get("powerOutput"));
-    	outputMax = Float.parseFloat((String)attributes.get("powerOutput"));
+    	cpu = cpuMax = Float.parseFloat(type.getAttribute("cpuOutput"));
+    	grid = gridMax = Float.parseFloat(type.getAttribute("powerOutput"));
     }
 
     public int countLauncherHardpoints() {
@@ -63,7 +64,7 @@ public class Ship extends Item {
     }
     
     public int countTurretHardpoints() {
-        return turretHardpoints;
+        return turretHardpoints;  //FIXME: actually check hi slots
     }
     
     public int countRigSlots() {
@@ -79,9 +80,9 @@ public class Ship extends Item {
     public float calculateGenericDps() {
     	float dps = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	float multiplier = Float.parseFloat(((String)hiSlots[i].attributes.get("damageMultiplier")));
+        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier")));
         	float baseDmg = hiSlots[i].getCharge().getTotalDamage();
-        	float rate = Float.parseFloat(((String)hiSlots[i].attributes.get("speed")));
+        	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed")));
         	
         	dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
         }
@@ -114,9 +115,9 @@ public class Ship extends Item {
     	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
     	
     	if(hiSlots[i] != null) {
-	    	float multiplier = Float.parseFloat(((String)hiSlots[i].attributes.get("damageMultiplier")));
+	    	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier")));
 	    	Ammo charge = hiSlots[i].getCharge();
-	    	float rate = Float.parseFloat(((String)hiSlots[i].attributes.get("speed")));
+	    	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed")));
 	    	
 	    	dps[0] = (charge.getEmDamage() * multiplier) / (rate * calcFireRateBonus(charge));
 	    	dps[1] = (charge.getKineticDamage() * multiplier) / (rate * calcFireRateBonus(charge));
@@ -175,11 +176,11 @@ public class Ship extends Item {
     }
     
     public float getMaxPower() {
-    	float output = outputMax;
+    	float output = gridMax;
     	
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && lowSlots[i].attributes.contains("powerOutputMultiplier")) {
-    			output *=  Float.parseFloat((String)lowSlots[i].attributes.get("powerOutputMultiplier"));
+    			output *=  Float.parseFloat((String)lowSlots[i].getAttribute("powerOutputMultiplier"));
     		}
     	}
     	
@@ -191,7 +192,7 @@ public class Ship extends Item {
     	
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && lowSlots[i].attributes.contains("cpuMultiplier")) {
-    			c *=  Float.parseFloat((String)lowSlots[i].attributes.get("cpuMultiplier"));
+    			c *=  Float.parseFloat((String)lowSlots[i].getAttribute("cpuMultiplier"));
     		}
     	}
     	

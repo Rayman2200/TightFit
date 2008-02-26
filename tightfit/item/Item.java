@@ -12,6 +12,7 @@ package tightfit.item;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.swing.Icon;
 
@@ -31,6 +32,7 @@ public class Item {
     public Hashtable attributes;
  
     public Item() {
+    	attributes = new Hashtable();
     }
     
     public Item(Item type) {
@@ -52,5 +54,20 @@ public class Item {
     	}
     	
     	return -1;
+    }
+    
+    public String getAttribute(String attrib) {
+    	if(attributes.containsKey(attrib)) {
+    		return (String)attributes.get(attrib);
+    	}
+    	return "0";
+    }
+    
+    public void printAttributes() {
+    	Iterator keys = attributes.keySet().iterator();
+    	while(keys.hasNext()) {
+    		Object key = keys.next();
+    		System.out.println(""+key+": "+attributes.get(key));
+    	}
     }
 }
