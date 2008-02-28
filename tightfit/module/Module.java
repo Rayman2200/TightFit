@@ -21,7 +21,8 @@ public class Module extends Item {
 	
     public int slotRequirement;
     
-    private boolean bActive = false;
+    private boolean bActive = false,
+                bOnline = true;
     
     private Ammo charge;
     
@@ -57,12 +58,26 @@ public class Module extends Item {
     	return 0.0f;
     }
     
+    public boolean isOnline() {
+        return bOnline;
+    }
+    
+    public void online() {
+        bOnline = true;
+    }
+    
+    public void offline() {
+        bOnline = false;
+    }
+    
     public boolean isActive() {
     	return bActive;
     }
     
-    public void activate() {
-    	bActive = true;
+    public void activate() throws Exception {
+        if(bOnline)
+            bActive = true;
+        else throw new Exception("Module not online!");
     }
     
     public void deactivate() {

@@ -39,7 +39,10 @@ public class Ship extends Item {
     public Ship() {
         super();
         rigSlots = new Module[0];
-        name = "Shuttle";
+        name = "Caldari Shuttle";
+        cpu = cpuMax = 150;
+        grid = gridMax = 25;
+        sigRadius = 25;
     }
     
     public Ship(Item type) {
@@ -190,7 +193,7 @@ public class Ship extends Item {
     	float output = gridMax;
     	
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].attributes.contains("powerOutputMultiplier")) {
+    		if(lowSlots[i] != null && lowSlots[i].isOnline() && lowSlots[i].attributes.contains("powerOutputMultiplier")) {
     			output *=  Float.parseFloat((String)lowSlots[i].getAttribute("powerOutputMultiplier"));
     		}
     	}
@@ -202,7 +205,7 @@ public class Ship extends Item {
     	float c = cpuMax;
     	
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].attributes.contains("cpuMultiplier")) {
+    		if(lowSlots[i] != null && lowSlots[i].isOnline() && lowSlots[i].attributes.contains("cpuMultiplier")) {
     			c *=  Float.parseFloat((String)lowSlots[i].getAttribute("cpuMultiplier"));
     		}
     	}
@@ -220,21 +223,21 @@ public class Ship extends Item {
     	
     	//HI
     	for(int i=0;i<hiSlots.length;i++) {
-    		if(hiSlots[i] != null && hiSlots[i].isActive()) {
+    		if(hiSlots[i] != null && hiSlots[i].isOnline()) {
     			gridRemain -= hiSlots[i].getPowerUsage();
     		}
     	}
     	
     	//MID
     	for(int i=0;i<midSlots.length;i++) {
-    		if(midSlots[i] != null && midSlots[i].isActive()) {
+    		if(midSlots[i] != null && midSlots[i].isOnline()) {
     			gridRemain -=  midSlots[i].getPowerUsage();
     		}
     	}
     	
     	//LOW
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].isActive()) {
+    		if(lowSlots[i] != null && lowSlots[i].isOnline()) {
     			gridRemain -=  lowSlots[i].getPowerUsage();
     		}
     	}
@@ -247,21 +250,21 @@ public class Ship extends Item {
     	
     	//HI
     	for(int i=0;i<hiSlots.length;i++) {
-    		if(hiSlots[i] != null && hiSlots[i].isActive()) {
+    		if(hiSlots[i] != null && hiSlots[i].isOnline()) {
     			cpuRemain -= hiSlots[i].getCpuUsage();
     		}
     	}
     	
     	//MID
     	for(int i=0;i<midSlots.length;i++) {
-    		if(midSlots[i] != null && midSlots[i].isActive()) {
+    		if(midSlots[i] != null && midSlots[i].isOnline()) {
     			cpuRemain -=  midSlots[i].getCpuUsage();
     		}
     	}
     	
     	//LOW
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].isActive()) {
+    		if(lowSlots[i] != null && lowSlots[i].isOnline()) {
     			cpuRemain -=  lowSlots[i].getCpuUsage();
     		}
     	}

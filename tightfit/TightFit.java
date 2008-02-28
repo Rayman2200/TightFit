@@ -10,9 +10,8 @@
 
 package tightfit;
 
-import java.awt.Color;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -25,12 +24,14 @@ import tightfit.item.*;
  * Main Class
  *
  */
-public class TightFit {
+public class TightFit implements MouseListener, MouseMotionListener {
 
     private JFrame      appFrame;
     private FitPanel    thePanel;
     
     private Ship myShip;
+    
+    private Point mousePressLocation;
     
     private static final int APP_WIDTH = 680;
     private static final int APP_HEIGHT = 500;
@@ -55,25 +56,33 @@ public class TightFit {
         appFrame.pack();
         appFrame.setVisible(true);
         
-        try {
-            initDatabase();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                initDatabase();
+            }
+        }).start();
     }
     
     private JPanel createContentPane() throws IllegalArgumentException, IOException {
     	thePanel = new FitPanel(this);
     	//build drag-n-drop slots, put them in the right places
-    	
+    	thePanel.addMouseListener(this);
+        thePanel.addMouseMotionListener(this);
     	
         return thePanel;
     }
     
-    private void initDatabase() throws Exception {
-        Database.getInstance();
+    private void initDatabase() {
         
-        setShip(new Ship(Database.getInstance().getType("myrmidon")));
+        try {
+            Database.getInstance();
+        
+            setShip(new Ship(Database.getInstance().getType("myrmidon")));
+            
+            //TODO: notify
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public void setShip(Ship s) {
@@ -84,6 +93,34 @@ public class TightFit {
     	myShip = s;
         thePanel.setShip(s);
     	//TODO: fire an event
+    }
+    
+    public void mouseDragged(MouseEvent e) {
+        if(mousePressLocation != null && mousePressLocation.y < 15) {
+            appFrame.setLocation(e.getX() - mousePressLocation.x, e.getY()-mousePressLocation.y);
+            
+        }
+    }
+    
+    public void mouseMoved(MouseEvent e) {
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+    }
+    
+    public void mousePressed(MouseEvent e) {
+        mousePressLocation = new Point(e.getPoint());
+        
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+        mousePressLocation = null;
+    }
+    
+    public void mouseEntered(MouseEvent e) {
+    }
+    
+    public void mouseExited(MouseEvent e) {
     }
     
     /**

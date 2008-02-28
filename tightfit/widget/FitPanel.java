@@ -17,6 +17,8 @@ public class FitPanel extends JPanel {
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg;
     
+    private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
+                
 	private Font bigFont, smallFont,
 				shipTypeFont;
 	
@@ -25,7 +27,7 @@ public class FitPanel extends JPanel {
 	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
 		this.editor = editor;
 		
-		//panelImg = Resources.getImage("panel.png");
+		panelImg = Resources.getImage("panel.png");
         rigImg = Resources.getImage("icon68_01.png");
         lnchrImg = Resources.getImage("icon12_12.png");
         turImg = Resources.getImage("icon12_09.png");
@@ -33,6 +35,11 @@ public class FitPanel extends JPanel {
         scanImg = Resources.getImage("icon03_09.png");
         maxTarImg = Resources.getImage("icon04_12.png");
         maxRanImg = Resources.getImage("icon22_15.png");
+        
+        rstEmImg = Resources.getImage("icon22_20.png");
+        rstExImg = Resources.getImage("icon22_19.png");
+        rstThImg = Resources.getImage("icon22_18.png");
+        rstKnImg = Resources.getImage("icon22_17.png");
         
 		try {
 			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
@@ -88,8 +95,8 @@ public class FitPanel extends JPanel {
         g2d.drawRect(392, 335, 280, 66);
         
         g2d.setColor(dullWhite);
-        g2d.draw3DRect(0, 0, 679, 499, true);
-        g2d.draw3DRect(1, 1, 677, 497, true);
+        //g2d.draw3DRect(0, 0, 679, 499, true);
+        //g2d.draw3DRect(1, 1, 677, 497, true);
         g2d.drawLine(2,15,678,15);
         g2d.drawLine(75,64,325,64);
         g2d.drawLine(393, 69, 672, 69);
@@ -128,12 +135,13 @@ public class FitPanel extends JPanel {
         g2d.drawImage(maxTarImg, 532, 69, null);
         g2d.drawImage(maxRanImg, 532, 101, null);
         
+        
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
         drawShadowedString(g2d, "TIGHTFIT EVE FITTING TOOL v1.0a", 5, 12, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
-
+        drawShadowedString(g2d, "Rechargerate:", 397, 250, Color.white);
         
         //smaller font
         g2d.setFont(smallFont);
