@@ -97,7 +97,8 @@ public class TightFit implements MouseListener, MouseMotionListener {
     
     public void mouseDragged(MouseEvent e) {
         if(mousePressLocation != null && mousePressLocation.y < 15) {
-            appFrame.setLocation(e.getX() - mousePressLocation.x, e.getY()-mousePressLocation.y);
+        	Point d = appFrame.getLocation();
+            appFrame.setLocation(d.x + (e.getX() - mousePressLocation.x), d.y + (e.getY()-mousePressLocation.y));
             
         }
     }

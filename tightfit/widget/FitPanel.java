@@ -11,18 +11,24 @@ import tightfit.ship.Ship;
 
 public class FitPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private TightFit editor;
 	private Ship ship;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
-                sigRadImg, scanImg, maxTarImg, maxRanImg;
+                sigRadImg, scanImg, maxTarImg, maxRanImg,
+                cargoImg, shieldImg;
     
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
                 
 	private Font bigFont, smallFont,
 				shipTypeFont;
 	
-    private Color brightWhite, dullWhite, shadow;
+    private Color bgColor, brightWhite, dullWhite, shadow;
     
 	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
 		this.editor = editor;
@@ -35,6 +41,8 @@ public class FitPanel extends JPanel {
         scanImg = Resources.getImage("icon03_09.png");
         maxTarImg = Resources.getImage("icon04_12.png");
         maxRanImg = Resources.getImage("icon22_15.png");
+        cargoImg = Resources.getImage("icon03_13.png");
+        shieldImg = Resources.getImage("icon01_13.png");
         
         rstEmImg = Resources.getImage("icon22_20.png");
         rstExImg = Resources.getImage("icon22_19.png");
@@ -56,9 +64,11 @@ public class FitPanel extends JPanel {
 		}
         
         ship = new Ship();
+        
+        bgColor = new Color(.43f, .44f, .8f);
         brightWhite = new Color(1f,1f,1f,.95f);
         dullWhite = new Color(.9f,.9f,1f,.85f);
-        shadow = new Color(.3f,.3f,.3f,.95f);
+        shadow = new Color(.1f,.1f,.1f,.95f);
         
         setPreferredSize(new Dimension(680,500));
         
@@ -83,7 +93,7 @@ public class FitPanel extends JPanel {
         g2d.setComposite(AlphaComposite.SrcAtop);
                             
         //let the drawing begin!
-        g2d.setColor(new Color(0.4f, 0.5f, 0.6f));
+        g2d.setColor(bgColor);
         g2d.fillRect(0,0,680,500);
         g2d.drawImage(panelImg, 0, 0, null);
         
@@ -91,13 +101,13 @@ public class FitPanel extends JPanel {
         g2d.setColor(brightWhite);
         g2d.drawRect(392, 37, 280, 130);
         g2d.drawRect(392, 172, 280, 84);
-        g2d.drawRect(392, 263, 280, 66);
-        g2d.drawRect(392, 335, 280, 66);
+        g2d.drawRect(392, 263, 280, 65);
+        g2d.drawRect(392, 335, 280, 65);
+        g2d.drawRect(392, 407, 280, 19);
+        g2d.drawRect(392, 432, 280, 32);
         
         g2d.setColor(dullWhite);
-        //g2d.draw3DRect(0, 0, 679, 499, true);
-        //g2d.draw3DRect(1, 1, 677, 497, true);
-        g2d.drawLine(2,15,678,15);
+        g2d.drawLine(0,17,680,17);
         g2d.drawLine(75,64,325,64);
         g2d.drawLine(393, 69, 672, 69);
         g2d.drawLine(393, 101, 672, 101);
@@ -112,6 +122,13 @@ public class FitPanel extends JPanel {
         
         g2d.drawLine(456, 263, 456, 328);
         g2d.drawLine(564, 263, 564, 328);
+        
+        g2d.drawLine(456, 335, 456, 399);
+        g2d.drawLine(564, 335, 564, 399);
+        
+        g2d.drawLine(424, 432, 424, 463);
+        g2d.drawLine(532, 432, 532, 463);
+        g2d.drawLine(564, 432, 564, 463);
         
         for(int i=0,x=65, r=ship.countRigSlots();i<8;i++,x+=34,r--) {
             g2d.drawRect(x, 450, 32, 32);
@@ -134,14 +151,26 @@ public class FitPanel extends JPanel {
         g2d.drawImage(sigRadImg, 393, 133, null);
         g2d.drawImage(maxTarImg, 532, 69, null);
         g2d.drawImage(maxRanImg, 532, 101, null);
-        
+        g2d.drawImage(rstEmImg, 458, 175, null); g2d.drawImage(rstKnImg, 566, 175, null);
+        g2d.drawImage(rstEmImg, 458, 268, null); g2d.drawImage(rstKnImg, 566, 268, null);
+        g2d.drawImage(rstEmImg, 458, 340, null); g2d.drawImage(rstKnImg, 566, 340, null);
+        g2d.drawImage(rstExImg, 458, 202, null); g2d.drawImage(rstThImg, 566, 202, null);
+        g2d.drawImage(rstExImg, 458, 295, null); g2d.drawImage(rstThImg, 566, 295, null);
+        g2d.drawImage(rstExImg, 458, 367, null); g2d.drawImage(rstThImg, 566, 367, null);
+        g2d.drawImage(cargoImg, 393, 432, null);
+        g2d.drawImage(shieldImg, 399, 180, null);
         
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
         drawShadowedString(g2d, "TIGHTFIT EVE FITTING TOOL v1.0a", 5, 12, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
-        drawShadowedString(g2d, "Rechargerate:", 397, 250, Color.white);
+        drawShadowedString(g2d, "Rechargerate", 397, 250, Color.white);
+        drawShadowedString(g2d, "Speed", 401, 421, Color.white);
+        drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
+        drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
+        drawShadowedStringCentered(g2d, "Armor", 424, 277, Color.white);
+        drawShadowedStringCentered(g2d, "Structure", 424, 349, Color.white);
         
         //smaller font
         g2d.setFont(smallFont);
@@ -152,6 +181,8 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
         drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
         drawShadowedString(g2d, "SIGNATURE RADIUS", 430, 142, Color.white);
+        drawShadowedString(g2d, "CARGOHOLD", 432, 443, Color.white);
+        drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
         
         g2d.setFont(shipTypeFont);
         drawShadowedString(g2d, ship.name.toUpperCase(), 172, 60, Color.white);
@@ -161,7 +192,14 @@ public class FitPanel extends JPanel {
 	}
     
     public void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
-        
+        g2d.setColor(shadow);
+        g2d.drawString(s, x+1, y+1);
+        g2d.setColor(c);
+        g2d.drawString(s, x, y);
+    }
+    
+    public void drawShadowedStringCentered(Graphics2D g2d, String s, float x, float y, Color c) {
+    	x -= g2d.getFontMetrics().getStringBounds(s, g2d).getWidth()/2.0f;
         g2d.setColor(shadow);
         g2d.drawString(s, x+1, y+1);
         g2d.setColor(c);
@@ -174,6 +212,10 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, dullWhite);
         drawShadowedString(g2d, ""+ship.countRigSlots(), 432, 92, dullWhite);
         drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, dullWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+"m", 432, 156, dullWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, dullWhite);
+        drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, dullWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, dullWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 320, dullWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, dullWhite);
     }
 }

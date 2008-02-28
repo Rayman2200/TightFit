@@ -31,9 +31,11 @@ public class Ship extends Item {
     
     private float cpu, cpuMax;
     private float grid, gridMax;
+    private float shieldHp, armorHp;
     
     private float scanRes;
     private float sigRadius;
+    private float maxRange;
     //private Item myType;
     
     public Ship() {
@@ -43,6 +45,7 @@ public class Ship extends Item {
         cpu = cpuMax = 150;
         grid = gridMax = 25;
         sigRadius = 25;
+        attributes.put("maxLockedTargets", "2.0");
     }
     
     public Ship(Item type) {
@@ -63,6 +66,10 @@ public class Ship extends Item {
     	
     	scanRes = Float.parseFloat(type.getAttribute("scanResolution"));
     	sigRadius = Float.parseFloat(type.getAttribute("signatureRadius"));
+    	maxRange = Float.parseFloat(type.getAttribute("maxTargetRange"));
+    	
+    	shieldHp = Float.parseFloat(type.getAttribute("shieldCapacity"));
+    	armorHp = Float.parseFloat(type.getAttribute("armorHP"));
     }
 
     public int countLauncherHardpoints() {
@@ -140,6 +147,10 @@ public class Ship extends Item {
     
     public float calculateRadius() {
     	return sigRadius;
+    }
+    
+    public int getMaxLockedTargets() {
+    	return (int)Float.parseFloat(getAttribute("maxLockedTargets"));
     }
     
     public boolean putModule(Module m, int slotType, int slot) {
@@ -274,6 +285,18 @@ public class Ship extends Item {
     
     public float calculateMaxCapacity() {
         return 0.0f;
+    }
+    
+    public float calculateMaxShields() {
+    	return shieldHp;
+    }
+    
+    public float calculateMaxArmor() {
+    	return armorHp;
+    }
+    
+    public float calculateMaxRange() {
+    	return maxRange;
     }
     
     private float calcFireRateBonus(Ammo charge) {

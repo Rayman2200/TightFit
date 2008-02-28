@@ -87,6 +87,7 @@ public class Database {
             cache.put(type.name.toLowerCase(), type);
             //System.out.println(">>> added module");
         }
+        in.close();
         System.out.println("DONE");
 	}
 	
