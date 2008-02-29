@@ -26,7 +26,7 @@ public class FitPanel extends JPanel {
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
                 
 	private Font bigFont, smallFont,
-				shipTypeFont;
+				shipTypeFont, shipTitleFont;
 	
     private Color bgColor, brightWhite, dullWhite, shadow;
     
@@ -53,6 +53,7 @@ public class FitPanel extends JPanel {
 			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
             bigFont = big.deriveFont(8f);
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
+            shipTitleFont = big.deriveFont(Font.BOLD, 10f);
 			smallFont = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_55.ttf"));
             smallFont = smallFont.deriveFont(6f);
 		} catch (FontFormatException e) {
@@ -184,8 +185,10 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, "CARGOHOLD", 432, 443, Color.white);
         drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
         
+        g2d.setFont(shipTitleFont);
+        drawShadowedStringCentered(g2d, ship.title.toUpperCase(), 200, 47, Color.white);
         g2d.setFont(shipTypeFont);
-        drawShadowedString(g2d, ship.name.toUpperCase(), 172, 60, Color.white);
+        drawShadowedStringCentered(g2d, ship.name.toUpperCase(), 200, 60, Color.white);
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);

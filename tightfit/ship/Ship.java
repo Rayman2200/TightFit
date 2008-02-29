@@ -21,6 +21,8 @@ import tightfit.module.Module;
  */
 public class Ship extends Item {
 
+	public String title;
+	
     private Module hiSlots[];
     private Module midSlots[];
     private Module lowSlots[];
@@ -46,6 +48,7 @@ public class Ship extends Item {
         grid = gridMax = 25;
         sigRadius = 25;
         attributes.put("maxLockedTargets", "2.0");
+        title = "Corporate Jet";
     }
     
     public Ship(Item type) {
@@ -70,6 +73,8 @@ public class Ship extends Item {
     	
     	shieldHp = Float.parseFloat(type.getAttribute("shieldCapacity"));
     	armorHp = Float.parseFloat(type.getAttribute("armorHP"));
+    	
+    	title = "Pilot's "+name;
     }
 
     public int countLauncherHardpoints() {
