@@ -28,7 +28,7 @@ public class FitPanel extends JPanel {
 	private Font bigFont, smallFont,
 				shipTypeFont, shipTitleFont;
 	
-    private Color bgColor, brightWhite, dullWhite, shadow;
+    private Color bgColor, brightWhite, dullWhite, shadow, statWhite;
     
 	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
 		this.editor = editor;
@@ -68,8 +68,9 @@ public class FitPanel extends JPanel {
         
         bgColor = new Color(.43f, .44f, .8f);
         brightWhite = new Color(1f,1f,1f,.95f);
-        dullWhite = new Color(.9f,.9f,1f,.85f);
-        shadow = new Color(.1f,.1f,.1f,.95f);
+        dullWhite = new Color(.9f,.9f,1f,.55f);
+        statWhite = new Color(.9f,.9f,1f,.95f);
+        shadow = new Color(.1f,.1f,.1f,.85f);
         
         setPreferredSize(new Dimension(680,500));
         
@@ -152,19 +153,23 @@ public class FitPanel extends JPanel {
         g2d.drawImage(sigRadImg, 393, 133, null);
         g2d.drawImage(maxTarImg, 532, 69, null);
         g2d.drawImage(maxRanImg, 532, 101, null);
+        
         g2d.drawImage(rstEmImg, 458, 175, null); g2d.drawImage(rstKnImg, 566, 175, null);
-        g2d.drawImage(rstEmImg, 458, 268, null); g2d.drawImage(rstKnImg, 566, 268, null);
-        g2d.drawImage(rstEmImg, 458, 340, null); g2d.drawImage(rstKnImg, 566, 340, null);
         g2d.drawImage(rstExImg, 458, 202, null); g2d.drawImage(rstThImg, 566, 202, null);
+        
+        g2d.drawImage(rstEmImg, 458, 268, null); g2d.drawImage(rstKnImg, 566, 268, null);
         g2d.drawImage(rstExImg, 458, 295, null); g2d.drawImage(rstThImg, 566, 295, null);
+        
+        g2d.drawImage(rstEmImg, 458, 340, null); g2d.drawImage(rstKnImg, 566, 340, null);
         g2d.drawImage(rstExImg, 458, 367, null); g2d.drawImage(rstThImg, 566, 367, null);
+        
         g2d.drawImage(cargoImg, 393, 432, null);
         g2d.drawImage(shieldImg, 399, 180, null);
         
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, "TIGHTFIT EVE FITTING TOOL v1.0a", 5, 12, Color.white);
+        drawShadowedString(g2d, "TIGHTFIT v0.6a - " /*+ship.title*/, 6, 13, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
         drawShadowedString(g2d, "Rechargerate", 397, 250, Color.white);
         drawShadowedString(g2d, "Speed", 401, 421, Color.white);
@@ -172,7 +177,7 @@ public class FitPanel extends JPanel {
         drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
         drawShadowedStringCentered(g2d, "Armor", 424, 277, Color.white);
         drawShadowedStringCentered(g2d, "Structure", 424, 349, Color.white);
-        
+
         //smaller font
         g2d.setFont(smallFont);
         drawShadowedString(g2d, "LAUNCHER HARDPOINTS", 430, 46, Color.white);
@@ -211,14 +216,14 @@ public class FitPanel extends JPanel {
     
     private void drawShipSpecs(Graphics2D g2d) {
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, ""+ship.countLauncherHardpoints(), 432, 60, dullWhite);
-        drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, dullWhite);
-        drawShadowedString(g2d, ""+ship.countRigSlots(), 432, 92, dullWhite);
-        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, dullWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, dullWhite);
-        drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, dullWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, dullWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 320, dullWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, dullWhite);
+        drawShadowedString(g2d, ""+ship.countLauncherHardpoints(), 432, 60, statWhite);
+        drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, statWhite);
+        drawShadowedString(g2d, ""+ship.countRigSlots(), 432, 92, statWhite);
+        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, statWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
+        drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 320, statWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, statWhite);
     }
 }

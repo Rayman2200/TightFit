@@ -19,6 +19,7 @@ import javax.swing.*;
 import tightfit.ship.Ship;
 import tightfit.widget.*;
 import tightfit.item.*;
+import tightfit.dialogs.*;
 
 /**
  * Main Class
@@ -30,6 +31,7 @@ public class TightFit implements MouseListener, MouseMotionListener {
     private FitPanel    thePanel;
     
     private Ship myShip;
+    private MarketDialog mdlg;
     
     private Point mousePressLocation;
     
@@ -54,7 +56,9 @@ public class TightFit implements MouseListener, MouseMotionListener {
         appFrame.setLocationRelativeTo(null);
         
         appFrame.pack();
-        appFrame.setVisible(true);
+        appFrame.setVisible(true); 
+        
+        mdlg = new MarketDialog(appFrame);
         
         new Thread(new Runnable() {
             public void run() {
@@ -78,6 +82,8 @@ public class TightFit implements MouseListener, MouseMotionListener {
             Database.getInstance();
         
             setShip(new Ship(Database.getInstance().getType("myrmidon")));
+            
+            mdlg.updateTree(Database.getInstance());
             
             //TODO: notify
         } catch(Exception e) {

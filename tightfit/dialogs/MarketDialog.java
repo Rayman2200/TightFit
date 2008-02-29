@@ -10,7 +10,9 @@
 
 package tightfit.dialogs;
 
-import java.awt.GridLayout;
+import java.io.IOException;
+
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
 
 import java.util.Iterator;
@@ -18,27 +20,39 @@ import java.util.Iterator;
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import tightfit.Resources;
 import tightfit.item.Database;
 import tightfit.item.Group;
 
 public class MarketDialog extends JDialog {
 
-    JTree marketTree;
+    private JTree marketTree;
+    private DefaultMutableTreeNode top;
+    private Database myDb; 
     
-    public MarketDialog(Database db) {
+    public MarketDialog(JFrame parent) {
         JPanel panel = new JPanel(new GridLayout());
-        DefaultMutableTreeNode top =
-            new DefaultMutableTreeNode("Galactic Market");
-        createNodes(top, db);
+        top =
+            new DefaultMutableTreeNode("Galactic Market (Loading...)");
         
         marketTree = new JTree(top);
         
         marketTree.setDragEnabled(true);
         marketTree.setTransferHandler(new MarketTransferHandler());
         
+        try {
+            marketTree.setFont(Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf")).deriveFont(8f));
+        } catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         panel.add(marketTree);
         
-        JDialog market = new JDialog();
+        JDialog market = new JDialog(parent);
         
         market.add(panel);
         
@@ -46,6 +60,15 @@ public class MarketDialog extends JDialog {
         market.setVisible(true);
     }
 
+    public void updateTree(Database db) {
+        top.setUserObject("Galactic Market");
+        
+        myDb = db;
+        
+        createNodes(top, myDb);
+        
+    }
+    
     private void createNodes(DefaultMutableTreeNode top, Database db) {
     	Iterator itr = db.getGroups();
         while(itr.hasNext()) {
