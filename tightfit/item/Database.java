@@ -112,7 +112,7 @@ public class Database {
 	}
 	
     public Item getType(String name) {
-        return (Item)cache.get(name);
+        return (Item)cache.get(name.toLowerCase());
     }
     
 	private static String getAttributeValue(Node node, String attribname) {

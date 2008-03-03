@@ -56,11 +56,11 @@ public class Item {
     	return -1;
     }
     
-    public String getAttribute(String attrib) {
+    public String getAttribute(String attrib, String defaultVal) {
     	if(attributes.containsKey(attrib)) {
     		return (String)attributes.get(attrib);
     	}
-    	return "0";
+    	return defaultVal;
     }
     
     public void printAttributes() {

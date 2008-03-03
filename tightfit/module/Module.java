@@ -27,11 +27,10 @@ public class Module extends Item {
     private Ammo charge;
     
     public Module() {
-        
     }
     
     public Module(Item type) {
-    	
+    	super(type);
     }
     
     public Module(Module m) {
@@ -46,16 +45,12 @@ public class Module extends Item {
     
     public float getCpuUsage() {
     	//TODO: also calc bonus for skills
-    	if(attributes.contains("cpu"))
-    		return Float.parseFloat((String)attributes.get("cpu"));
-    	return 0.0f;
+    	return Float.parseFloat(getAttribute("cpu", "0"));
     }
     
     public float getPowerUsage() {
     	//TODO: also calc bonus for skills
-    	if(attributes.contains("power"))
-    		return Float.parseFloat((String)attributes.get("power"));
-    	return 0.0f;
+    	return Float.parseFloat(getAttribute("power", "0"));
     }
     
     public boolean isOnline() {
@@ -68,6 +63,7 @@ public class Module extends Item {
     
     public void offline() {
         bOnline = false;
+        bActive = false;
     }
     
     public boolean isActive() {

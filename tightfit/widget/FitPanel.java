@@ -24,7 +24,8 @@ public class FitPanel extends JPanel {
                 cargoImg, shieldImg;
     
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
-                
+    private Image bigBarImg, smallBarImg;
+    
 	private Font bigFont, smallFont,
 				shipTypeFont, shipTitleFont;
 	
@@ -66,7 +67,7 @@ public class FitPanel extends JPanel {
         
         ship = new Ship();
         
-        bgColor = new Color(.43f, .44f, .8f);
+        bgColor = new Color(.07f, .25f, .43f);
         brightWhite = new Color(1f,1f,1f,.95f);
         dullWhite = new Color(.9f,.9f,1f,.55f);
         statWhite = new Color(.9f,.9f,1f,.95f);
@@ -132,7 +133,7 @@ public class FitPanel extends JPanel {
         g2d.drawLine(532, 432, 532, 463);
         g2d.drawLine(564, 432, 564, 463);
         
-        for(int i=0,x=65, r=ship.countRigSlots();i<8;i++,x+=34,r--) {
+        for(int i=0,x=65, r=ship.totalRigSlots();i<8;i++,x+=34,r--) {
             g2d.drawRect(x, 450, 32, 32);
             if(r>0)
                 g2d.drawImage(rigImg, x+1, 451, null);
@@ -171,7 +172,6 @@ public class FitPanel extends JPanel {
         g2d.setFont(bigFont);
         drawShadowedString(g2d, "TIGHTFIT v0.6a - " /*+ship.title*/, 6, 13, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
-        drawShadowedString(g2d, "Rechargerate", 397, 250, Color.white);
         drawShadowedString(g2d, "Speed", 401, 421, Color.white);
         drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
         drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
@@ -214,16 +214,27 @@ public class FitPanel extends JPanel {
         g2d.drawString(s, x, y);
     }
     
+    public void drawBigBar(Graphics2D g2d, Point pos, float percent) {
+    	float width = bigBarImg.getWidth(null) * percent;
+    	g2d.drawImage(bigBarImg, pos.x, pos.y, null);
+    	
+    }
+    
     private void drawShipSpecs(Graphics2D g2d) {
         g2d.setFont(bigFont);
         drawShadowedString(g2d, ""+ship.countLauncherHardpoints(), 432, 60, statWhite);
         drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, statWhite);
-        drawShadowedString(g2d, ""+ship.countRigSlots(), 432, 92, statWhite);
+        drawShadowedString(g2d, ""+ship.totalRigSlots(), 432, 92, statWhite);
         drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, statWhite);
         drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
         drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 320, statWhite);
         drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, statWhite);
+        drawShadowedString(g2d, "Rechargerate  "+((int)ship.calculateRechargeRate())+" Sec.", 397, 250, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
+        drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " Sec. )", 200, 368, statWhite);
+        drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
+        drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
     }
 }
