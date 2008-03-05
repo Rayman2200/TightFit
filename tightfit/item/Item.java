@@ -10,11 +10,15 @@
 
 package tightfit.item;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
+import tightfit.Resources;
 
 public class Item {
     protected Icon icon;
@@ -56,11 +60,34 @@ public class Item {
     	return -1;
     }
     
+    public boolean requiresActivation() {
+    	return attributes.containsKey("capacitorNeed");
+    }
+    
     public String getAttribute(String attrib, String defaultVal) {
     	if(attributes.containsKey(attrib)) {
     		return (String)attributes.get(attrib);
     	}
     	return defaultVal;
+    }
+    
+    public Icon getImage() {
+    	if(icon == null) {
+    		try {
+    			int catId = getCategory();
+    			String cat = (catId < 10 ? "0" : "") + catId;
+    			String group = (groupId < 10 ? "0" : "") + groupId;
+				icon = new ImageIcon(Resources.getImage("icon"+cat+"_"+group+".png"));
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	return icon;
     }
     
     public void printAttributes() {

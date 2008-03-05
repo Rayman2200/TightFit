@@ -10,7 +10,6 @@
 
 package tightfit.item;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -20,8 +19,6 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import tightfit.Resources;
-import tightfit.module.Module;
-import tightfit.ship.Ship;
 
 public class Database {
 
@@ -125,15 +122,6 @@ public class Database {
             }
         }
         return att;
-    }
-
-    private static int getAttribute(Node node, String attribname, int def) {
-        String attr = getAttributeValue(node, attribname);
-        if (attr != null) {
-            return Integer.parseInt(attr);
-        } else {
-            return def;
-        }
     }
     
     private void getProperties(Item i, Node t) {

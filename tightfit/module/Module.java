@@ -53,6 +53,10 @@ public class Module extends Item {
     	return Float.parseFloat(getAttribute("power", "0"));
     }
     
+    public boolean isReady() {
+    	return (requiresActivation() && isActive()) || (!requiresActivation() && isOnline());
+    }
+    
     public boolean isOnline() {
         return bOnline;
     }

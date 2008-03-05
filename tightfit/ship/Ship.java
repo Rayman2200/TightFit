@@ -233,7 +233,7 @@ public class Ship extends Item {
      	}
     	
     	for(int i=0;i<rack.length;i++) {
-    		if(rack[i] != null  && (rack[i].isOnline() || !requiresOnline)) {
+    		if(rack[i] != null  && (rack[i].isReady() || !requiresOnline)) {
     			a +=  Float.parseFloat((String)rack[i].getAttribute(prop, "0"));
     		}
     	}
@@ -245,19 +245,19 @@ public class Ship extends Item {
     	float a = 0f;
     	
     	for(int i=0;i<hiSlots.length;i++) {
-    		if(hiSlots[i] != null && (hiSlots[i].isOnline() || !requiresOnline)) {
+    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
     			a +=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"));
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
-    		if(midSlots[i] != null && (midSlots[i].isOnline() || !requiresOnline)) {
+    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
     			a +=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"));
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && (lowSlots[i].isOnline() || !requiresOnline)) {
+    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
     			a +=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"));
     		}
     	}
@@ -274,19 +274,19 @@ public class Ship extends Item {
     public float multiplyAttributeProperty(float att, String prop, boolean requiresOnline) {
     	
     	for(int i=0;i<hiSlots.length;i++) {
-    		if(hiSlots[i] != null && (hiSlots[i].isOnline() || !requiresOnline)) {
+    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
     			att *=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "1"));
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
-    		if(midSlots[i] != null && (midSlots[i].isOnline() || !requiresOnline)) {
+    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
     			att *=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "1"));
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && (lowSlots[i].isOnline() || !requiresOnline)) {
+    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
     			att *=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "1"));
     		}
     	}
