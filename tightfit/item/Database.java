@@ -39,8 +39,14 @@ public class Database {
             factory.setIgnoringComments(true);
             factory.setIgnoringElementContentWhitespace(true);
             factory.setExpandEntityReferences(false);
+            factory.setValidating(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(in, ".");
+            //System.out.println("free "+Runtime.getRuntime().freeMemory());
+            in.close();
+            //System.out.println("free "+Runtime.getRuntime().freeMemory());
+            System.gc(); //don't give me that crap about *suggests*, this frees like 50Mb of memory
+            //System.out.println("free "+Runtime.getRuntime().freeMemory());
         } catch (SAXException e) {
             e.printStackTrace();
             throw new Exception("Error while parsing map file: " +
@@ -52,9 +58,17 @@ public class Database {
             throw new Exception("not a valid TightFit database");
         }
         
-        System.out.print("building types...");
+        System.out.println("building groups...");
         Node item;
-        NodeList l = doc.getElementsByTagName("type");
+        NodeList l = doc.getElementsByTagName("group");
+        for (int i = 0; (item = l.item(i)) != null; i++) {
+        	Group g = unmarshalGroup(item);
+        	//System.out.println(g.name);
+        	groups.addLast(g);
+        }
+        
+        System.out.print("building types...");
+        l = doc.getElementsByTagName("type");
         for (int i = 0; (item = l.item(i)) != null; i++) {
         	Item type = unmarshalType(item);
             //System.out.print("type "+type.name+" ");
@@ -84,7 +98,6 @@ public class Database {
             cache.put(type.name.toLowerCase(), type);
             //System.out.println(">>> added module");
         }
-        in.close();
         System.out.println("DONE");
 	}
 	
@@ -110,6 +123,17 @@ public class Database {
 	
     public Item getType(String name) {
         return (Item)cache.get(name.toLowerCase());
+    }
+    
+    public LinkedList getTypeByGroup(int gid) {
+    	LinkedList l = new LinkedList();
+    	Enumeration types = cache.elements();
+    	while(types.hasMoreElements()) {
+    		Item item = (Item)types.nextElement();
+    		if(item.groupId == gid)
+    			l.addLast(item);
+    	}
+    	return l;
     }
     
 	private static String getAttributeValue(Node node, String attribname) {

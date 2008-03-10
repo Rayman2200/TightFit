@@ -10,18 +10,16 @@
 
 package tightfit.item;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
 import tightfit.Resources;
 
 public class Item {
-    protected Icon icon;
+    protected Image icon;
     
     static public HashMap attributeNames;
     
@@ -64,6 +62,17 @@ public class Item {
     	return attributes.containsKey("capacitorNeed");
     }
     
+    public boolean acceptsCharges() {
+    	return attributes.containsKey("chargeGroup1");
+    }
+    
+    /**
+     * Retrieves an attribute value from the hash
+     * 
+     * @param attrib key to value
+     * @param defaultVal if key dne, return this value
+     * @return
+     */
     public String getAttribute(String attrib, String defaultVal) {
     	if(attributes.containsKey(attrib)) {
     		return (String)attributes.get(attrib);
@@ -71,20 +80,22 @@ public class Item {
     	return defaultVal;
     }
     
-    public Icon getImage() {
+    public Image getImage() {
     	if(icon == null) {
+    		String filename = "";
     		try {
     			int catId = getCategory();
     			String cat = (catId < 10 ? "0" : "") + catId;
     			String group = (groupId < 10 ? "0" : "") + groupId;
-				icon = new ImageIcon(Resources.getImage("icon"+cat+"_"+group+".png"));
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    			filename = "icon"+cat+"_"+group+".png";
+				icon = Resources.getImage(filename);
+			} catch (Exception e) {
+	            System.out.println("Failed to load as image: " + filename);
+	            try {
+					icon = Resources.getImage("icon01_09.png");
+				} catch (Exception e1) {
+				}
+	        }
     	}
     	
     	return icon;

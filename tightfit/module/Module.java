@@ -14,10 +14,10 @@ import tightfit.item.*;
 
 public class Module extends Item {
 
-	public static int LOW_SLOT = 1;
-	public static int MID_SLOT = 2;
-	public static int HI_SLOT = 3;
-	public static int RIG_SLOT = 4;
+	public static int LOW_SLOT = 0;
+	public static int MID_SLOT = 1;
+	public static int HI_SLOT = 2;
+	public static int RIG_SLOT = 3;
 	
     public int slotRequirement;
     

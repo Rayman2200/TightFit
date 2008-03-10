@@ -34,12 +34,16 @@ public class Ship extends Item {
     private float cpu, cpuMax;
     private float grid, gridMax;
     private float cap, capMax;
-    private float shieldHp, armorHp;
+    private float shieldHp, armorHp, hp;
     
     private float scanRes;
     private float sigRadius;
     private float maxRange;
     //private Item myType;
+    
+    private float [] shieldReson;
+    private float [] armorReson;
+    private float [] structReson;
     
     public Ship() {
         super();
@@ -53,6 +57,23 @@ public class Ship extends Item {
         sigRadius = 25;
         attributes.put("maxLockedTargets", "2.0");
         title = "Corporate Jet";
+        shieldReson = new float[4];
+    	shieldReson[0] = 1;
+    	shieldReson[1] = 1;
+    	shieldReson[2] = 1;
+    	shieldReson[3] = 1;
+    	
+    	armorReson = new float[4];
+    	armorReson[0] = 1;
+    	armorReson[1] = 1;
+    	armorReson[2] = 1;
+    	armorReson[3] = 1;
+    	
+    	structReson = new float[4];
+    	structReson[0] = 1;
+    	structReson[1] = 1;
+    	structReson[2] = 1;
+    	structReson[3] = 1;
     }
     
     public Ship(Item type) {
@@ -78,6 +99,25 @@ public class Ship extends Item {
     	
     	shieldHp = Float.parseFloat(type.getAttribute("shieldCapacity", "0"));
     	armorHp = Float.parseFloat(type.getAttribute("armorHP", "0"));
+    	hp = Float.parseFloat(type.getAttribute("hp", "0"));
+    	
+    	shieldReson = new float[4];
+    	shieldReson[0] = Float.parseFloat(getAttribute("shieldEmDamageResonance", "1.0"));
+    	shieldReson[1] = Float.parseFloat(getAttribute("shieldKineticDamageResonance", "1.0"));
+    	shieldReson[2] = Float.parseFloat(getAttribute("shieldThermalDamageResonance", "1.0"));
+    	shieldReson[3] = Float.parseFloat(getAttribute("shieldExplosiveDamageResonance", "1.0"));
+    	
+    	armorReson = new float[4];
+    	armorReson[0] = Float.parseFloat(getAttribute("armorEmDamageResonance", "1.0"));
+    	armorReson[1] = Float.parseFloat(getAttribute("armorKineticDamageResonance", "1.0"));
+    	armorReson[2] = Float.parseFloat(getAttribute("armorThermalDamageResonance", "1.0"));
+    	armorReson[3] = Float.parseFloat(getAttribute("armorExplosiveDamageResonance", "1.0"));
+    	
+    	structReson = new float[4];
+    	structReson[0] = Float.parseFloat(getAttribute("emDamageResonance", "1.0"));
+    	structReson[1] = Float.parseFloat(getAttribute("kineticDamageResonance", "1.0"));
+    	structReson[2] = Float.parseFloat(getAttribute("thermalDamageResonance", "1.0"));
+    	structReson[3] = Float.parseFloat(getAttribute("explosiveDamageResonance", "1.0"));
     	
     	title = "Pilot's "+name;
     }
@@ -96,6 +136,14 @@ public class Ship extends Item {
     
     public int totalRigSlots() {
     	return rigSlots.length;
+    }
+    
+    public int totalLowSlots() {
+    	return lowSlots.length;
+    }
+    
+    public int totalMedSlots() {
+    	return midSlots.length;
     }
     
     /**
@@ -188,6 +236,7 @@ public class Ship extends Item {
     		rack[slot] = m;
     		cpu -= m.getCpuUsage();
     		grid -= m.getPowerUsage();
+    		//TODO: send out a message
     		return true;
     	}
     	
@@ -215,7 +264,31 @@ public class Ship extends Item {
 				grid += m.getPowerUsage();
 	    	}
 	    	rack[slot] = null;
+	    	//TODO: send out a message
     	}
+    }
+    
+    public boolean hasModule(int slotType, int slot) {
+    	return getModule(slotType, slot) != null;
+    }
+    
+    public Module getModule(int slotType, int slot) {
+    	Module rack[];
+    	
+    	if(slotType == Module.LOW_SLOT) {
+    		rack = lowSlots;
+    	} else if(slotType == Module.MID_SLOT) {
+    		rack = midSlots;
+    	} else if(slotType == Module.HI_SLOT) {
+     		rack = hiSlots;
+     	} else {
+     		rack = rigSlots;
+     	}
+    	
+    	
+    	if(slot <= rack.length)
+	    	return rack[slot];
+	    return null;
     }
     
     public float aggregateRack(String prop, int slotType, boolean requiresOnline) {
@@ -383,6 +456,18 @@ public class Ship extends Item {
     	return cpuRemain;
     }
     
+    public float [] getShieldResonance() {
+    	return shieldReson;
+    }
+    
+    public float [] getArmorResonance() {
+    	return armorReson;
+    }
+    
+    public float [] getStructureResonance() {
+    	return structReson;
+    }
+    
     public float calculateMaxCapacity() {
         return multiplyAttributeProperty(capMax, "capacitorCapacityMultiplier", true);
     }
@@ -397,6 +482,10 @@ public class Ship extends Item {
     
     public float calculateMaxArmor() {
     	return armorHp + aggregateAllSlots("armorHPBonusAdd", true);
+    }
+    
+    public float calculateMaxStructure() {
+    	return hp + aggregateAllSlots("hpBonusAdd", true);
     }
     
     public float calculateMaxRange() {

@@ -1,15 +1,22 @@
 package tightfit.widget;
 
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.module.Module;
 import tightfit.ship.Ship;
 
-public class FitPanel extends JPanel {
+public class FitPanel extends JPanel implements DropTargetListener, MouseListener {
 
 	/**
 	 * 
@@ -19,17 +26,23 @@ public class FitPanel extends JPanel {
 	private TightFit editor;
 	private Ship ship;
 	
+	public Image hiSlotImg;
+    public Image medSlotImg;
+    public Image lowSlotImg;
+	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
-                cargoImg, shieldImg;
+                cargoImg, shieldImg, armorImg, structImg;
     
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
-    private Image bigBarImg, smallBarImg;
+    private Image bigBarImg, smallBarImg, bigBarGlowImg, smallBarGlowImg;
     
 	private Font bigFont, smallFont,
 				shipTypeFont, shipTitleFont;
 	
     private Color bgColor, brightWhite, dullWhite, shadow, statWhite;
+    
+    private Point mountPoints[][];
     
 	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
 		this.editor = editor;
@@ -44,12 +57,23 @@ public class FitPanel extends JPanel {
         maxRanImg = Resources.getImage("icon22_15.png");
         cargoImg = Resources.getImage("icon03_13.png");
         shieldImg = Resources.getImage("icon01_13.png");
+        armorImg = Resources.getImage("icon01_09-small.png");
+        structImg = Resources.getImage("icon02_12-small.png");
         
         rstEmImg = Resources.getImage("icon22_20.png");
         rstExImg = Resources.getImage("icon22_19.png");
         rstThImg = Resources.getImage("icon22_18.png");
         rstKnImg = Resources.getImage("icon22_17.png");
         
+        //hiSlotImg = Resources.getImage("hislot.png");
+	    //medSlotImg = Resources.getImage("mdslot.png");
+	    lowSlotImg = Resources.getImage("loslot.png");
+	    
+	    bigBarImg = Resources.getImage("bar.png");
+	    bigBarGlowImg = Resources.getImage("barglow.png");
+	    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.5f), Image.SCALE_SMOOTH);
+	    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.5f), Image.SCALE_SMOOTH);
+	    
 		try {
 			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
             bigFont = big.deriveFont(8f);
@@ -74,13 +98,38 @@ public class FitPanel extends JPanel {
         shadow = new Color(.1f,.1f,.1f,.85f);
         
         setPreferredSize(new Dimension(680,500));
+        //setLayout(new BoxLayout(this, 0));
         
-        setLayout(new OverlayLayout(this));
+        createMountPoints();
 	}
 	
 	public void setShip(Ship s) {
 		ship = s;
-        repaint();
+        
+		removeAll();
+		
+		//HI
+		
+		//MED
+		for(int i=0;i<ship.totalMedSlots();i++) {
+			Slot slot = new Slot(this, Module.MID_SLOT, i);
+			slot.mount(ship.getModule(Module.MID_SLOT, i));
+    		add(slot);
+    		slot.setLocation(mountPoints[Module.MID_SLOT][i]);
+    		slot.addMouseListener(this);
+		}
+		
+		//LOW
+		for(int i=0;i<ship.totalLowSlots();i++) {
+			Slot slot = new Slot(this, Module.LOW_SLOT, i);
+			slot.mount(ship.getModule(Module.LOW_SLOT, i));
+			slot.setLocation(mountPoints[Module.LOW_SLOT][i]);
+    		add(slot);
+    		slot.addMouseListener(this);
+    		slot.setBorder(new LineBorder(Color.BLACK, 0));
+		}
+		
+		repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -92,6 +141,9 @@ public class FitPanel extends JPanel {
         
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
+        					RenderingHints.VALUE_RENDER_QUALITY);
         
         g2d.setComposite(AlphaComposite.SrcAtop);
                             
@@ -166,6 +218,8 @@ public class FitPanel extends JPanel {
         
         g2d.drawImage(cargoImg, 393, 432, null);
         g2d.drawImage(shieldImg, 399, 180, null);
+        g2d.drawImage(armorImg, 399, 273, null);
+        g2d.drawImage(structImg, 399, 345, null);
         
         //draw all the labels
         //bigger font
@@ -197,6 +251,12 @@ public class FitPanel extends JPanel {
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);
+        
+        /*for(int c=0;c<getComponentCount();c++) {
+        	//g.translate(mountPoints[Module.LOW_SLOT][c].x, mountPoints[Module.LOW_SLOT][c].y);
+        	getComponent(c).paint(g);
+        	//g.translate(-mountPoints[Module.LOW_SLOT][c].x, -mountPoints[Module.LOW_SLOT][c].y);
+        }*/
 	}
     
     public void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
@@ -214,10 +274,22 @@ public class FitPanel extends JPanel {
         g2d.drawString(s, x, y);
     }
     
-    public void drawBigBar(Graphics2D g2d, Point pos, float percent) {
+    public void drawBigBar(Graphics2D g2d, int x, int y, float percent) {
     	float width = bigBarImg.getWidth(null) * percent;
-    	g2d.drawImage(bigBarImg, pos.x, pos.y, null);
-    	
+    	g2d.drawImage(bigBarImg, x, y, null);
+    	Rectangle s = g2d.getClipBounds();
+    	g2d.setClip(x, y, (int)width, bigBarGlowImg.getHeight(null));
+    	g2d.drawImage(bigBarGlowImg, x, y, null);
+    	g2d.setClip(s);
+    }
+    
+    public void drawSmallBar(Graphics2D g2d, int x, int y, float percent) {
+    	float width = smallBarImg.getWidth(null) * percent;
+    	g2d.drawImage(smallBarImg, x, y, null);
+    	Rectangle s = g2d.getClipBounds();
+    	g2d.setClip(x, y, (int)width, smallBarGlowImg.getHeight(null));
+    	g2d.drawImage(smallBarGlowImg, x, y, null);
+    	g2d.setClip(s);
     }
     
     private void drawShipSpecs(Graphics2D g2d) {
@@ -229,12 +301,145 @@ public class FitPanel extends JPanel {
         drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
         drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 320, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 322, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxStructure())+"  hp", 424, 395, statWhite);
         drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, statWhite);
         drawShadowedString(g2d, "Rechargerate  "+((int)ship.calculateRechargeRate())+" Sec.", 397, 250, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
         drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " Sec. )", 200, 368, statWhite);
         drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
         drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
+        
+        //bars
+        drawBigBar(g2d, 135, 363, (ship.getMaxCpu() - ship.getRemainingCpu()) / ship.getMaxCpu());
+        drawBigBar(g2d, 135, 393, (ship.getMaxPower() - ship.getRemainingPower()) / ship.getMaxPower());
+        
+        g2d.setFont(smallFont);
+        //shield
+        float [] reson = ship.getShieldResonance();
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 187, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 187, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 214, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 214, statWhite);
+        drawSmallBar(g2d, 488, 187, 1.0f - reson[0]);
+        drawSmallBar(g2d, 595, 187, 1.0f - reson[1]);
+        drawSmallBar(g2d, 488, 214, 1.0f - reson[3]);
+        drawSmallBar(g2d, 595, 214, 1.0f - reson[2]);
+        
+        //armor
+        reson = ship.getArmorResonance();
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 279, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 279, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 306, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 306, statWhite);
+        drawSmallBar(g2d, 488, 279, 1.0f - reson[0]);
+        drawSmallBar(g2d, 595, 279, 1.0f - reson[1]);
+        drawSmallBar(g2d, 488, 306, 1.0f - reson[3]);
+        drawSmallBar(g2d, 595, 306, 1.0f - reson[2]);
+        
+        //armor
+        reson = ship.getStructureResonance();
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 353, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 353, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 380, statWhite);
+        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 380, statWhite);
+        drawSmallBar(g2d, 488, 353, 1.0f - reson[0]);
+        drawSmallBar(g2d, 595, 353, 1.0f - reson[1]);
+        drawSmallBar(g2d, 488, 380, 1.0f - reson[3]);
+        drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
     }
+    
+    private void createMountPoints() {
+    	mountPoints = new Point[Module.RIG_SLOT][];
+    	mountPoints[Module.LOW_SLOT] = new Point[8];
+    	mountPoints[Module.MID_SLOT] = new Point[8];
+    	mountPoints[Module.HI_SLOT] = new Point[8];
+    	
+    	mountPoints[Module.LOW_SLOT][0] = new Point(98,303);
+    	mountPoints[Module.LOW_SLOT][1] = new Point(96,235);
+    	mountPoints[Module.LOW_SLOT][2] = new Point(135,180);
+    	mountPoints[Module.LOW_SLOT][3] = new Point(198,159);
+    	mountPoints[Module.LOW_SLOT][4] = new Point(262,179);
+    	mountPoints[Module.LOW_SLOT][5] = new Point(302,232);
+    	mountPoints[Module.LOW_SLOT][6] = new Point(247,236);
+    	mountPoints[Module.LOW_SLOT][7] = new Point(219,270);
+    	
+    	mountPoints[Module.MID_SLOT][0] = new Point(98,303);
+    	mountPoints[Module.MID_SLOT][1] = new Point(96,235);
+    	mountPoints[Module.MID_SLOT][2] = new Point(135,180);
+    	mountPoints[Module.MID_SLOT][3] = new Point(198,159);
+    	mountPoints[Module.MID_SLOT][4] = new Point(262,179);
+    	mountPoints[Module.MID_SLOT][5] = new Point(302,232);
+    	mountPoints[Module.MID_SLOT][6] = new Point(247,236);
+    	mountPoints[Module.MID_SLOT][7] = new Point(219,270);
+    }
+
+	public void dragEnter(DropTargetDragEvent e) {
+		((Slot)((DropTarget)e.getSource()).getComponent()).setSelected(true);
+		//TODO: set attributes in yellow as per this module
+	}
+
+	public void dragOver(DropTargetDragEvent e) {
+	}
+
+	public void dropActionChanged(DropTargetDragEvent e) {
+	}
+
+	public void dragExit(DropTargetEvent e) {
+		((Slot)((DropTarget)e.getSource()).getComponent()).setSelected(false);
+	}
+
+	public void drop(DropTargetDropEvent e) {
+		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
+		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
+			try {
+				Module m = (Module)((ModuleTransferable)e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+				if(ship.putModule(m, s.getRack(), s.getSlotNumber())) {
+					s.mount(m);
+					e.acceptDrop(DnDConstants.ACTION_COPY);
+					repaint();
+				} else {
+					e.rejectDrop();
+				}
+			} catch (UnsupportedFlavorException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			e.rejectDrop();
+		}
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		Slot s = (Slot)e.getSource();
+		if(e.isPopupTrigger()) {
+			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
+				//TODO: pop menu to show info or put online/offline
+			}
+		}
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseEntered(MouseEvent e) {
+		System.out.println("wee beastie: "+e.getX()+","+e.getY());
+		Slot s = (Slot)e.getSource();
+		s.setSelected(true);
+		
+	}
+
+	public void mouseExited(MouseEvent e) {
+		System.out.println("wee beastie: "+e.getX()+","+e.getY());
+		Slot s = (Slot)e.getSource();
+		s.setSelected(false);
+	}
 }
