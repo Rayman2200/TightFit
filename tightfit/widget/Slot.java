@@ -42,7 +42,7 @@ public class Slot extends JPanel {
         setDropTarget(dt);
         
         setPreferredSize(new Dimension(64,64));
-        setLayout(new OverlayLayout(this));
+        //setLayout(new OverlayLayout(this));
     }
     
     public boolean mount(Module m) {
@@ -92,14 +92,19 @@ public class Slot extends JPanel {
         	int dx = (int)(x * Math.cos(r) - y * Math.sin(r));
         	int dy = (int)(x * Math.sin(r) + y * Math.cos(r));*/
         	
-        	g2d.scale(.75, .75);
+        	g2d.scale(0.75f, 0.75f);
 	        g2d.drawImage(mounted.getImage(), 6, 6, null);
 	        
 	        if(mounted.acceptsCharges()) {
-	        	//TODO: draw circle and charge type
+                //TODO: draw circle
+                
+                g2d.scale(0.15f, 0.15f);
+                //TODO: draw charge
 	        }
         } else {
+            g2d.rotate(r, 32, 32);
         	//TODO: draw image for slot type
+            g2d.setTransform(t);
         }
         
         //g2d.translate(-pt.x, -pt.y);

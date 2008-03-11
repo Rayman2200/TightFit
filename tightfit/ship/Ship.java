@@ -146,6 +146,10 @@ public class Ship extends Item {
     	return midSlots.length;
     }
     
+    public int totalHiSlots() {
+    	return hiSlots.length;
+    }
+    
     /**
      * Calculates the generic DPS of the ship, does not account for ranges or damage types.
      * This number will almost always be higher than actual DPS.

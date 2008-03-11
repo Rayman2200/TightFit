@@ -1,3 +1,12 @@
+/*
+ *  TightFit (c) 2008 The TightFit Development Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ */
 package tightfit.widget;
 
 import java.awt.*;
@@ -71,8 +80,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	    
 	    bigBarImg = Resources.getImage("bar.png");
 	    bigBarGlowImg = Resources.getImage("barglow.png");
-	    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.5f), Image.SCALE_SMOOTH);
-	    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.5f), Image.SCALE_SMOOTH);
+	    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
+	    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
 	    
 		try {
 			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
@@ -98,7 +107,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         shadow = new Color(.1f,.1f,.1f,.85f);
         
         setPreferredSize(new Dimension(680,500));
-        //setLayout(new BoxLayout(this, 0));
+        setLayout(new SlickLayoutManager());
         
         createMountPoints();
 	}
@@ -109,13 +118,20 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		removeAll();
 		
 		//HI
-		
+		for(int i=0;i<ship.totalHiSlots();i++) {
+			Slot slot = new Slot(this, Module.HI_SLOT, i);
+			slot.mount(ship.getModule(Module.HI_SLOT, i));
+            slot.setLocation(mountPoints[Module.HI_SLOT][i]);
+    		add(slot);
+    		slot.addMouseListener(this);
+		}
+        
 		//MED
 		for(int i=0;i<ship.totalMedSlots();i++) {
 			Slot slot = new Slot(this, Module.MID_SLOT, i);
 			slot.mount(ship.getModule(Module.MID_SLOT, i));
+            slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
-    		slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		slot.addMouseListener(this);
 		}
 		
