@@ -18,6 +18,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -28,15 +29,17 @@ import javax.swing.tree.*;
 
 import tightfit.Resources;
 import tightfit.item.Database;
-import tightfit.item.Group;
 import tightfit.item.Item;
+import tightfit.item.MarketGroup;
 import tightfit.module.Module;
 import tightfit.widget.*;
 
 public class MarketDialog extends JDialog implements TreeSelectionListener, 
 								DragSourceListener, DragGestureListener {
 
-    private JTree marketTree;
+	private static final long serialVersionUID = 1L;
+
+	private JTree marketTree;
     private DefaultMutableTreeNode top;
     private Database myDb; 
     private JList groups;
@@ -63,8 +66,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		init();
 		
 		ds = new DragSource();
-	    DragGestureRecognizer dgr = ds.createDefaultDragGestureRecognizer(groups,
-	        DnDConstants.ACTION_COPY, this);
+	    ds.createDefaultDragGestureRecognizer(groups, DnDConstants.ACTION_COPY, this);
 		
         pack();
         setVisible(true);
@@ -90,13 +92,14 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         groups.setCellRenderer(new ModuleListRenderer());
         //groups.addListSelectionListener(this);
         try {
-			groups.setFont(Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf")).deriveFont(8f));
+        	groups.setFont(Resources.getFont("stan07_55.ttf").deriveFont(6f));
 		} catch (Exception e) {
 		}
         JScrollPane sp = new JScrollPane();
         sp.getViewport().setView(groups);
         sp.setPreferredSize(new Dimension(550, 350));
         groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
         //groups.setDragEnabled(true);
         //groups.setTransferHandler(new MarketTransferHandler());
         
@@ -122,36 +125,28 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     }
     
     private void createNodes(DefaultMutableTreeNode top, Database db) {
-    	DefaultMutableTreeNode ships = new DefaultMutableTreeNode("Ships");
-    	DefaultMutableTreeNode ammo = new DefaultMutableTreeNode("Ammunition & Charges");
-    	DefaultMutableTreeNode equip = new DefaultMutableTreeNode("Ship Equipment");
-    	DefaultMutableTreeNode turrets = new DefaultMutableTreeNode("Turrets & Bays");
-    	DefaultMutableTreeNode hybridammo = new DefaultMutableTreeNode("Hybrid Charges");
-    	DefaultMutableTreeNode ecm = new DefaultMutableTreeNode("Electronic Warfare");
+    	HashMap nodes = new HashMap();
+    	DefaultMutableTreeNode node;
     	
-    	//major categories
-    	top.add(ammo);
-    	top.add(equip);
-    	top.add(ships);
-    	
-    	equip.add(turrets);
-    	equip.add(ecm);
-    	ammo.add(hybridammo);
-    	
-    	Iterator itr = db.getGroups();
+    	Iterator itr = db.getMarketGroups();
         while(itr.hasNext()) {
-        	Group g = (Group)itr.next();
-        	if(g.catId >= 6 && g.catId <= 8) {
-        		//top.add(new DefaultMutableTreeNode(g.name));
-        		//System.out.println("group "+g.catId+"_"+g.groupId);
-        		if(g.groupId == 201 || g.groupId == 208)
-        			ecm.add(new MarketTreeNode(g.name, g.catId, g.groupId));
-        		else if(g.groupId == 255)
-        			turrets.add(new MarketTreeNode(g.name, g.catId, g.groupId));
-        		else if(g.groupId > 24 && g.groupId < 32)
-        			ships.add(new MarketTreeNode(g.name, g.catId, g.groupId));
-        		else if(g.groupId == 85)
-        			hybridammo.add(new MarketTreeNode(g.name, g.catId, g.groupId));
+        	MarketGroup g = (MarketGroup)itr.next();
+        	node = new MarketTreeNode(g.name, g.catId, g.groupId);
+        	nodes.put(""+g.groupId, node);
+        }
+        
+        //run it through again to build up the tree
+        itr = db.getMarketGroups();
+        while(itr.hasNext()) {
+        	MarketGroup g = (MarketGroup)itr.next();
+        	node = (MarketTreeNode) nodes.get(""+g.groupId);
+        	if(g.parentGroupId == 0) {
+        		top.add(node);
+        	} else {
+        		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) nodes.get(""+g.parentGroupId);
+        		if(parent != null)
+        			parent.add(node);
+        		else System.err.println("failed adding "+g.name);
         	}
         }
     }
@@ -170,7 +165,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	Vector list = new Vector();
     	groups.removeAll();
     	
-    	Iterator itr = myDb.getTypeByGroup(groupId).iterator();
+    	Iterator itr = myDb.getTypeByMarketGroup(groupId).iterator();
     	while(itr.hasNext()) {
     		Item i = (Item)itr.next();
     		list.add(new MarketListEntry(i));

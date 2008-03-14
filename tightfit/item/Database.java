@@ -26,18 +26,19 @@ public class Database {
 	
 	private Hashtable cache = new Hashtable();
 	private LinkedList groups = new LinkedList();
+	private LinkedList marketGroups = new LinkedList();
 	
 	public Database(String resource) throws Exception {
 		
 		InputStream in = Resources.getResource(resource);
 		
-        System.out.println("building DB...");
+        System.out.println("building DB... ");
         
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document doc;
         try {
             factory.setIgnoringComments(true);
-            factory.setIgnoringElementContentWhitespace(true);
+            //factory.setIgnoringElementContentWhitespace(true);
             factory.setExpandEntityReferences(false);
             factory.setValidating(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -58,7 +59,7 @@ public class Database {
             throw new Exception("not a valid TightFit database");
         }
         
-        System.out.println("building groups...");
+        System.out.println("building groups... ");
         Node item;
         NodeList l = doc.getElementsByTagName("group");
         for (int i = 0; (item = l.item(i)) != null; i++) {
@@ -67,7 +68,15 @@ public class Database {
         	groups.addLast(g);
         }
         
-        System.out.print("building types...");
+        System.out.println("building market groups... ");
+        l = doc.getElementsByTagName("marketgroup");
+        for (int i = 0; (item = l.item(i)) != null; i++) {
+        	Group g = unmarshalMarketGroup(item);
+        	//System.out.println(g.name);
+        	marketGroups.addLast(g);
+        }
+        
+        System.out.print("building types... ");
         l = doc.getElementsByTagName("type");
         for (int i = 0; (item = l.item(i)) != null; i++) {
         	Item type = unmarshalType(item);
@@ -121,6 +130,10 @@ public class Database {
 		return groups.iterator();
 	}
 	
+	public Iterator getMarketGroups() {
+		return marketGroups.iterator();
+	}
+	
     public Item getType(String name) {
         return (Item)cache.get(name.toLowerCase());
     }
@@ -131,6 +144,17 @@ public class Database {
     	while(types.hasMoreElements()) {
     		Item item = (Item)types.nextElement();
     		if(item.groupId == gid)
+    			l.addLast(item);
+    	}
+    	return l;
+    }
+    
+    public LinkedList getTypeByMarketGroup(int gid) {
+    	LinkedList l = new LinkedList();
+    	Enumeration types = cache.elements();
+    	while(types.hasMoreElements()) {
+    		Item item = (Item)types.nextElement();
+    		if(item.marketGroupId == gid)
     			l.addLast(item);
     	}
     	return l;
@@ -172,6 +196,9 @@ public class Database {
 	    	n = nnm.getNamedItem("marketgroupid");
 	    	if(n != null)
 	    		i.marketGroupId = (int)Float.parseFloat(n.getNodeValue());
+	    	n = nnm.getNamedItem("graphicid");
+	    	if(n != null)
+	    		i.graphicId = n.getNodeValue();
     	}
     }
     
@@ -216,6 +243,41 @@ public class Database {
 	    	n = nnm.getNamedItem("catid");
 	    	if(n != null)
 	    		g.catId = (int)Float.parseFloat(n.getNodeValue());
+	    	n = nnm.getNamedItem("graphicid");
+	    	if(n != null)
+	    		g.graphicId = (int)Float.parseFloat(n.getNodeValue());
+    	}
+    	
+    	return g;
+    }
+    
+    private Group unmarshalMarketGroup(Node t) {
+    	MarketGroup g = new MarketGroup();
+    	NodeList children;
+    	NamedNodeMap nnm = t.getAttributes();
+    	
+    	if(nnm != null) {
+	    	Node n = nnm.getNamedItem("name");
+	    	if(n != null)
+	    		g.name = n.getNodeValue();
+	    	n = nnm.getNamedItem("marketGroupId");
+	    	if(n != null)
+	    		g.groupId = (int)Float.parseFloat(n.getNodeValue());
+	    	n = nnm.getNamedItem("parentGroupId");
+	    	if(n != null)
+	    		g.parentGroupId = (int)Float.parseFloat(n.getNodeValue());
+	    	n = nnm.getNamedItem("graphicId");
+	    	if(n != null)
+	    		g.graphicId = (int)Float.parseFloat(n.getNodeValue());
+	    	children = t.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+	            Node child = children.item(i);
+	            if(child != null) {
+	            	if("description".equalsIgnoreCase(child.getNodeName()) && child.getFirstChild() != null) {
+	            		g.description = child.getFirstChild().getNodeValue();
+	            	}
+	            }
+	        }
     	}
     	
     	return g;

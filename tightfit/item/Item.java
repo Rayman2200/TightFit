@@ -11,7 +11,6 @@
 package tightfit.item;
 
 import java.awt.Image;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -30,6 +29,7 @@ public class Item {
     public int typeId;
     public int groupId;
     public int marketGroupId;
+    public String graphicId;
     
     public Hashtable attributes;
  
@@ -45,6 +45,7 @@ public class Item {
     	typeId = type.typeId;
     	groupId = type.groupId;
     	marketGroupId = type.marketGroupId;
+    	graphicId = type.graphicId;
     	
     	attributes = (Hashtable)type.attributes.clone();
     }
@@ -84,15 +85,12 @@ public class Item {
     	if(icon == null) {
     		String filename = "";
     		try {
-    			int catId = getCategory();
-    			String cat = (catId < 10 ? "0" : "") + catId;
-    			String group = (groupId < 10 ? "0" : "") + groupId;
-    			filename = "icon"+cat+"_"+group+".png";
+    			filename = "icon"+graphicId+".png";
 				icon = Resources.getImage(filename);
 			} catch (Exception e) {
 	            System.out.println("Failed to load as image: " + filename);
 	            try {
-					icon = Resources.getImage("icon01_09.png");
+					icon = Resources.getImage("icon74_14.png");
 				} catch (Exception e1) {
 				}
 	        }

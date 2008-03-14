@@ -49,7 +49,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	private Font bigFont, smallFont,
 				shipTypeFont, shipTitleFont;
 	
-    private Color bgColor, brightWhite, dullWhite, shadow, statWhite;
+    private Color bgColor, brightWhite, dullWhite, statWhite;
+    
+    private static Color shadow = new Color(.1f,.1f,.1f,.85f);
     
     private Point mountPoints[][];
     
@@ -84,11 +86,11 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
 	    
 		try {
-			Font big = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf"));
+			Font big = Resources.getFont("stan07_57.ttf");
             bigFont = big.deriveFont(8f);
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
             shipTitleFont = big.deriveFont(Font.BOLD, 10f);
-			smallFont = Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_55.ttf"));
+			smallFont = Resources.getFont("stan07_55.ttf");
             smallFont = smallFont.deriveFont(6f);
 		} catch (FontFormatException e) {
 			// TODO Auto-generated catch block
@@ -104,7 +106,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         brightWhite = new Color(1f,1f,1f,.95f);
         dullWhite = new Color(.9f,.9f,1f,.55f);
         statWhite = new Color(.9f,.9f,1f,.95f);
-        shadow = new Color(.1f,.1f,.1f,.85f);
         
         setPreferredSize(new Dimension(680,500));
         setLayout(new SlickLayoutManager());
@@ -121,7 +122,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		for(int i=0;i<ship.totalHiSlots();i++) {
 			Slot slot = new Slot(this, Module.HI_SLOT, i);
 			slot.mount(ship.getModule(Module.HI_SLOT, i));
-            slot.setLocation(mountPoints[Module.HI_SLOT][i]);
+            //slot.setLocation(mountPoints[Module.HI_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
 		}
@@ -132,6 +133,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 			slot.mount(ship.getModule(Module.MID_SLOT, i));
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
+    		//slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		slot.addMouseListener(this);
 		}
 		
@@ -142,7 +144,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 			slot.setLocation(mountPoints[Module.LOW_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
-    		slot.setBorder(new LineBorder(Color.BLACK, 0));
+    		slot.setBorder(new LineBorder(Color.BLACK, 0)); //goofy? ya.
 		}
 		
 		repaint();
@@ -178,7 +180,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         g2d.drawRect(392, 432, 280, 32);
         
         g2d.setColor(dullWhite);
-        g2d.drawLine(0,17,680,17);
+        g2d.drawLine(0,16,680,16);
         g2d.drawLine(75,64,325,64);
         g2d.drawLine(393, 69, 672, 69);
         g2d.drawLine(393, 101, 672, 101);
@@ -268,23 +270,23 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         //finally, put in the ship's specs
         drawShipSpecs(g2d);
         
-        /*for(int c=0;c<getComponentCount();c++) {
+        for(int c=0;c<getComponentCount();c++) {
         	//g.translate(mountPoints[Module.LOW_SLOT][c].x, mountPoints[Module.LOW_SLOT][c].y);
-        	getComponent(c).paint(g);
+        	getComponent(c).repaint();
         	//g.translate(-mountPoints[Module.LOW_SLOT][c].x, -mountPoints[Module.LOW_SLOT][c].y);
-        }*/
+        }
 	}
     
-    public void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
+    public static void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
         g2d.setColor(shadow);
         g2d.drawString(s, x+1, y+1);
         g2d.setColor(c);
         g2d.drawString(s, x, y);
     }
     
-    public void drawShadowedStringCentered(Graphics2D g2d, String s, float x, float y, Color c) {
+    public static void drawShadowedStringCentered(Graphics2D g2d, String s, float x, float y, Color c) {
     	x -= g2d.getFontMetrics().getStringBounds(s, g2d).getWidth()/2.0f;
-        g2d.setColor(shadow);
+    	g2d.setColor(shadow);
         g2d.drawString(s, x+1, y+1);
         g2d.setColor(c);
         g2d.drawString(s, x, y);

@@ -10,7 +10,10 @@
 
 package tightfit;
 
+import java.util.Hashtable;
 import java.util.ResourceBundle;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +24,7 @@ import javax.swing.ImageIcon;
 
 /**
  * This class implements static accessors to common editor resources. These
- * currently include icons and internationalized strings.
+ * currently include icons, fonts, and internationalized strings.
  *
  * @version $Id$
  */
@@ -31,10 +34,21 @@ public final class Resources {
             ResourceBundle.getBundle(
                     Resources.class.getPackage().getName() + ".resources.gui");
 
+    private static Resources instance;
+    
+    private Hashtable cache;
+    
     // Prevent instanciation
     private Resources() {
+    	cache = new Hashtable();
     }
 
+    private static Resources getInstance() {
+    	if(instance == null)
+    		instance = new Resources();
+    	return instance;
+    }
+    
     /**
      * Retrieves a string from the resource bundle in the default locale.
      *
@@ -56,8 +70,9 @@ public final class Resources {
      */
     public static Image getImage(String filename) throws IOException,
             IllegalArgumentException {
-        return ImageIO.read(Resources.class.getResourceAsStream(
-                "resources/" + filename));
+    	if(getInstance().getCachedResource(filename) == null)
+    		getInstance().addCachedResource(filename, ImageIO.read(getResource(filename)));
+    	return (Image)getInstance().getCachedResource(filename);
     }
 
     /**
@@ -79,8 +94,22 @@ public final class Resources {
         }
         return null;
     }
+  
+    public static Font getFont(String filename) throws FontFormatException, IOException {
+    	if(getInstance().getCachedResource(filename) == null)
+    		getInstance().addCachedResource(filename, Font.createFont(Font.TRUETYPE_FONT, Resources.getResource(filename)));
+    	return (Font)getInstance().getCachedResource(filename);
+    }
     
     public static InputStream getResource(String filename) {
     	return Resources.class.getResourceAsStream("resources/" + filename);
+    }
+    
+    private Object getCachedResource(String filename) {
+    	return cache.get(filename);
+    }
+    
+    private void addCachedResource(String filename, Object res) {
+    	cache.put(filename, res);
     }
 }

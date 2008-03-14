@@ -26,6 +26,14 @@ class SlickLayoutManager implements LayoutManager {
     }
     
     public void layoutContainer(Container c) {
+    	Component [] l = c.getComponents();
+    	for(int i=0;i<c.getComponentCount();i++) {
+    		if(l[i] instanceof Slot) {
+    			Slot s = (Slot)l[i];
+    			//System.out.println(s.getLocation().toString());
+    			//s.paint(c.getGraphics());
+    		}
+    	}
     }
     
     public Dimension minimumLayoutSize(Container c) {

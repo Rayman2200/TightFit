@@ -119,6 +119,8 @@ public class Ship extends Item {
     	structReson[2] = Float.parseFloat(getAttribute("thermalDamageResonance", "1.0"));
     	structReson[3] = Float.parseFloat(getAttribute("explosiveDamageResonance", "1.0"));
     	
+    	capacity = type.capacity;
+    	
     	title = "Pilot's "+name;
     }
 
