@@ -25,6 +25,10 @@ import tightfit.TightFit;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
 
+/**
+ * FitPanel is the pretty face of TightFit. Renders similar to the actual eve fit window, 
+ *
+ */
 public class FitPanel extends JPanel implements DropTargetListener, MouseListener {
 
 	/**
@@ -34,10 +38,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	
 	private TightFit editor;
 	private Ship ship;
-	
-	public Image hiSlotImg;
-    public Image medSlotImg;
-    public Image lowSlotImg;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
@@ -75,10 +75,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         rstExImg = Resources.getImage("icon22_19.png");
         rstThImg = Resources.getImage("icon22_18.png");
         rstKnImg = Resources.getImage("icon22_17.png");
-        
-        //hiSlotImg = Resources.getImage("hislot.png");
-	    //medSlotImg = Resources.getImage("mdslot.png");
-	    lowSlotImg = Resources.getImage("loslot.png");
 	    
 	    bigBarImg = Resources.getImage("bar.png");
 	    bigBarGlowImg = Resources.getImage("barglow.png");
@@ -108,7 +104,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         statWhite = new Color(.9f,.9f,1f,.95f);
         
         setPreferredSize(new Dimension(680,500));
-        setLayout(new SlickLayoutManager());
+        setLayout(new SlickLayout());
         
         createMountPoints();
 	}
@@ -119,7 +115,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		removeAll();
 		
 		//HI
-		for(int i=0;i<ship.totalHiSlots();i++) {
+		/*for(int i=0;i<ship.totalHiSlots();i++) {
 			Slot slot = new Slot(this, Module.HI_SLOT, i);
 			slot.mount(ship.getModule(Module.HI_SLOT, i));
             //slot.setLocation(mountPoints[Module.HI_SLOT][i]);
@@ -135,7 +131,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     		add(slot);
     		//slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		slot.addMouseListener(this);
-		}
+		}*/
 		
 		//LOW
 		for(int i=0;i<ship.totalLowSlots();i++) {
@@ -269,12 +265,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);
-        
-        for(int c=0;c<getComponentCount();c++) {
-        	//g.translate(mountPoints[Module.LOW_SLOT][c].x, mountPoints[Module.LOW_SLOT][c].y);
-        	getComponent(c).repaint();
-        	//g.translate(-mountPoints[Module.LOW_SLOT][c].x, -mountPoints[Module.LOW_SLOT][c].y);
-        }
 	}
     
     public static void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
@@ -373,17 +363,17 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     	mountPoints[Module.MID_SLOT] = new Point[8];
     	mountPoints[Module.HI_SLOT] = new Point[8];
     	
-    	mountPoints[Module.LOW_SLOT][0] = new Point(98,303);
-    	mountPoints[Module.LOW_SLOT][1] = new Point(96,235);
-    	mountPoints[Module.LOW_SLOT][2] = new Point(135,180);
-    	mountPoints[Module.LOW_SLOT][3] = new Point(198,159);
-    	mountPoints[Module.LOW_SLOT][4] = new Point(262,179);
-    	mountPoints[Module.LOW_SLOT][5] = new Point(302,232);
+    	mountPoints[Module.LOW_SLOT][0] = new Point(107,279);
+    	mountPoints[Module.LOW_SLOT][1] = new Point(92,234);
+    	mountPoints[Module.LOW_SLOT][2] = new Point(107,190);
+    	mountPoints[Module.LOW_SLOT][3] = new Point(145,163);
+    	mountPoints[Module.LOW_SLOT][4] = new Point(192,163);
+    	mountPoints[Module.LOW_SLOT][5] = new Point(230,191);
     	mountPoints[Module.LOW_SLOT][6] = new Point(247,236);
     	mountPoints[Module.LOW_SLOT][7] = new Point(219,270);
     	
-    	mountPoints[Module.MID_SLOT][0] = new Point(98,303);
-    	mountPoints[Module.MID_SLOT][1] = new Point(96,235);
+    	mountPoints[Module.MID_SLOT][0] = new Point(68,303);
+    	mountPoints[Module.MID_SLOT][1] = new Point(66,235);
     	mountPoints[Module.MID_SLOT][2] = new Point(135,180);
     	mountPoints[Module.MID_SLOT][3] = new Point(198,159);
     	mountPoints[Module.MID_SLOT][4] = new Point(262,179);
@@ -449,14 +439,12 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		System.out.println("wee beastie: "+e.getX()+","+e.getY());
 		Slot s = (Slot)e.getSource();
 		s.setSelected(true);
 		
 	}
 
 	public void mouseExited(MouseEvent e) {
-		System.out.println("wee beastie: "+e.getX()+","+e.getY());
 		Slot s = (Slot)e.getSource();
 		s.setSelected(false);
 	}

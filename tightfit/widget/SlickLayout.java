@@ -11,28 +11,27 @@ package tightfit.widget;
 
 import java.awt.*;
 
-import java.util.LinkedList;
+class SlickLayout implements LayoutManager {
 
-class SlickLayoutManager implements LayoutManager {
-
-    private LinkedList list;
-
-    public SlickLayoutManager() {
-        list = new LinkedList();
+    public SlickLayout() {
     }
     
     public void addLayoutComponent(String name, Component c) {
-        list.add(c);
     }
     
-    public void layoutContainer(Container c) {
-    	Component [] l = c.getComponents();
-    	for(int i=0;i<c.getComponentCount();i++) {
-    		if(l[i] instanceof Slot) {
-    			Slot s = (Slot)l[i];
-    			//System.out.println(s.getLocation().toString());
-    			//s.paint(c.getGraphics());
-    		}
+    public void layoutContainer(Container target) {
+    	
+    	for(int i=0;i<target.getComponentCount();i++) {
+            Component m = target.getComponent(i);
+            if(m.isVisible()) {
+                Point pt = m.getLocation();
+                
+                Dimension d = m.getPreferredSize();
+                m.setSize(d.width, d.height);
+                
+                m.setLocation(pt);
+                //System.out.println("set location");
+            }
     	}
     }
     
@@ -45,6 +44,5 @@ class SlickLayoutManager implements LayoutManager {
     }
     
     public void removeLayoutComponent(Component c) {
-        list.remove(c);
     }
 }

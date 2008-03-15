@@ -14,12 +14,18 @@ import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
 
 import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
 
+import tightfit.Resources;
 import tightfit.module.Module;
 
+/**
+ * A module slot on the ship. Handles it's own rendering of the slot graphic 
+ * and module icon, as well as the activation indicator light.
+ *
+ */
 public class Slot extends JPanel {
 	private static final long serialVersionUID = 1L;
 
@@ -64,13 +70,16 @@ public class Slot extends JPanel {
         Image img = null;
         double r = Math.toRadians(rotate());
         
-        if(myType == Module.HI_SLOT)
-        	img = parent.hiSlotImg;
-        else if(myType == Module.LOW_SLOT)
-        	img = parent.lowSlotImg;
-        else if(myType == Module.MID_SLOT)
-        	img = parent.medSlotImg;
-        
+        try {
+            if(myType == Module.HI_SLOT)
+            	img = Resources.getImage("hislot.png");
+            else if(myType == Module.LOW_SLOT)
+            	img = Resources.getImage("loslot.png");
+            else if(myType == Module.MID_SLOT)
+            	img = Resources.getImage("midslot.png");
+        }catch(IOException e) {
+            
+        }
         //g2d.translate(pt.x, pt.y);
 
         //g2d.clearRect(0,0,64,64);
