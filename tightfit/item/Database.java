@@ -16,7 +16,8 @@ import java.util.*;
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 import tightfit.Resources;
 
@@ -32,17 +33,16 @@ public class Database {
 		
 		InputStream in = Resources.getResource(resource);
 		
-        System.out.println("building DB... ");
         
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        Document doc;
+        
+		SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
-            factory.setIgnoringComments(true);
+            //factory.setIgnoringComments(true);
             //factory.setIgnoringElementContentWhitespace(true);
-            factory.setExpandEntityReferences(false);
+            //factory.setExpandEntityReferences(false);
             factory.setValidating(false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(in, ".");
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(in, new DatabaseParserHandler(this));
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
             in.close();
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
@@ -50,64 +50,10 @@ public class Database {
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
         } catch (SAXException e) {
             e.printStackTrace();
-            throw new Exception("Error while parsing map file: " +
+            throw new Exception("Error while parsing database file: " +
                     e.toString());
         }
 		
-        Node dbNode = doc.getDocumentElement();
-        if (!"database".equals(dbNode.getNodeName())) {
-            throw new Exception("not a valid TightFit database");
-        }
-        
-        System.out.println("building groups... ");
-        Node item;
-        NodeList l = doc.getElementsByTagName("group");
-        for (int i = 0; (item = l.item(i)) != null; i++) {
-        	Group g = unmarshalGroup(item);
-        	//System.out.println(g.name);
-        	groups.addLast(g);
-        }
-        
-        System.out.println("building market groups... ");
-        l = doc.getElementsByTagName("marketgroup");
-        for (int i = 0; (item = l.item(i)) != null; i++) {
-        	Group g = unmarshalMarketGroup(item);
-        	//System.out.println(g.name);
-        	marketGroups.addLast(g);
-        }
-        
-        System.out.print("building types... ");
-        l = doc.getElementsByTagName("type");
-        for (int i = 0; (item = l.item(i)) != null; i++) {
-        	Item type = unmarshalType(item);
-            //System.out.print("type "+type.name+" ");
-        	/*switch(type.getCategory()) {
-        		case 6:
-        		{
-        			//It's a ship...
-        			Ship ship = new Ship(type);
-            		cache.put(ship.name, ship);
-                    System.out.println("add ship: "+type.name);
-        		}break;
-        		case 7:
-        		{
-        			//It's a module
-            		Module module = new Module(type);
-            		cache.put(module.name, module);
-                    System.out.println("add module: "+type.name);
-        		}break;
-        		case 8:
-        		{
-        			//It's ammo! \o/
-        			
-        		}break;
-        		default:
-        		break;
-        	}*/
-            cache.put(type.name.toLowerCase(), type);
-            //System.out.println(">>> added module");
-        }
-        System.out.println("DONE");
 	}
 	
 	public static Database getInstance() throws Exception {
@@ -160,75 +106,6 @@ public class Database {
     	return l;
     }
     
-	private static String getAttributeValue(Node node, String attribname) {
-        NamedNodeMap attributes = node.getAttributes();
-        String att = null;
-        if (attributes != null) {
-            Node attribute = attributes.getNamedItem(attribname);
-            if (attribute != null) {
-                att = attribute.getNodeValue();
-            }
-        }
-        return att;
-    }
-    
-    private void getProperties(Item i, Node t) {
-    	NamedNodeMap nnm = t.getAttributes();
-    	if(nnm != null) {
-	    	Node n = nnm.getNamedItem("mass");
-	    	if(n != null)
-	    		i.mass = Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("volume");
-	    	if(n != null)
-	    		i.volume = Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("capacity");
-	    	if(n != null)
-	    		i.capacity = Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("name");
-	    	if(n != null)
-	    		i.name = n.getNodeValue();
-	    	n = nnm.getNamedItem("typeid");
-	    	if(n != null)
-	    		i.typeId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("groupid");
-	    	if(n != null)
-	    		i.groupId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("marketgroupid");
-	    	if(n != null)
-	    		i.marketGroupId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("graphicid");
-	    	if(n != null)
-	    		i.graphicId = n.getNodeValue();
-    	}
-    }
-    
-    private static void readAttributes(NodeList children, Item item) {
-    	for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if(child != null) {
-                if ("attribute".equalsIgnoreCase(child.getNodeName())) {
-                    item.attributes.put(getAttributeValue(child, "name"),
-                            getAttributeValue(child, "value"));
-                }
-                if("description".equalsIgnoreCase(child.getNodeName()) && child.getFirstChild() != null) {
-                    item.attributes.put("description", child.getFirstChild().getNodeValue());
-                }
-            }
-        }
-    }
-    
-    private Item unmarshalType(Node t) {
-    	Item type = new Item();
-    	
-    	getProperties(type, t);
-    	
-    	NodeList children = t.getChildNodes();
-    	
-    	readAttributes(children, type);
-    	
-    	return type;
-    }
-    
     private Group unmarshalGroup(Node t) {
     	Group g = new Group();
     	
@@ -251,35 +128,75 @@ public class Database {
     	return g;
     }
     
-    private Group unmarshalMarketGroup(Node t) {
-    	MarketGroup g = new MarketGroup();
-    	NodeList children;
-    	NamedNodeMap nnm = t.getAttributes();
-    	
-    	if(nnm != null) {
-	    	Node n = nnm.getNamedItem("name");
-	    	if(n != null)
-	    		g.name = n.getNodeValue();
-	    	n = nnm.getNamedItem("marketGroupId");
-	    	if(n != null)
-	    		g.groupId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("parentGroupId");
-	    	if(n != null)
-	    		g.parentGroupId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("graphicId");
-	    	if(n != null)
-	    		g.graphicId = (int)Float.parseFloat(n.getNodeValue());
-	    	children = t.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-	            Node child = children.item(i);
-	            if(child != null) {
-	            	if("description".equalsIgnoreCase(child.getNodeName()) && child.getFirstChild() != null) {
-	            		g.description = child.getFirstChild().getNodeValue();
-	            	}
-	            }
-	        }
-    	}
-    	
-    	return g;
+    private class DatabaseParserHandler extends DefaultHandler {
+        
+        private Database myDb;
+        
+        private Object currentElement;
+        
+        public DatabaseParserHandler(Database instance) {
+            myDb = instance;
+        }
+        
+        public void startDocument() throws SAXException {
+            System.out.print("building DB... ");
+        }
+        
+        public void endDocument() throws SAXException {
+            System.out.println("DONE");
+        }
+        
+        public void startElement(String name, String localName, String qName, Attributes attrs) throws SAXException {
+            if(qName.equalsIgnoreCase("type")) {
+                Item type = new Item();
+                currentElement = type;
+                unmarshalType(type, attrs);
+                myDb.cache.put(type.name.toLowerCase(), type);
+            } else if(qName.equalsIgnoreCase("attribute")) {
+                Item m = (Item)currentElement;
+                m.attributes.put(attrs.getValue("name"),
+                            attrs.getValue("value"));
+            } else if(qName.equalsIgnoreCase("marketgroup")) {
+                Group g = unmarshalMarketGroup(attrs);
+                myDb.marketGroups.addLast(g);
+            } else if(qName.equalsIgnoreCase("group")) {
+                Group g = unmarshalGroup(attrs);
+                myDb.groups.addLast(g);
+            }
+        }
+        
+        public void endElement(String name) throws SAXException {}
+        
+        public void characters(char buf[], int offset, int len) throws SAXException {
+        }
+        
+        private void unmarshalType(Item type, Attributes attrs) {
+            type.name = attrs.getValue("name");
+            type.mass = Float.parseFloat(attrs.getValue("mass"));
+            type.volume = Float.parseFloat(attrs.getValue("volume"));
+            type.capacity = Float.parseFloat(attrs.getValue("capacity"));
+            type.typeId = (int)Float.parseFloat(attrs.getValue("typeid"));
+            type.groupId = (int)Float.parseFloat(attrs.getValue("groupid"));
+            type.marketGroupId = (int)Float.parseFloat(attrs.getValue("marketgroupid"));
+            type.graphicId = attrs.getValue("graphicid");
+        }
+        
+        private Group unmarshalMarketGroup(Attributes attrs) {
+            MarketGroup g = new MarketGroup();
+            g.name = attrs.getValue("name");
+            g.groupId = (int)Float.parseFloat(attrs.getValue("marketGroupId"));
+            g.parentGroupId = (int)Float.parseFloat(attrs.getValue("parentGroupId"));
+            g.graphicId = (int)Float.parseFloat(attrs.getValue("graphicId"));
+            return g;
+        }
+        
+        private Group unmarshalGroup(Attributes attrs) {
+            Group g = new Group();
+            g.name = attrs.getValue("name");
+            g.groupId = (int)Float.parseFloat(attrs.getValue("groupid"));
+            g.catId = (int)Float.parseFloat(attrs.getValue("catid"));
+            g.graphicId = (int)Float.parseFloat(attrs.getValue("graphicid"));
+            return g;
+        }
     }
 }
