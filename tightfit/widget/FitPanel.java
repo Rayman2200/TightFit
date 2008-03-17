@@ -57,6 +57,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     private Point mountPoints[][];
     
 	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
+		super();
 		this.editor = editor;
 		
 		panelImg = Resources.getImage("panel.png");
@@ -238,7 +239,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, "TIGHTFIT v0.6a - " /*+ship.title*/, 6, 13, Color.white);
+        drawShadowedString(g2d, "TIGHTFIT v0.6a - " + ship.title, 6, 13, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
         drawShadowedString(g2d, "Speed", 401, 421, Color.white);
         drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
@@ -469,7 +470,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 				JMenuItem mi;
 				Point pt = getMousePosition();
 				
-				menu.add(new JMenuItem(new ShowInfoAction(null, s.getModule())));
+				menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, s.getModule())));
 				menu.addSeparator();
 				mi = new JMenuItem("UnFit");
 				mi.addActionListener(s);
@@ -488,7 +489,11 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 				menu.show(this, pt.x, pt.y);
 			}
 		} else if (e.getButton() == MouseEvent.BUTTON1) {
-			//TODO: if the module can be activated, activate it
+			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
+				Module m = ship.getModule(s.getRack(), s.getSlotNumber());
+				//TODO: if the module can be activated, activate it
+				System.out.println("activate me: "+m.name);
+			}
 		}
 	}
 

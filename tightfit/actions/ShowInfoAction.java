@@ -1,24 +1,22 @@
 package tightfit.actions;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 
 import tightfit.dialogs.ShowInfoDialog;
 import tightfit.item.Item;
 
-public class ShowInfoAction extends AbstractAction {
-	private Item myItem;
-	private JDialog parent;
+public class ShowInfoAction extends AbstractItemAction {
+	private Frame parent;
 	
-	public ShowInfoAction(JDialog parent, Item item) {
-		super("Show Info");
-		myItem = item;
+	public ShowInfoAction(Frame parent, Item item) {
+		super("Show Info", item);
 		this.parent = parent;
 	}
 	
-	public void actionPerformed(ActionEvent ae) {
+	protected void doAction(ActionEvent ae) {
 		ShowInfoDialog sid = new ShowInfoDialog(parent, myItem);
 		
 	}

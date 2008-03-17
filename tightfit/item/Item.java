@@ -103,11 +103,14 @@ public class Item {
     	return icon;
     }
     
-    public void printAttributes() {
+    public String printAttributes() {
     	Iterator keys = attributes.keySet().iterator();
+    	String n = "";
     	while(keys.hasNext()) {
     		Object key = keys.next();
-    		System.out.println(""+key+": "+attributes.get(key));
+    		n += ""+key+": "+attributes.get(key) + "\n";
     	}
+    	
+    	return n;
     }
 }

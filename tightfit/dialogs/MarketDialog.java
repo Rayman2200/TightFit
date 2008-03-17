@@ -17,6 +17,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -31,10 +33,11 @@ import tightfit.TightFit;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.*;
 import tightfit.module.Module;
+import tightfit.ship.Ship;
 import tightfit.widget.*;
 
 public class MarketDialog extends JDialog implements TreeSelectionListener, 
-								DragSourceListener, DragGestureListener, MouseListener {
+								DragSourceListener, DragGestureListener, MouseListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,10 +63,8 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         try {
             marketTree.setFont(Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf")).deriveFont(8f));
         } catch (FontFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -186,25 +187,25 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	JPopupMenu menu = new JPopupMenu();
     	JMenuItem mitem;
     	
+    	menu = new JPopupMenu();
+		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
+		menu.addSeparator();
     	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-    		menu = new JPopupMenu();
-            menu.add(new JMenuItem(new ShowInfoAction(this, item)));
-            menu.addSeparator();
             mitem = new JMenuItem("Fit to Active Ship");
+            mitem.addActionListener(this);
             //if(!editor.getShip().hasFreeSlot(item.slotType))
             //	mitem.setEnabled(false);
             menu.add(mitem);
 		} else {
-			menu = new JPopupMenu();
-			menu.add(new JMenuItem(new ShowInfoAction(this, item)));
-			menu.addSeparator();
-			menu.add(new JMenuItem("Make Active"));
+			mitem = new JMenuItem("Make Active");
+			mitem.addActionListener(this);
+			menu.add(mitem);
 		}
     	
     	return menu;
     }
     
-    private class MarketTransferHandler extends TransferHandler {
+    /*private class MarketTransferHandler extends TransferHandler {
 		private static final long serialVersionUID = 1L;
 
 		public Icon getVisualRepresentation(Transferable t) {
@@ -217,39 +218,27 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 			}
 			return null;
     	}
-    }
+    }*/
 
 	public void dragEnter(DragSourceDragEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void dragOver(DragSourceDragEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void dropActionChanged(DragSourceDragEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void dragExit(DragSourceEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void dragDropEnd(DragSourceDropEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void dragGestureRecognized(DragGestureEvent e) {
 		JList comp = (JList)e.getComponent();
 		Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
 		Transferable transferable = new ModuleTransferable(new Module(item));
-		
-		//System.out.println("Yay for DnD!");
 		
 		if(DragSource.isDragImageSupported())
 			e.startDrag(DragSource.DefaultCopyDrop, item.getImage(), new Point(-5,-5), transferable, this);
@@ -266,22 +255,25 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	}
 
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	}
+
+	public void actionPerformed(ActionEvent ae) {
+		try {
+			if(ae.getActionCommand().equalsIgnoreCase("make active")) {
+				editor.setShip(new Ship(Database.getInstance().getType(((MarketListEntry)groups.getSelectedValue()).getName())));
+			} else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
+				//TODO
+			}
+		} catch (Exception e) {
+		}
 	}
 }

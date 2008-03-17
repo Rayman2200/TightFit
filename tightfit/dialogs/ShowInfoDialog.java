@@ -11,6 +11,7 @@
 package tightfit.dialogs;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -22,7 +23,7 @@ public class ShowInfoDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private Item myItem;
 	
-	public ShowInfoDialog(JDialog parent, Item item) {
+	public ShowInfoDialog(Frame parent, Item item) {
 		super(parent);
 		
 		setTitle("Show Info - "+item.name);
@@ -61,6 +62,12 @@ public class ShowInfoDialog extends JDialog {
         ((JTextArea)scrollPane.getViewport().getView()).setLineWrap(true);
         pane.addTab("Description", scrollPane);
         
+        scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(200, 250));
+        scrollPane.getViewport().setView(new JTextArea(myItem.printAttributes()));
+        ((JTextArea)scrollPane.getViewport().getView()).setEditable(false);
+        ((JTextArea)scrollPane.getViewport().getView()).setLineWrap(true);
+        pane.addTab("Attributes", scrollPane);
         
         
         panel.add(pane, c);
