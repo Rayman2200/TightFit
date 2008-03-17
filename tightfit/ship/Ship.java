@@ -124,12 +124,30 @@ public class Ship extends Item {
     	title = "Pilot's "+name;
     }
 
-    public int countLauncherHardpoints() {
-        return launcherHardpoints;  //FIXME
+    public int countFreeLauncherHardpoints() {
+        int count = launcherHardpoints;
+        if(count > 0) {
+	    	for(int i=0;i<hiSlots.length;i++) {
+	    		if(hiSlots[i] != null) {
+	    			if(hiSlots[i].getAttribute("launcherFitted", "0").equals("1"))
+	    				count--;
+	    		}
+	    	}
+        }
+        return count;
     }
     
-    public int countTurretHardpoints() {
-        return turretHardpoints;  //FIXME: actually check hi slots
+    public int countFreeTurretHardpoints() {
+    	int count = turretHardpoints;
+    	if(count > 0) {
+	    	for(int i=0;i<hiSlots.length;i++) {
+	    		if(hiSlots[i] != null) {
+	    			if(hiSlots[i].getAttribute("turretFitted", "0").equals("1"))
+	    				count--;
+	    		}
+	    	}
+    	}
+        return count;
     }
     
     public int countRigSlots() {
@@ -150,6 +168,27 @@ public class Ship extends Item {
     
     public int totalHiSlots() {
     	return hiSlots.length;
+    }
+    
+    public boolean hasFreeSlot(int slotType) {
+    	Module rack[];
+    	
+    	if(slotType == Module.LOW_SLOT) {
+    		rack = lowSlots;
+    	} else if(slotType == Module.MID_SLOT) {
+    		rack = midSlots;
+    	} else if(slotType == Module.HI_SLOT) {
+     		rack = hiSlots;
+     	} else {
+     		rack = rigSlots;
+     	}
+    	
+    	for(int i=0;i<rack.length;i++) {
+    		if(rack[i] == null)
+    			return true;
+    	}
+    	
+    	return false;
     }
     
     /**
@@ -225,8 +264,23 @@ public class Ship extends Item {
     	return (int)Float.parseFloat(getAttribute("maxLockedTargets", "0"));
     }
     
+    public boolean testPutModule(Module m, int slotType, int slot) {
+    	if(slotType != m.slotRequirement)
+    		return false;
+    	
+    	if(m.getAttribute("launcherFitted", "0").equals("1") && countFreeLauncherHardpoints() == 0)
+    		return false;
+    	else if(m.getAttribute("turretFitted", "0").equals("1") && countFreeTurretHardpoints() == 0)
+    		return false;
+    	
+    	return true;
+    }
+    
     public boolean putModule(Module m, int slotType, int slot) {
     	Module rack[];
+    	
+    	if(!testPutModule(m, slotType, slot))
+    		return false;
     	
     	if(slotType == Module.LOW_SLOT) {
     		rack = lowSlots;

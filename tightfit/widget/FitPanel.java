@@ -22,6 +22,7 @@ import javax.swing.border.LineBorder;
 
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.actions.ShowInfoAction;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
 
@@ -60,15 +61,15 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		
 		panelImg = Resources.getImage("panel.png");
         rigImg = Resources.getImage("icon68_01.png");
-        lnchrImg = Resources.getImage("icon12_12.png");
+        lnchrImg = Resources.getImage("icon12_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         turImg = Resources.getImage("icon12_09.png");
         sigRadImg = Resources.getImage("icon22_14.png");
-        scanImg = Resources.getImage("icon03_09.png");
+        scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         maxTarImg = Resources.getImage("icon04_12.png");
         maxRanImg = Resources.getImage("icon22_15.png");
         cargoImg = Resources.getImage("icon03_13.png");
         shieldImg = Resources.getImage("icon01_13.png");
-        armorImg = Resources.getImage("icon01_09-small.png");
+        armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
         structImg = Resources.getImage("icon02_12-small.png");
         
         rstEmImg = Resources.getImage("icon22_20.png");
@@ -115,27 +116,26 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		removeAll();
 		
 		//HI
-		/*for(int i=0;i<ship.totalHiSlots();i++) {
-			Slot slot = new Slot(this, Module.HI_SLOT, i);
+		for(int i=0;i<ship.totalHiSlots();i++) {
+			Slot slot = new Slot(editor, this, Module.HI_SLOT, i);
 			slot.mount(ship.getModule(Module.HI_SLOT, i));
-            //slot.setLocation(mountPoints[Module.HI_SLOT][i]);
+            slot.setLocation(mountPoints[Module.HI_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
 		}
         
 		//MED
 		for(int i=0;i<ship.totalMedSlots();i++) {
-			Slot slot = new Slot(this, Module.MID_SLOT, i);
+			Slot slot = new Slot(editor, this, Module.MID_SLOT, i);
 			slot.mount(ship.getModule(Module.MID_SLOT, i));
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
-    		//slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		slot.addMouseListener(this);
-		}*/
+		}
 		
 		//LOW
 		for(int i=0;i<ship.totalLowSlots();i++) {
-			Slot slot = new Slot(this, Module.LOW_SLOT, i);
+			Slot slot = new Slot(editor, this, Module.LOW_SLOT, i);
 			slot.mount(ship.getModule(Module.LOW_SLOT, i));
 			slot.setLocation(mountPoints[Module.LOW_SLOT][i]);
     		add(slot);
@@ -283,6 +283,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     }
     
     public void drawBigBar(Graphics2D g2d, int x, int y, float percent) {
+    	percent = percent > 1 ? 1 : percent;
     	float width = bigBarImg.getWidth(null) * percent;
     	g2d.drawImage(bigBarImg, x, y, null);
     	Rectangle s = g2d.getClipBounds();
@@ -292,6 +293,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     }
     
     public void drawSmallBar(Graphics2D g2d, int x, int y, float percent) {
+    	percent = percent > 1 ? 1 : percent;
     	float width = smallBarImg.getWidth(null) * percent;
     	g2d.drawImage(smallBarImg, x, y, null);
     	Rectangle s = g2d.getClipBounds();
@@ -302,8 +304,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     
     private void drawShipSpecs(Graphics2D g2d) {
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, ""+ship.countLauncherHardpoints(), 432, 60, statWhite);
-        drawShadowedString(g2d, ""+ship.countTurretHardpoints(), 572, 60, statWhite);
+        drawShadowedString(g2d, ""+ship.countFreeLauncherHardpoints(), 432, 60, statWhite);
+        drawShadowedString(g2d, ""+ship.countFreeTurretHardpoints(), 572, 60, statWhite);
         drawShadowedString(g2d, ""+ship.totalRigSlots(), 432, 92, statWhite);
         drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, statWhite);
         drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
@@ -315,8 +317,13 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         drawShadowedString(g2d, "Rechargerate  "+((int)ship.calculateRechargeRate())+" Sec.", 397, 250, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
         drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " Sec. )", 200, 368, statWhite);
-        drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
-        drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
+        
+        if(ship.getRemainingCpu() < 0)
+        	drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, Color.RED);
+        else drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
+        if(ship.getRemainingPower() < 0)
+        	drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, Color.RED);
+        else drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
         
         //bars
         drawBigBar(g2d, 135, 363, (ship.getMaxCpu() - ship.getRemainingCpu()) / ship.getMaxCpu());
@@ -369,28 +376,59 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     	mountPoints[Module.LOW_SLOT][3] = new Point(145,163);
     	mountPoints[Module.LOW_SLOT][4] = new Point(192,163);
     	mountPoints[Module.LOW_SLOT][5] = new Point(230,191);
-    	mountPoints[Module.LOW_SLOT][6] = new Point(247,236);
-    	mountPoints[Module.LOW_SLOT][7] = new Point(219,270);
+    	mountPoints[Module.LOW_SLOT][6] = new Point(244,235);
+    	mountPoints[Module.LOW_SLOT][7] = new Point(228,280);
     	
-    	mountPoints[Module.MID_SLOT][0] = new Point(68,303);
-    	mountPoints[Module.MID_SLOT][1] = new Point(66,235);
-    	mountPoints[Module.MID_SLOT][2] = new Point(135,180);
-    	mountPoints[Module.MID_SLOT][3] = new Point(198,159);
-    	mountPoints[Module.MID_SLOT][4] = new Point(262,179);
-    	mountPoints[Module.MID_SLOT][5] = new Point(302,232);
-    	mountPoints[Module.MID_SLOT][6] = new Point(247,236);
-    	mountPoints[Module.MID_SLOT][7] = new Point(219,270);
+    	mountPoints[Module.MID_SLOT][0] = new Point(69,308);
+    	mountPoints[Module.MID_SLOT][1] = new Point(45,235);
+    	mountPoints[Module.MID_SLOT][2] = new Point(70,162);
+    	mountPoints[Module.MID_SLOT][3] = new Point(131,119);
+    	mountPoints[Module.MID_SLOT][4] = new Point(206,119);
+    	mountPoints[Module.MID_SLOT][5] = new Point(267,164);
+    	mountPoints[Module.MID_SLOT][6] = new Point(290,236);
+    	mountPoints[Module.MID_SLOT][7] = new Point(265,309);
+    	
+    	mountPoints[Module.HI_SLOT][0] = new Point(32,333);
+    	mountPoints[Module.HI_SLOT][1] = new Point(0,235);
+    	mountPoints[Module.HI_SLOT][2] = new Point(32,137);
+    	mountPoints[Module.HI_SLOT][3] = new Point(115,75);
+    	mountPoints[Module.HI_SLOT][4] = new Point(220,76);
+    	mountPoints[Module.HI_SLOT][5] = new Point(303,137);
+    	mountPoints[Module.HI_SLOT][6] = new Point(335,235);
+    	mountPoints[Module.HI_SLOT][7] = new Point(304,334);
     }
 
 	public void dragEnter(DropTargetDragEvent e) {
-		((Slot)((DropTarget)e.getSource()).getComponent()).setSelected(true);
-		//TODO: set attributes in yellow as per this module
+		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
+		
+		s.setSelected(true);
+		
+		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
+			try {
+				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
+					Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+					if(ship.testPutModule(m, s.getRack(), s.getSlotNumber())) {
+						e.acceptDrag(DnDConstants.ACTION_COPY);
+						//TODO: set attributes in yellow as per this module
+					} else {
+						e.rejectDrag();
+					}
+				}
+			} catch (UnsupportedFlavorException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			e.rejectDrag();
+		}
 	}
 
 	public void dragOver(DropTargetDragEvent e) {
 	}
 
 	public void dropActionChanged(DropTargetDragEvent e) {
+		e.rejectDrag();
 	}
 
 	public void dragExit(DropTargetEvent e) {
@@ -401,14 +439,18 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
 		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
 			try {
-				Module m = (Module)((ModuleTransferable)e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
-				if(ship.putModule(m, s.getRack(), s.getSlotNumber())) {
-					s.mount(m);
-					e.acceptDrop(DnDConstants.ACTION_COPY);
-					repaint();
+				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
+					Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+					if(ship.putModule(m, s.getRack(), s.getSlotNumber())) {
+						s.mount(m);
+						e.acceptDrop(DnDConstants.ACTION_COPY);
+						repaint();
+					} else {
+						e.rejectDrop();
+					}
 				} else {
 					e.rejectDrop();
-				}
+				} 
 			} catch (UnsupportedFlavorException e1) {
 				e1.printStackTrace();
 			} catch (IOException e1) {
@@ -421,21 +463,39 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 
 	public void mouseClicked(MouseEvent e) {
 		Slot s = (Slot)e.getSource();
-		if(e.isPopupTrigger()) {
+		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
 			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
-				//TODO: pop menu to show info or put online/offline
+				JPopupMenu menu = new JPopupMenu();
+				JMenuItem mi;
+				Point pt = getMousePosition();
+				
+				menu.add(new JMenuItem(new ShowInfoAction(null, s.getModule())));
+				menu.addSeparator();
+				mi = new JMenuItem("UnFit");
+				mi.addActionListener(s);
+				menu.add(mi);
+				menu.addSeparator();
+				if(s.getModule().isOnline()) {
+					mi = new JMenuItem("Put Offline");
+					mi.addActionListener(s);
+					menu.add(mi);
+				} else {
+					mi = new JMenuItem("Put Online");
+					mi.addActionListener(s);
+					menu.add(mi);
+				}
+
+				menu.show(this, pt.x, pt.y);
 			}
+		} else if (e.getButton() == MouseEvent.BUTTON1) {
+			//TODO: if the module can be activated, activate it
 		}
 	}
 
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -448,4 +508,5 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		Slot s = (Slot)e.getSource();
 		s.setSelected(false);
 	}
+
 }

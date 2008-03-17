@@ -17,40 +17,44 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import tightfit.Resources;
-import tightfit.item.Database;
-import tightfit.item.Item;
-import tightfit.item.MarketGroup;
+import tightfit.TightFit;
+import tightfit.actions.ShowInfoAction;
+import tightfit.item.*;
 import tightfit.module.Module;
 import tightfit.widget.*;
 
 public class MarketDialog extends JDialog implements TreeSelectionListener, 
-								DragSourceListener, DragGestureListener {
+								DragSourceListener, DragGestureListener, MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
+	private TightFit editor;
 	private JTree marketTree;
     private DefaultMutableTreeNode top;
     private Database myDb; 
     private JList groups;
     private DragSource ds;
     
-    public MarketDialog(JFrame parent) {
+    public MarketDialog(TightFit editor) {
+    	super(editor.appFrame);
         top =
             new DefaultMutableTreeNode("Galactic Market (Loading...)");
         
+        this.editor = editor;
+        
         marketTree = new JTree(top);
         marketTree.addTreeSelectionListener(this);
+        marketTree.setOpaque(false);
         setTitle("EVE Market");
         
         try {
@@ -99,9 +103,9 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         sp.getViewport().setView(groups);
         sp.setPreferredSize(new Dimension(550, 350));
         groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
         //groups.setDragEnabled(true);
         //groups.setTransferHandler(new MarketTransferHandler());
+        groups.addMouseListener(this);
         
         JScrollPane mtsp = new JScrollPane();
         mtsp.getViewport().setView(marketTree);
@@ -149,6 +153,8 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         		else System.err.println("failed adding "+g.name);
         	}
         }
+        
+        
     }
     
     public void valueChanged(TreeSelectionEvent e) {
@@ -168,10 +174,34 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	Iterator itr = myDb.getTypeByMarketGroup(groupId).iterator();
     	while(itr.hasNext()) {
     		Item i = (Item)itr.next();
-    		list.add(new MarketListEntry(i));
+    		MarketListEntry mle = new MarketListEntry(i);
+    		list.add(mle);
     	}
     	
         groups.setListData(list);
+        groups.setSelectedIndex(0);
+    }
+    
+    private JPopupMenu buildPopup(Item item) {
+    	JPopupMenu menu = new JPopupMenu();
+    	JMenuItem mitem;
+    	
+    	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
+    		menu = new JPopupMenu();
+            menu.add(new JMenuItem(new ShowInfoAction(this, item)));
+            menu.addSeparator();
+            mitem = new JMenuItem("Fit to Active Ship");
+            //if(!editor.getShip().hasFreeSlot(item.slotType))
+            //	mitem.setEnabled(false);
+            menu.add(mitem);
+		} else {
+			menu = new JPopupMenu();
+			menu.add(new JMenuItem(new ShowInfoAction(this, item)));
+			menu.addSeparator();
+			menu.add(new JMenuItem("Make Active"));
+		}
+    	
+    	return menu;
     }
     
     private class MarketTransferHandler extends TransferHandler {
@@ -221,8 +251,37 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		
 		//System.out.println("Yay for DnD!");
 		
-		//if(DragSource.isDragImageSupported())
+		if(DragSource.isDragImageSupported())
 			e.startDrag(DragSource.DefaultCopyDrop, item.getImage(), new Point(-5,-5), transferable, this);
-		//else e.startDrag(DragSource.DefaultCopyDrop, transferable, this);
+		else e.startDrag(DragSource.DefaultCopyDrop, transferable, this);
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+			MarketListEntry mle = (MarketListEntry) groups.getSelectedValue();
+			Point pt = getMousePosition();
+			Item item = mle.getItem();
+			buildPopup(item).show(this, pt.x, pt.y);
+		}
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

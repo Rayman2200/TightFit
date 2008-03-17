@@ -13,12 +13,14 @@ package tightfit.widget;
 import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
-import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import tightfit.Resources;
+import tightfit.TightFit;
 import tightfit.module.Module;
 
 /**
@@ -26,7 +28,7 @@ import tightfit.module.Module;
  * and module icon, as well as the activation indicator light.
  *
  */
-public class Slot extends JPanel {
+public class Slot extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	/* -- slot types -- */
@@ -35,20 +37,39 @@ public class Slot extends JPanel {
     
     protected int myType, mySpot;
     protected FitPanel parent;
+    protected TightFit editor;
     protected Module mounted;
     
     private boolean selected;
+    private Image slotImg, typeImg, inactiveImg, activeImg;
     
-    public Slot(FitPanel parent, int type, int spot) {
+    public Slot(TightFit editor, FitPanel parent, int type, int spot) {
         myType = type;
         mySpot = spot;
         this.parent = parent;
+        this.editor = editor;
         
         DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY, parent, true, null);
         setDropTarget(dt);
         
         setPreferredSize(new Dimension(64,64));
-        //setLayout(new OverlayLayout(this));
+        
+        try {
+            if(myType == Module.HI_SLOT) {
+            	slotImg = Resources.getImage("hislot.png");
+            	typeImg = Resources.getImage("icon08_11-aligned.png");
+            } else if(myType == Module.LOW_SLOT) {
+            	slotImg = Resources.getImage("loslot.png");
+            	typeImg = Resources.getImage("icon08_09-aligned.png");
+            } else if(myType == Module.MID_SLOT) {
+            	slotImg = Resources.getImage("mdslot.png");
+            	typeImg = Resources.getImage("icon08_10-aligned.png");
+            }
+            activeImg = Resources.getImage("loslot-active.png");
+        	inactiveImg = Resources.getImage("loslot-inactive.png");
+        }catch(Exception e) {
+        	e.printStackTrace();
+        }
     }
     
     public boolean mount(Module m) {
@@ -56,8 +77,14 @@ public class Slot extends JPanel {
         //    return false;
         
         mounted = m;
-        
+        if(m != null) {
+        	setToolTipText(m.name + "\r\nRequired CPU: "+m.getCpuUsage()+"\r\nRequired Power: "+ m.getPowerUsage());
+        }
         return true;
+    }
+    
+    public Module getModule() {
+    	return mounted;
     }
     
     public void paintComponent(Graphics g) {
@@ -66,20 +93,8 @@ public class Slot extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
 				RenderingHints.VALUE_RENDER_QUALITY);
         
-        //Point pt = getLocation();
-        Image img = null;
         double r = Math.toRadians(rotate());
         
-        try {
-            if(myType == Module.HI_SLOT)
-            	img = Resources.getImage("hislot.png");
-            else if(myType == Module.LOW_SLOT)
-            	img = Resources.getImage("loslot.png");
-            else if(myType == Module.MID_SLOT)
-            	img = Resources.getImage("midslot.png");
-        }catch(IOException e) {
-            
-        }
         //g2d.translate(pt.x, pt.y);
 
         //g2d.clearRect(0,0,64,64);
@@ -89,20 +104,25 @@ public class Slot extends JPanel {
         g2d.rotate(r, 32, 32);
         //g2d.rotate(r);
         
-        g2d.drawImage(img, 0, 0, null);
+        g2d.drawImage(slotImg, 0, 0, null);
         
         if(selected)
-        	g2d.drawImage(img, 0, 0, null);
+        	g2d.drawImage(slotImg, 0, 0, null);
         
-        g2d.setTransform(t);
+        //int x=8, y=8;
+    	//int dx = (int)(x * Math.cos(r) - y * Math.sin(r));
+    	//int dy = (int)(x * Math.sin(r) + y * Math.cos(r));
         
         if(mounted != null) {
-        	/*int x=6, y=6;
-        	int dx = (int)(x * Math.cos(r) - y * Math.sin(r));
-        	int dy = (int)(x * Math.sin(r) + y * Math.cos(r));*/
+        	
+        	if(mounted.isOnline())
+        		g2d.drawImage(activeImg, 0, 0, null);
+        	else g2d.drawImage(inactiveImg, 0, 0, null);
+        	
+        	g2d.setTransform(t);
         	
         	g2d.scale(0.75f, 0.75f);
-	        g2d.drawImage(mounted.getImage(), 6, 6, null);
+	        g2d.drawImage(mounted.getImage(), 8, 8, null);
 	        
 	        if(mounted.acceptsCharges()) {
                 //TODO: draw circle
@@ -111,8 +131,10 @@ public class Slot extends JPanel {
                 //TODO: draw charge
 	        }
         } else {
-            g2d.rotate(r, 32, 32);
+            //g2d.rotate(r, 32, 32);
         	//TODO: draw image for slot type
+        	//g2d.scale(0.75f, 0.75f);
+        	g2d.drawImage(typeImg, 0, 0, null);
             g2d.setTransform(t);
         }
         
@@ -122,7 +144,7 @@ public class Slot extends JPanel {
     public void setSelected(boolean s) {
     	if(selected != s) {
 	    	selected = s;
-	    	Point pt = getLocation();
+	    	//Point pt = getLocation();
 	    	//FIXME: parent.repaint(pt.x, pt.y, 64, 64);
 	    	parent.repaint();
     	}
@@ -153,5 +175,17 @@ public class Slot extends JPanel {
     		return -143.19f;
     	return 0;
     }
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equalsIgnoreCase("unfit")) {
+			mounted = null;
+			editor.getShip().removeModule(myType, mySpot);
+		} else if(e.getActionCommand().contains("Offline")) {
+			mounted.offline();
+		} else if(e.getActionCommand().contains("Online")) {
+			mounted.online();
+		}
+		parent.repaint();
+	}
 
 }

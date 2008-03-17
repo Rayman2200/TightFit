@@ -28,6 +28,7 @@ public class MarketListEntry extends JPanel {
 		
 		myItem = item;
 		
+		setName(item.name);
 		setToolTipText(item.name);
 	}
 	

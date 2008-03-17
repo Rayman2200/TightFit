@@ -11,6 +11,9 @@
 package tightfit;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.io.IOException;
 
@@ -18,17 +21,17 @@ import javax.swing.*;
 
 import tightfit.ship.Ship;
 import tightfit.widget.*;
+import tightfit.io.EFTShipParser;
 import tightfit.item.*;
-import tightfit.module.Module;
 import tightfit.dialogs.*;
 
 /**
  * Main Class
  *
  */
-public class TightFit implements MouseListener, MouseMotionListener {
+public class TightFit implements MouseListener, MouseMotionListener, KeyListener {
 
-    private JFrame      appFrame;
+    public JFrame      appFrame;
     private FitPanel    thePanel;
     
     private Ship myShip;
@@ -50,7 +53,7 @@ public class TightFit implements MouseListener, MouseMotionListener {
         appFrame.setContentPane(createContentPane());
         appFrame.setBackground(new Color(.4f, .5f, .6f));  //blue-grey
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
-        
+        appFrame.addKeyListener(this);
         appFrame.setUndecorated(true);
         appFrame.setResizable(false); 
         
@@ -59,7 +62,7 @@ public class TightFit implements MouseListener, MouseMotionListener {
         appFrame.pack();
         appFrame.setVisible(true); 
         
-        mdlg = new MarketDialog(appFrame);
+        mdlg = new MarketDialog(this);
         
         new Thread(new Runnable() {
             public void run() {
@@ -81,23 +84,6 @@ public class TightFit implements MouseListener, MouseMotionListener {
         
         try {
         	mdlg.updateTree(Database.getInstance());
-        
-            Ship s = new Ship(Database.getInstance().getType("myrmidon"));
-            s.putModule(new Module(Database.getInstance().getType("Salvager I")), Module.HI_SLOT, 5);
-            s.putModule(new Module(Database.getInstance().getType("Large Shield Extender I")), Module.MID_SLOT, 0);
-            s.putModule(new Module(Database.getInstance().getType("Medium Capacitor Booster I")), Module.MID_SLOT, 1);
-            s.putModule(new Module(Database.getInstance().getType("Fleeting Warp Scrambler I")), Module.MID_SLOT, 2);
-            s.putModule(new Module(Database.getInstance().getType("Sensor Booster I")), Module.MID_SLOT, 3);
-            s.putModule(new Module(Database.getInstance().getType("10MN MicroWarpdrive I")), Module.MID_SLOT, 4);
-            s.putModule(new Module(Database.getInstance().getType("Damage Control II")), Module.LOW_SLOT, 0);
-            s.putModule(new Module(Database.getInstance().getType("Medium Armor Repairer II")), Module.LOW_SLOT, 1);
-            s.putModule(new Module(Database.getInstance().getType("Armor Explosive Hardener I")), Module.LOW_SLOT, 2);
-            s.putModule(new Module(Database.getInstance().getType("Magnetic Field Stabilizer I")), Module.LOW_SLOT, 3);
-            s.putModule(new Module(Database.getInstance().getType("Power Diagnostic System I")), Module.LOW_SLOT, 4);
-            s.putModule(new Module(Database.getInstance().getType("800mm Reinforced Rolled Tungsten Plates I")), Module.LOW_SLOT, 5);
-            //TODO: notify
-            
-            setShip(s);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -111,6 +97,10 @@ public class TightFit implements MouseListener, MouseMotionListener {
     	myShip = s;
         thePanel.setShip(s);
     	//TODO: fire an event
+    }
+    
+    public Ship getShip() {
+    	return myShip;
     }
     
     public void mouseDragged(MouseEvent e) {
@@ -141,6 +131,36 @@ public class TightFit implements MouseListener, MouseMotionListener {
     
     public void mouseExited(MouseEvent e) {
     }
+    
+    public void keyTyped(KeyEvent arg0) {
+	}
+
+	public void keyPressed(KeyEvent e) {
+		//System.out.println(e.getKeyModifiersText(e.getModifiers())+"+"+e.getKeyCode());
+		if(KeyEvent.getKeyModifiersText(e.getModifiers()).equals("Ctrl") && e.getKeyCode() == 86) {
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
+			Transferable clipData = clipboard.getContents(clipboard);
+			String input = "";
+			
+		   if (clipData != null) {
+			   try {
+			       if (clipData.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+			         input = (String)(clipData.getTransferData(
+			           DataFlavor.stringFlavor));
+			       }
+			       
+			       EFTShipParser esp = new EFTShipParser();
+			       setShip(esp.parse(input));
+			   } catch (Exception ex) {
+				   //ex.printStackTrace();
+			   }
+		   }
+		}
+		
+	}
+
+	public void keyReleased(KeyEvent arg0) {	
+	}
     
     /**
      * @param args

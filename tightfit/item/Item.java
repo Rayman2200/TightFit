@@ -38,16 +38,20 @@ public class Item {
     }
     
     public Item(Item type) {
-    	name = type.name;
-    	mass = type.mass;
-    	volume = type.volume;
-    	capacity = type.capacity;
-    	typeId = type.typeId;
-    	groupId = type.groupId;
-    	marketGroupId = type.marketGroupId;
-    	graphicId = type.graphicId;
-    	
-    	attributes = (Hashtable)type.attributes.clone();
+    	if(type != null) {
+	    	name = type.name;
+	    	mass = type.mass;
+	    	volume = type.volume;
+	    	capacity = type.capacity;
+	    	typeId = type.typeId;
+	    	groupId = type.groupId;
+	    	marketGroupId = type.marketGroupId;
+	    	graphicId = type.graphicId;
+	    	
+	    	attributes = (Hashtable)type.attributes.clone();
+    	} else {
+    		attributes = new Hashtable();
+    	}
     }
     
     public int getCategory() {

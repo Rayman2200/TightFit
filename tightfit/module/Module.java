@@ -31,9 +31,20 @@ public class Module extends Item {
     
     public Module(Item type) {
     	super(type);
+    	
+    	slotRequirement = RIG_SLOT;
+    	//figure out slot requirement...
+    	if(!type.getAttribute("loPower", "-1").equals("-1")) {
+    		slotRequirement = LOW_SLOT; 
+    	} else if(!type.getAttribute("hiPower", "-1").equals("-1")) {
+    		slotRequirement = HI_SLOT;
+    	} else if(!type.getAttribute("medPower", "-1").equals("-1")) {
+    		slotRequirement = MID_SLOT;
+    	}
     }
     
     public Module(Module m) {
+    	super(m);
     	charge = m.charge;
     	slotRequirement = m.slotRequirement;
     	
