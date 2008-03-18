@@ -108,16 +108,25 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         //groups.setTransferHandler(new MarketTransferHandler());
         groups.addMouseListener(this);
         
+        JTabbedPane jtp = new JTabbedPane();
+        
         JScrollPane mtsp = new JScrollPane();
         mtsp.getViewport().setView(marketTree);
         mtsp.setPreferredSize(new Dimension(200, 350));
         mtsp.setBackground(new Color(.07f, .25f, .43f));
+        jtp.addTab("List", mtsp);
+        
+        JPanel search = new JPanel();
+        search.add(new JTextField(10));
+        JButton b = new JButton("Search");
+        search.add(b);
+        jtp.addTab("Search", search);
         
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, true);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setResizeWeight(0.25);
-        splitPane.setLeftComponent(mtsp);
+        splitPane.setLeftComponent(jtp);
         splitPane.setRightComponent(sp);
         
         c.fill = GridBagConstraints.BOTH;
