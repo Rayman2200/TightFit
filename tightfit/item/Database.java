@@ -131,7 +131,7 @@ public class Database {
     private class DatabaseParserHandler extends DefaultHandler {
         
         private Database myDb;
-        
+        private boolean inDesc;
         private Object currentElement;
         
         public DatabaseParserHandler(Database instance) {
@@ -158,23 +158,39 @@ public class Database {
                             attrs.getValue("value"));
             } else if(qName.equalsIgnoreCase("marketgroup")) {
                 Group g = unmarshalMarketGroup(attrs);
+                currentElement = g;
                 myDb.marketGroups.addLast(g);
             } else if(qName.equalsIgnoreCase("group")) {
                 Group g = unmarshalGroup(attrs);
+                currentElement = g;
                 myDb.groups.addLast(g);
+            } else if(qName.equalsIgnoreCase("description")) {
+            	inDesc = true;
             }
         }
         
-        public void endElement(String name) throws SAXException {}
+        public void endElement(String name) throws SAXException {
+        	inDesc = false;
+        }
         
         public void characters(char buf[], int offset, int len) throws SAXException {
+        	if(inDesc) {
+        		String sbuf = (new String(buf)).substring(offset, offset+len);
+        		//System.out.println(sbuf);
+        		if(currentElement instanceof Item) {
+        			String desc = (String)((Item)currentElement).attributes.get("description");
+        			((Item)currentElement).attributes.put("description", desc + sbuf);
+        		}
+        		else if(currentElement instanceof MarketGroup)
+        			((MarketGroup)currentElement).description += sbuf;
+        	}
         }
         
         private void unmarshalType(Item type, Attributes attrs) {
             type.name = attrs.getValue("name");
-            type.mass = Float.parseFloat(attrs.getValue("mass"));
-            type.volume = Float.parseFloat(attrs.getValue("volume"));
-            type.capacity = Float.parseFloat(attrs.getValue("capacity"));
+            type.attributes.put("mass", attrs.getValue("mass"));
+            type.attributes.put("capacity", attrs.getValue("capacity"));
+            type.attributes.put("volume", attrs.getValue("volume"));
             type.typeId = (int)Float.parseFloat(attrs.getValue("typeid"));
             type.groupId = (int)Float.parseFloat(attrs.getValue("groupid"));
             type.marketGroupId = (int)Float.parseFloat(attrs.getValue("marketgroupid"));

@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Vector;
 
 import tightfit.Resources;
 
@@ -23,9 +24,6 @@ public class Item {
     static public HashMap attributeNames;
     
     public String name;
-    public double mass;
-    public double volume;
-    public double capacity;
     public int typeId;
     public int groupId;
     public int marketGroupId;
@@ -35,14 +33,12 @@ public class Item {
  
     public Item() {
     	attributes = new Hashtable();
+    	attributes.put("description", "");
     }
     
     public Item(Item type) {
     	if(type != null) {
 	    	name = type.name;
-	    	mass = type.mass;
-	    	volume = type.volume;
-	    	capacity = type.capacity;
 	    	typeId = type.typeId;
 	    	groupId = type.groupId;
 	    	marketGroupId = type.marketGroupId;
@@ -51,6 +47,7 @@ public class Item {
 	    	attributes = (Hashtable)type.attributes.clone();
     	} else {
     		attributes = new Hashtable();
+    		attributes.put("description", "");
     	}
     }
     
@@ -83,6 +80,20 @@ public class Item {
     		return (String)attributes.get(attrib);
     	}
     	return defaultVal;
+    }
+    
+    public String [] getAttributeKey(String incompleteKey) throws Exception {
+    	Iterator itr = attributes.keySet().iterator();
+    	Vector v = new Vector();
+    	while(itr.hasNext()) {
+    		String key = (String) itr.next();
+    		if(key.contains(incompleteKey)) {
+    			v.add(key);
+    		}
+    	}
+    	if(v.size() > 0)
+    		return (String[])v.toArray(new String[8]);
+    	else throw new Exception("no key containing '"+incompleteKey+"' exists");
     }
     
     public Image getImage() {

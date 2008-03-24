@@ -86,6 +86,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		try {
 			Font big = Resources.getFont("stan07_57.ttf");
             bigFont = big.deriveFont(8f);
+            big = Resources.getFont("agencyr.ttf");
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
             shipTitleFont = big.deriveFont(Font.BOLD, 10f);
 			smallFont = Resources.getFont("stan07_55.ttf");
@@ -260,7 +261,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
         
         g2d.setFont(shipTitleFont);
-        drawShadowedStringCentered(g2d, ship.title.toUpperCase(), 200, 47, Color.white);
+        drawShadowedStringCentered(g2d, editor.getChar().name.toUpperCase()+"'"+
+        		(editor.getChar().name.lastIndexOf("s") != editor.getChar().name.length()-1 ? "S" : "")+
+        		" "+ship.title.toUpperCase(), 200, 47, Color.white);
         g2d.setFont(shipTypeFont);
         drawShadowedStringCentered(g2d, ship.name.toUpperCase(), 200, 60, Color.white);
         

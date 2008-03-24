@@ -13,9 +13,7 @@ package tightfit.dialogs;
 import java.io.IOException;
 
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +47,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     private DragSource ds;
     
     public MarketDialog(TightFit editor) {
-    	super(editor.appFrame);
+    	super(editor.appFrame, "EVE Market", false);
         top =
             new DefaultMutableTreeNode("Galactic Market (Loading...)");
         
@@ -57,8 +55,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         
         marketTree = new JTree(top);
         marketTree.addTreeSelectionListener(this);
-        marketTree.setOpaque(false);
-        setTitle("EVE Market");
+        marketTree.setOpaque(true);
         
         try {
             marketTree.setFont(Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf")).deriveFont(8f));
@@ -94,7 +91,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         c.gridy = 0;
         
         groups = new JList();
-        groups.setCellRenderer(new ModuleListRenderer());
+        groups.setCellRenderer(new CustomListRenderer());
         //groups.addListSelectionListener(this);
         try {
         	groups.setFont(Resources.getFont("stan07_55.ttf").deriveFont(6f));
@@ -179,12 +176,13 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     
     private void buildList(int groupId) {
     	Vector list = new Vector();
-    	groups.removeAll();
     	
     	Iterator itr = myDb.getTypeByMarketGroup(groupId).iterator();
+    	if(itr.hasNext())
+    		groups.removeAll();
     	while(itr.hasNext()) {
     		Item i = (Item)itr.next();
-    		MarketListEntry mle = new MarketListEntry(i);
+    		MarketListEntry mle = new MarketListEntry(i, editor);
     		list.add(mle);
     	}
     	
@@ -196,7 +194,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	JPopupMenu menu = new JPopupMenu();
     	JMenuItem mitem;
     	
-    	menu = new JPopupMenu();
 		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
 		menu.addSeparator();
     	if(item.getAttribute("lowSlots", "-1").equals("-1")) {

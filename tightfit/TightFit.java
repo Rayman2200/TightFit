@@ -24,6 +24,7 @@ import tightfit.widget.*;
 import tightfit.io.EFTShipParser;
 import tightfit.item.*;
 import tightfit.dialogs.*;
+import tightfit.character.Character;
 
 /**
  * Main Class
@@ -35,6 +36,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private FitPanel    thePanel;
     
     private Ship myShip;
+    private Character myChar;
     private MarketDialog mdlg;
     
     private Point mousePressLocation;
@@ -56,6 +58,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         appFrame.addKeyListener(this);
         appFrame.setUndecorated(true);
         appFrame.setResizable(false); 
+        
+        myShip = new Ship();
+        myChar = new Character("");
         
         appFrame.setLocationRelativeTo(null);
         
@@ -103,6 +108,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	return myShip;
     }
     
+    public Character getChar() {
+    	return myChar;
+    }
+    
     public void mouseDragged(MouseEvent e) {
         if(mousePressLocation != null && mousePressLocation.y < 15) {
         	Point d = appFrame.getLocation();
@@ -136,7 +145,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 	}
 
 	public void keyPressed(KeyEvent e) {
-		//System.out.println(e.getKeyModifiersText(e.getModifiers())+"+"+e.getKeyCode());
+		//CTRL-v
 		if(KeyEvent.getKeyModifiersText(e.getModifiers()).equals("Ctrl") && e.getKeyCode() == 86) {
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
 			Transferable clipData = clipboard.getContents(clipboard);
@@ -145,12 +154,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 		   if (clipData != null) {
 			   try {
 			       if (clipData.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-			         input = (String)(clipData.getTransferData(
-			           DataFlavor.stringFlavor));
+			    	   input = (String)(clipData.getTransferData(DataFlavor.stringFlavor));
+			    	   setShip((new EFTShipParser()).parse(input));
 			       }
-			       
-			       EFTShipParser esp = new EFTShipParser();
-			       setShip(esp.parse(input));
 			   } catch (Exception ex) {
 				   //ex.printStackTrace();
 			   }

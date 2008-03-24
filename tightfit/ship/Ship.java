@@ -79,14 +79,14 @@ public class Ship extends Item {
     public Ship(Item type) {
     	super(type);
     	//myType = type;             //OMG, you're just my type! What's your sign?
-    	type.printAttributes();
+    	System.out.println(type.printAttributes());
     	
     	lowSlots = new Module[(int)Float.parseFloat(type.getAttribute("lowSlots", "0"))];
     	midSlots = new Module[(int)Float.parseFloat(type.getAttribute("medSlots", "0"))];
     	hiSlots = new Module[(int)Float.parseFloat(type.getAttribute("hiSlots", "0"))];
     	rigSlots = new Module[(int)Float.parseFloat(type.getAttribute("rigSlots", "0"))];
     	
-    	launcherHardpoints = (int)Float.parseFloat(type.getAttribute("launcherHardpoints", "0"));
+    	launcherHardpoints = (int)Float.parseFloat(type.getAttribute("launcherSlotsLeft", "0"));
     	turretHardpoints = (int)Float.parseFloat(type.getAttribute("turretSlotsLeft", "0"));
     	
     	cpu = cpuMax = Float.parseFloat(type.getAttribute("cpuOutput", "0"));
@@ -119,9 +119,7 @@ public class Ship extends Item {
     	structReson[2] = Float.parseFloat(getAttribute("thermalDamageResonance", "1.0"));
     	structReson[3] = Float.parseFloat(getAttribute("explosiveDamageResonance", "1.0"));
     	
-    	capacity = type.capacity;
-    	
-    	title = "Pilot's "+name;
+    	title = name;
     }
 
     public int countFreeLauncherHardpoints() {
@@ -436,25 +434,13 @@ public class Ship extends Item {
     public float getMaxPower() {
     	float output = gridMax;
     	
-    	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].isOnline()) {
-    			output *=  Float.parseFloat((String)lowSlots[i].getAttribute("powerOutputMultiplier", "1"));
-    		}
-    	}
-    	
-    	return output;
+    	return multiplyAttributeProperty(output, "powerOutputMultiplier", true);
     }
     
     public float getMaxCpu() {
     	float c = cpuMax;
     	
-    	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && lowSlots[i].isOnline() && lowSlots[i].attributes.contains("cpuMultiplier")) {
-    			c *=  Float.parseFloat((String)lowSlots[i].getAttribute("cpuMultiplier", "1"));
-    		}
-    	}
-    	
-    	return c;
+    	return multiplyAttributeProperty(c, "cpuMultiplier", true);
     }
     
     /**
