@@ -26,7 +26,7 @@ public class ShowInfoDialog extends JDialog {
 	private Item myItem;
 	
 	public ShowInfoDialog(Frame parent, Item item) {
-		super(parent);
+		super();
 		
 		setTitle("Show Info - "+item.name);
 		myItem = item;

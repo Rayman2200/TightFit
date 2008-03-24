@@ -24,7 +24,8 @@ public class MarketListEntry extends AbstractListEntry {
 	
 	private Color green = new Color(.22f,.52f,.26f);
 	private Color red = new Color(.52f,.22f,.26f);
-	
+	private Color blank = new Color(1f,1f,1f,.8f);
+    
 	private Font bigFont, smallFont;
 	
 	public MarketListEntry(Item item, TightFit editor) {
@@ -99,19 +100,23 @@ public class MarketListEntry extends AbstractListEntry {
             g2d.fillRect(imgPos.x + 48, imgPos.y + 48, 16, 16);
             g2d.drawImage(imgSlot, imgPos.x + 48, imgPos.y+48, null);
             
+            g2d.setFont(smallFont);
+            
 	        //power
 	        if(editor.getShip().getMaxPower() > (int)Float.parseFloat(myItem.getAttribute("power", "0")))
 	        	g2d.setColor(green);
 	        else g2d.setColor(red);
 	        g2d.fillRect(imgPos.x + 94, imgPos.y, 22, 22);
 	        g2d.drawImage(imgPower, imgPos.x + 94, imgPos.y, null);
-	        
+	        FitPanel.drawShadowedStringCentered(g2d, myItem.getAttribute("power", "0"), imgPos.x+105, imgPos.y+27, blank);
+            
 	        //cpu
 	        if(editor.getShip().getMaxCpu() > (int)Float.parseFloat(myItem.getAttribute("cpu", "0")))
 	        	g2d.setColor(green);
 	        else g2d.setColor(red);
 	        g2d.fillRect(imgPos.x + 116, imgPos.y, 22, 22);
 	        g2d.drawImage(imgCpu, imgPos.x + 116, imgPos.y, null);
+            FitPanel.drawShadowedStringCentered(g2d, myItem.getAttribute("cpu", "0"), imgPos.x+127, imgPos.y+27, blank);
         }
         
         g2d.setColor(Color.WHITE);

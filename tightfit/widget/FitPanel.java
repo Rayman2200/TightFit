@@ -119,7 +119,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		
 		//HI
 		for(int i=0;i<ship.totalHiSlots();i++) {
-			Slot slot = new Slot(editor, this, Module.HI_SLOT, i);
+			ModuleSlot slot = new ModuleSlot(editor, this, Module.HI_SLOT, i);
 			slot.mount(ship.getModule(Module.HI_SLOT, i));
             slot.setLocation(mountPoints[Module.HI_SLOT][i]);
     		add(slot);
@@ -128,7 +128,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         
 		//MED
 		for(int i=0;i<ship.totalMedSlots();i++) {
-			Slot slot = new Slot(editor, this, Module.MID_SLOT, i);
+			ModuleSlot slot = new ModuleSlot(editor, this, Module.MID_SLOT, i);
 			slot.mount(ship.getModule(Module.MID_SLOT, i));
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
@@ -137,7 +137,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		
 		//LOW
 		for(int i=0;i<ship.totalLowSlots();i++) {
-			Slot slot = new Slot(editor, this, Module.LOW_SLOT, i);
+			ModuleSlot slot = new ModuleSlot(editor, this, Module.LOW_SLOT, i);
 			slot.mount(ship.getModule(Module.LOW_SLOT, i));
 			slot.setLocation(mountPoints[Module.LOW_SLOT][i]);
     		add(slot);
@@ -356,7 +356,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         drawSmallBar(g2d, 488, 306, 1.0f - reson[3]);
         drawSmallBar(g2d, 595, 306, 1.0f - reson[2]);
         
-        //armor
+        //structure
         reson = ship.getStructureResonance();
         drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 353, statWhite);
         drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 353, statWhite);
@@ -366,6 +366,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         drawSmallBar(g2d, 595, 353, 1.0f - reson[1]);
         drawSmallBar(g2d, 488, 380, 1.0f - reson[3]);
         drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
+        
+        drawShadowedString(g2d, ""+ship.getFreeCargoCapacity() + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
     }
     
     private void createMountPoints() {
@@ -403,7 +405,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     }
 
 	public void dragEnter(DropTargetDragEvent e) {
-		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
+		ModuleSlot s = (ModuleSlot)((DropTarget)e.getSource()).getComponent();
 		
 		s.setSelected(true);
 		
@@ -440,7 +442,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	}
 
 	public void drop(DropTargetDropEvent e) {
-		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
+		ModuleSlot s = (ModuleSlot)((DropTarget)e.getSource()).getComponent();
 		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
 			try {
 				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
@@ -466,7 +468,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		Slot s = (Slot)e.getSource();
+		ModuleSlot s = (ModuleSlot)e.getSource();
 		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
 			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
 				JPopupMenu menu = new JPopupMenu();

@@ -38,6 +38,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private Ship myShip;
     private Character myChar;
     private MarketDialog mdlg;
+    private StatsDialog stats;
     
     private Point mousePressLocation;
     
@@ -68,6 +69,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         appFrame.setVisible(true); 
         
         mdlg = new MarketDialog(this);
+        stats = new StatsDialog(this);
         
         new Thread(new Runnable() {
             public void run() {

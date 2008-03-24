@@ -1,5 +1,11 @@
+0.4.0
+* Drone damage simulator
+* Create Eve-like L&F for JavaUI
 
-0.6.0
+0.3.1
+
+
+0.3.0
 * Data export (EFT, TightFit)
 * Saving fits
 * Preferences support
@@ -9,3 +15,10 @@
 * Fix armor calculation bug
 * Shield/Armor/Structure resistances calc
 * Buttons (Strip Fit, Export, Simulate)
+* Character import from EveMon
++ MarketListEntry needs to show requirement icons and slot type
+* Estimated cap life
+* total effective shield HP
+* total effective armor HP
+* total effective struct HP
+

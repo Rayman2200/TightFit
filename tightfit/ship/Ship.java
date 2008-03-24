@@ -56,6 +56,7 @@ public class Ship extends Item {
         grid = gridMax = 25;
         sigRadius = 25;
         attributes.put("maxLockedTargets", "2.0");
+        attributes.put("capacity", "40.0");
         title = "Corporate Jet";
         shieldReson = new float[4];
     	shieldReson[0] = 1;
@@ -536,6 +537,14 @@ public class Ship extends Item {
     
     public float calculateMaxRange() {
     	return maxRange;
+    }
+    
+    public float getTotalCargoCapacity() {
+        return Float.parseFloat(getAttribute("capacity", "0"));
+    }
+    
+    public float getFreeCargoCapacity() {
+        return getTotalCargoCapacity() - 0; //TODO
     }
     
     private float calcFireRateBonus(Ammo charge) {
