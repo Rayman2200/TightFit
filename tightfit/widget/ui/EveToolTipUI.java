@@ -52,7 +52,7 @@ public final class EveToolTipUI extends BasicToolTipUI {
 	    		g2d.drawString(strs[i].toUpperCase(), 3, (metrics.getHeight()) * (i + 1)+1);
 	    	}
 	    }
-	    g2d.setColor(Color.WHITE);
+        
 	    g2d.drawRect(0, 0, size.width, size.height);
 	}
 	

@@ -26,6 +26,9 @@ public class StatsDialog extends JDialog {
     
     private TightFit editor;
     private Color bgColor = new Color(.07f, .25f, .43f);
+    
+    //private Image bgImg = Resources.getImage("panel.png");
+    
     public StatsDialog(TightFit editor) {
         super();
         this.editor = editor;

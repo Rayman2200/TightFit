@@ -40,7 +40,6 @@ public class CustomListRenderer extends DefaultListCellRenderer {
             module.setBackground(bgColor);
             if(isSelected)
             	module.setBackground(bgLightColor);
-
             return module;
         } else {
             setIcon(null);

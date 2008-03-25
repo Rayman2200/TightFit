@@ -110,6 +110,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         
         setPreferredSize(new Dimension(680,500));
         setLayout(new SlickLayout());
+        setDoubleBuffered(true);
         
         createMountPoints();
         

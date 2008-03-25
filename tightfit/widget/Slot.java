@@ -48,7 +48,7 @@ public abstract class Slot extends JPanel implements ActionListener {
     	if(selected != s) {
 	    	selected = s;
 	    	Point pt = getLocation();
-	    	//FIXME: parent.repaint(pt.x, pt.y, 64, 64);
+	    	//FIXME: parent.repaint(0, pt.x, pt.y, 64, 64);
 	    	parent.repaint();
     	}
     }

@@ -47,7 +47,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     private DragSource ds;
     
     public MarketDialog(TightFit editor) {
-    	super(editor.appFrame, "EVE Market", false);
+    	super((Frame)null, "EVE Market", false);
         top =
             new DefaultMutableTreeNode("Galactic Market (Loading...)");
         
@@ -253,10 +253,14 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 
 	public void mouseClicked(MouseEvent e) {
 		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
-			MarketListEntry mle = (MarketListEntry) groups.getSelectedValue();
-			Point pt = getMousePosition();
+			Point pt = e.getPoint();
+            groups.setSelectedIndex(groups.getFirstVisibleIndex() + pt.y/225);
+            
+            MarketListEntry mle = (MarketListEntry) groups.getSelectedValue();
+			
+            Point rel = e.getComponent().getLocation();
 			Item item = mle.getItem();
-			buildPopup(item).show(this, pt.x, pt.y);
+			buildPopup(item).show(this, pt.x+rel.x+350, pt.y+rel.y);
 		}
 	}
 

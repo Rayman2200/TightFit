@@ -10,12 +10,11 @@
 
 package tightfit.dialogs;
 
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 
 import javax.swing.*;
+
+import java.util.Vector;
 
 import tightfit.item.Item;
 import tightfit.widget.CustomListRenderer;
@@ -45,10 +44,12 @@ public class ShowInfoDialog extends JDialog {
         c.fill = GridBagConstraints.BOTH;
         
     	panel.setPreferredSize(new Dimension(300, 300));
-    	
+    	panel.setBackground(new Color(.07f, .25f, .43f));
         panel.add(new JLabel(new ImageIcon(myItem.getImage())), c);
         c.gridx=1;
-        panel.add(new JLabel(myItem.name), c);
+        JLabel l = new JLabel(myItem.name);
+        l.setForeground(Color.WHITE);
+        panel.add(l, c);
         
         c.gridy = 1;
         c.gridx = 0;
@@ -75,15 +76,17 @@ public class ShowInfoDialog extends JDialog {
 	}
 	
 	private JList buildAttributeList() {
-		JList list = new JList();
-		list.setCellRenderer(new CustomListRenderer());
+		JList attribs = new JList();
+		Vector list = new Vector();
+        attribs.setCellRenderer(new CustomListRenderer());
 		
 		list.add(new InfoListEntry(myItem, "capacity", null));
 		list.add(new InfoListEntry(myItem, "volume", null));
 		list.add(new InfoListEntry(myItem, "mass", null));
 		
-		//if(item.)
-		
-		return list;
+        attribs.setListData(list);
+        attribs.setBackground(Color.DARK_GRAY);
+        
+		return attribs;
 	}
 }

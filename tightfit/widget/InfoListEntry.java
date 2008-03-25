@@ -9,13 +9,9 @@
  */
 package tightfit.widget;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.*;
+
+import tightfit.Resources;
 
 import tightfit.item.Item;
 
@@ -24,12 +20,19 @@ public class InfoListEntry extends AbstractListEntry {
 	private String attribute;
 	private Image icon;
 	
+    private Font bigFont;
+    
 	public InfoListEntry(Item item, String attribute, Image icon) {
 		super(item);
 		this.attribute = attribute;
 		this.icon = icon;
 		
-		setPreferredSize(new Dimension(150, 16));
+		setPreferredSize(new Dimension(150, 22));
+        
+        try {
+			Font big = Resources.getFont("stan07_55.ttf");
+            bigFont = big.deriveFont(6f);
+        } catch (Exception e) {}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -46,16 +49,17 @@ public class InfoListEntry extends AbstractListEntry {
 						RenderingHints.VALUE_RENDER_QUALITY);
 		
 		g2d.setComposite(AlphaComposite.SrcAtop);
-		
+        
 		g2d.setColor(Color.DARK_GRAY);
 		g2d.fillRect(0, 0, size.width, size.height);
 		g2d.setColor(Color.GRAY);
-		g2d.drawLine(0, 0, size.width, 0);
+		g2d.drawLine(0, size.height-1, size.width, size.height-1);
 		
-		FitPanel.drawShadowedString(g2d, "", 17, 0, Color.WHITE);
-		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 19, 8, Color.WHITE);
+        g2d.setFont(bigFont);
+		FitPanel.drawShadowedString(g2d, "TEST", 23, 9, Color.WHITE);
+		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 16, Color.WHITE);
 		
-		g2d.scale(.25, .25);
+		//g2d.scale(.25, .25);
 		g2d.drawImage(icon, 0, 0, null);
 	}
 }
