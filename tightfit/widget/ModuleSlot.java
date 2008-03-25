@@ -11,10 +11,7 @@
 package tightfit.widget;
 
 import java.awt.*;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 
 import tightfit.Resources;
@@ -27,14 +24,13 @@ import tightfit.module.Module;
  *
  */
 public class ModuleSlot extends Slot {
-
     private static final long serialVersionUID = 1L;
 
     protected int myType, mySpot;
     
     protected Module mounted;
     
-    private Image slotImg, typeImg, inactiveImg, activeImg;
+    protected Image slotImg, typeImg, inactiveImg, activeImg;
     
     public ModuleSlot(TightFit editor, FitPanel parent, int type, int spot) {
         super(parent, editor);
@@ -67,7 +63,7 @@ public class ModuleSlot extends Slot {
         
         mounted = m;
         if(m != null) {
-        	setToolTipText(m.name + "\r\nRequired CPU: "+m.getCpuUsage()+"\r\nRequired Power: "+ m.getPowerUsage());
+        	setToolTipText("TYPE: "+m.name + "\r\nRequired CPU: "+m.getCpuUsage()+"\r\nRequired Power: "+ m.getPowerUsage());
         } else {
             setToolTipText("");
         }

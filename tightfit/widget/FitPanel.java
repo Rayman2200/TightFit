@@ -40,6 +40,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	private TightFit editor;
 	private Ship ship;
 	
+	private JButton strip, closeButton, minButton, configButton;
+	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
                 cargoImg, shieldImg, armorImg, structImg;
@@ -63,7 +65,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		panelImg = Resources.getImage("panel.png");
         rigImg = Resources.getImage("icon68_01.png");
         lnchrImg = Resources.getImage("icon12_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        turImg = Resources.getImage("icon12_09.png");
+        turImg = Resources.getImage("icon12_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         sigRadImg = Resources.getImage("icon22_14.png");
         scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         maxTarImg = Resources.getImage("icon04_12.png");
@@ -110,6 +112,11 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         setLayout(new SlickLayout());
         
         createMountPoints();
+        
+        strip = new JButton("STRIP FITTING");
+        strip.addActionListener(editor);
+        add(strip);
+        strip.setLocation(500,452);
 	}
 	
 	public void setShip(Ship s) {
@@ -143,6 +150,15 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     		add(slot);
     		slot.addMouseListener(this);
     		slot.setBorder(new LineBorder(Color.BLACK, 0)); //goofy? ya.
+		}
+		
+		//RIG
+		for(int i=0, x=65;i<ship.totalRigSlots();i++,x+=34) {
+			RigSlot slot = new RigSlot(editor, this, Module.RIG_SLOT, i);
+			slot.mount(ship.getModule(Module.LOW_SLOT, i));
+			slot.setLocation(x,450);
+			add(slot);
+    		slot.addMouseListener(this);
 		}
 		
 		repaint();
@@ -201,10 +217,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         g2d.drawLine(532, 432, 532, 463);
         g2d.drawLine(564, 432, 564, 463);
         
-        for(int i=0,x=65, r=ship.totalRigSlots();i<8;i++,x+=34,r--) {
+        for(int i=0,x=65;i<8;i++,x+=34) {
             g2d.drawRect(x, 450, 32, 32);
-            if(r>0)
-                g2d.drawImage(rigImg, x+1, 451, null);
         }
         
         
@@ -367,7 +381,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         drawSmallBar(g2d, 488, 380, 1.0f - reson[3]);
         drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
         
-        drawShadowedString(g2d, ""+ship.getFreeCargoCapacity() + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
+        drawShadowedString(g2d, "" + (ship.getTotalCargoCapacity()-ship.getFreeCargoCapacity()) + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
     }
     
     private void createMountPoints() {

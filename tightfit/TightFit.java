@@ -30,7 +30,7 @@ import tightfit.character.Character;
  * Main Class
  *
  */
-public class TightFit implements MouseListener, MouseMotionListener, KeyListener {
+public class TightFit implements MouseListener, MouseMotionListener, KeyListener, ActionListener {
 
     public JFrame      appFrame;
     private FitPanel    thePanel;
@@ -181,5 +181,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	}
         
     }
+
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

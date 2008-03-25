@@ -16,7 +16,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import tightfit.Resources;
 import tightfit.TightFit;
@@ -51,5 +51,11 @@ public abstract class Slot extends JPanel implements ActionListener {
 	    	//FIXME: parent.repaint(pt.x, pt.y, 64, 64);
 	    	parent.repaint();
     	}
+    }
+    
+    public JToolTip createToolTip() {
+    	MultiLintToolTip tip = new MultiLintToolTip();
+    	tip.setComponent(this);
+    	return tip;
     }
 }
