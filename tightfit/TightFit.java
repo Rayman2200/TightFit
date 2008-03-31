@@ -91,6 +91,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
         try {
         	mdlg.updateTree(Database.getInstance());
+        	myChar.parse("C:\\Documents and Settings\\Administrator\\Desktop\\biggeruniverse.xml");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +103,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         }
         
     	myShip = s;
-        thePanel.setShip(s);
+    	myShip.myChar = myChar;
+        thePanel.setShip(myShip);
     	//TODO: fire an event
     }
     

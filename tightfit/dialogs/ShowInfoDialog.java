@@ -43,7 +43,7 @@ public class ShowInfoDialog extends JDialog {
     	c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.BOTH;
         
-    	panel.setPreferredSize(new Dimension(300, 300));
+    	panel.setPreferredSize(new Dimension(300, 350));
     	panel.setBackground(new Color(.07f, .25f, .43f));
         panel.add(new JLabel(new ImageIcon(myItem.getImage())), c);
         c.gridx=1;
@@ -69,7 +69,6 @@ public class ShowInfoDialog extends JDialog {
         scrollPane.setPreferredSize(new Dimension(200, 250));
         scrollPane.getViewport().setView(buildAttributeList());
         pane.addTab("Attributes", scrollPane);
-        
         
         panel.add(pane, c);
     	add(panel);

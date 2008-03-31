@@ -15,7 +15,6 @@ import java.util.*;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -26,6 +25,7 @@ public class Database {
 	private static Database instance;
 	
 	private Hashtable cache = new Hashtable();
+	private HashMap attributeDisplayNames = new HashMap();
 	private LinkedList groups = new LinkedList();
 	private LinkedList marketGroups = new LinkedList();
 	
@@ -84,6 +84,10 @@ public class Database {
         return (Item)cache.get(name.toLowerCase());
     }
     
+    public String getAttributeDisplayName(String name) {
+    	return (String)attributeDisplayNames.get(name);
+    }
+    
     public LinkedList getTypeByGroup(int gid) {
     	LinkedList l = new LinkedList();
     	Enumeration types = cache.elements();
@@ -104,28 +108,6 @@ public class Database {
     			l.addLast(item);
     	}
     	return l;
-    }
-    
-    private Group unmarshalGroup(Node t) {
-    	Group g = new Group();
-    	
-    	NamedNodeMap nnm = t.getAttributes();
-    	if(nnm != null) {
-	    	Node n = nnm.getNamedItem("name");
-	    	if(n != null)
-	    		g.name = n.getNodeValue();
-	    	n = nnm.getNamedItem("groupid");
-	    	if(n != null)
-	    		g.groupId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("catid");
-	    	if(n != null)
-	    		g.catId = (int)Float.parseFloat(n.getNodeValue());
-	    	n = nnm.getNamedItem("graphicid");
-	    	if(n != null)
-	    		g.graphicId = (int)Float.parseFloat(n.getNodeValue());
-    	}
-    	
-    	return g;
     }
     
     private class DatabaseParserHandler extends DefaultHandler {
@@ -154,8 +136,10 @@ public class Database {
                 myDb.cache.put(type.name.toLowerCase(), type);
             } else if(qName.equalsIgnoreCase("attribute")) {
                 Item m = (Item)currentElement;
-                m.attributes.put(attrs.getValue("name"),
+                if(!m.attributes.containsKey(attrs.getValue("name"))) {
+                	m.attributes.put(attrs.getValue("name"),
                             attrs.getValue("value"));
+                }
             } else if(qName.equalsIgnoreCase("marketgroup")) {
                 Group g = unmarshalMarketGroup(attrs);
                 currentElement = g;
@@ -166,6 +150,8 @@ public class Database {
                 myDb.groups.addLast(g);
             } else if(qName.equalsIgnoreCase("description")) {
             	inDesc = true;
+            } else if(qName.equalsIgnoreCase("attribtype")) {
+            	unmarshalAttributeType(attrs);
             }
         }
         
@@ -176,6 +162,7 @@ public class Database {
         public void characters(char buf[], int offset, int len) throws SAXException {
         	if(inDesc) {
         		String sbuf = (new String(buf)).substring(offset, offset+len);
+        		sbuf = sbuf.replaceAll("\n", "");
         		//System.out.println(sbuf);
         		if(currentElement instanceof Item) {
         			String desc = (String)((Item)currentElement).attributes.get("description");
@@ -213,6 +200,10 @@ public class Database {
             g.catId = (int)Float.parseFloat(attrs.getValue("catid"));
             g.graphicId = (int)Float.parseFloat(attrs.getValue("graphicid"));
             return g;
+        }
+        
+        private void unmarshalAttributeType(Attributes attrs) {
+        	attributeDisplayNames.put(attrs.getValue("name").toLowerCase(), attrs.getValue("displayname"));
         }
     }
 }

@@ -127,7 +127,7 @@ public class MarketListEntry extends AbstractListEntry {
         g2d.setFont(bigFont);
         FitPanel.drawShadowedString(g2d, myItem.name, 82, 82, Color.WHITE);
         g2d.setFont(smallFont);
-        drawDescription(g2d, 42, 89);
+        drawDescription(g2d, 42, 109);
 	}
 	
 	private void drawDescription(Graphics2D g2d, int x, int y) {

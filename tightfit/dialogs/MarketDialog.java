@@ -254,7 +254,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	public void mouseClicked(MouseEvent e) {
 		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
 			Point pt = e.getPoint();
-            groups.setSelectedIndex(groups.getFirstVisibleIndex() + pt.y/225);
+            //groups.setSelectedIndex(groups.getFirstVisibleIndex() + pt.y/225);
             
             MarketListEntry mle = (MarketListEntry) groups.getSelectedValue();
 			

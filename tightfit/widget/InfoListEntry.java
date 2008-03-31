@@ -13,13 +13,14 @@ import java.awt.*;
 
 import tightfit.Resources;
 
+import tightfit.item.Database;
 import tightfit.item.Item;
 
 public class InfoListEntry extends AbstractListEntry {
 	private static final long serialVersionUID = 1L;
 	private String attribute;
 	private Image icon;
-	
+	private Color headerGrey;
     private Font bigFont;
     
 	public InfoListEntry(Item item, String attribute, Image icon) {
@@ -27,8 +28,9 @@ public class InfoListEntry extends AbstractListEntry {
 		this.attribute = attribute;
 		this.icon = icon;
 		
-		setPreferredSize(new Dimension(150, 22));
-        
+		setPreferredSize(new Dimension(150, 27));
+        headerGrey = new Color(.75f,.75f,.75f,.75f);
+		
         try {
 			Font big = Resources.getFont("stan07_55.ttf");
             bigFont = big.deriveFont(6f);
@@ -56,8 +58,11 @@ public class InfoListEntry extends AbstractListEntry {
 		g2d.drawLine(0, size.height-1, size.width, size.height-1);
 		
         g2d.setFont(bigFont);
-		FitPanel.drawShadowedString(g2d, "TEST", 23, 9, Color.WHITE);
-		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 16, Color.WHITE);
+		try {
+			FitPanel.drawShadowedString(g2d, Database.getInstance().getAttributeDisplayName(attribute), 23, 9, headerGrey);
+		} catch (Exception e) {
+		}
+		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
 		
 		//g2d.scale(.25, .25);
 		g2d.drawImage(icon, 0, 0, null);

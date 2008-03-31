@@ -38,6 +38,12 @@ public class Character {
 		skills.put(id, level);
 	}
 	
+	public int getSkillLevel(String id) {
+		if(skills.containsKey(id))
+			return Integer.parseInt((String)skills.get(id));
+		return 0;
+	}
+	
 	public boolean hasRequiredSkill(String skillId, int level) {
 		String skill = (String) skills.get(skillId);
 		if(skill != null) {
@@ -50,10 +56,10 @@ public class Character {
 		try {
 			String [] reqSkills = item.getAttributeKey("requiredSkill");
 			for(int i = 0; i < reqSkills.length; i++) {
-				if(!reqSkills[i].contains("Level")) {
+				if(reqSkills[i] != null && !reqSkills[i].contains("Level")) {
 					String level;
-					if((level = (String) skills.get(reqSkills[i])) != null) {
-						if(!level.equals(item.getAttribute(reqSkills[i]+"Level", "0"))) {
+					if((level = (String) skills.get(item.getAttribute(reqSkills[i], "-1"))) != null) {
+						if(Integer.parseInt(level) < Integer.parseInt(item.getAttribute(reqSkills[i]+"Level", "0"))) {
 							return false;
 						}
 					} else return false;
@@ -82,7 +88,7 @@ public class Character {
             
             NodeList l = doc.getElementsByTagName("row");
             for (int i = 0; (item = l.item(i)) != null; i++) {
-            	skills.put(getAttributeValue(item, "typeid"), getAttributeValue(item, "level"));
+            	skills.put(getAttributeValue(item, "typeID"), getAttributeValue(item, "level"));
             }
         } catch (SAXException e) {
             e.printStackTrace();

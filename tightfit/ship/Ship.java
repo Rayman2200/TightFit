@@ -13,6 +13,7 @@ package tightfit.ship;
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 import tightfit.module.Module;
+import tightfit.character.Character;
 
 /**
  * A ship is the nexus of TightFit. Everything is encompassed by this logical container.
@@ -22,6 +23,7 @@ import tightfit.module.Module;
 public class Ship extends Item {
 
 	public String title;
+	public Character myChar = new Character();
 	
     private Module hiSlots[];
     private Module midSlots[];
@@ -432,14 +434,43 @@ public class Ship extends Item {
     	return att;
     }
     
+    public float multiplyAttributeBonus(float att, String prop, boolean requiresOnline) {
+    	for(int i=0;i<hiSlots.length;i++) {
+    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
+    			att *=  1+(Float.parseFloat((String)hiSlots[i].getAttribute(prop, "1"))/100.0f);
+    		}
+    	}
+    	
+    	for(int i=0;i<midSlots.length;i++) {
+    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
+    			att *=  1+(Float.parseFloat((String)midSlots[i].getAttribute(prop, "1"))/100.0f);
+    		}
+    	}
+    	
+    	for(int i=0;i<lowSlots.length;i++) {
+    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
+    			att *=  1+(Float.parseFloat((String)lowSlots[i].getAttribute(prop, "1"))/100.0f);
+    		}
+    	}
+    	
+    	for(int i=0;i<rigSlots.length;i++) {
+    		if(rigSlots[i] != null) {
+    			att *=  1+(Float.parseFloat((String)rigSlots[i].getAttribute(prop, "1"))/100.0f);
+    		}
+    	}
+    	return att;
+    }
+    
     public float getMaxPower() {
-    	float output = gridMax;
+    	float output = gridMax*(1+myChar.getSkillLevel("3413")*0.05f);
+    	
+    	output = multiplyAttributeBonus(output, "powerEngineeringOutputBonus", true);
     	
     	return multiplyAttributeProperty(output, "powerOutputMultiplier", true);
     }
     
     public float getMaxCpu() {
-    	float c = cpuMax;
+    	float c = cpuMax*(1+myChar.getSkillLevel("3426")*0.05f);
     	
     	return multiplyAttributeProperty(c, "cpuMultiplier", true);
     }
@@ -516,15 +547,18 @@ public class Ship extends Item {
     }
     
     public float calculateMaxCapacity() {
-        return multiplyAttributeProperty(capMax, "capacitorCapacityMultiplier", true);
+    	cap = capMax * (1+myChar.getSkillLevel("3418")*0.05f);
+    	
+        return multiplyAttributeProperty(cap, "capacitorCapacityMultiplier", true);
     }
     
     public float calculateCapacitorRechargeRate() {
-        return multiplyAttributeProperty(Float.parseFloat(getAttribute("rechargeRate", "0")), "capacitorRechargeRateMultiplier", true) / 1000.0f;
+    	float recharge = Float.parseFloat(getAttribute("rechargeRate", "0")) * (1-myChar.getSkillLevel("3417")*0.05f);
+        return multiplyAttributeProperty(recharge, "capacitorRechargeRateMultiplier", true) / 1000.0f;
     }
     
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp + aggregateAllSlots("capacityBonus", true), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * (1+myChar.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", true), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
@@ -536,11 +570,11 @@ public class Ship extends Item {
     }
     
     public float calculateMaxRange() {
-    	return maxRange;
+    	return maxRange * (1+myChar.getSkillLevel("3428")*0.05f);
     }
     
     public float getTotalCargoCapacity() {
-        return Float.parseFloat(getAttribute("capacity", "0"));
+        return multiplyAttributeProperty(Float.parseFloat(getAttribute("capacity", "0")), "cargoCapacityMultiplier", true);
     }
     
     public float getFreeCargoCapacity() {

@@ -54,7 +54,7 @@ public abstract class Slot extends JPanel implements ActionListener {
     }
     
     public JToolTip createToolTip() {
-    	MultiLintToolTip tip = new MultiLintToolTip();
+    	MultiLineToolTip tip = new MultiLineToolTip();
     	tip.setComponent(this);
     	return tip;
     }
