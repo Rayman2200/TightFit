@@ -40,7 +40,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	private TightFit editor;
 	private Ship ship;
 	
-	private JButton strip, closeButton, minButton, configButton;
+	private JButton strip, closeButton, minButton, configButton, infoButton;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
@@ -90,14 +90,10 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
             bigFont = big.deriveFont(8f);
             big = Resources.getFont("agencyr.ttf");
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
-            shipTitleFont = big.deriveFont(Font.BOLD, 10f);
+            shipTitleFont = big.deriveFont(Font.BOLD, 14f);
 			smallFont = Resources.getFont("stan07_55.ttf");
             smallFont = smallFont.deriveFont(6f);
-		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
         
@@ -116,8 +112,26 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         
         strip = new JButton("STRIP FITTING");
         strip.addActionListener(editor);
-        add(strip);
         strip.setLocation(500,452);
+        
+        configButton = new ImageButton("config.png", true);
+        configButton.setActionCommand("config");
+        configButton.addActionListener(editor);
+        configButton.setLocation(628, 0);
+        minButton = new ImageButton("minimize.png", true);
+        minButton.setActionCommand("minimize");
+        minButton.addActionListener(editor);
+        minButton.setLocation(644, 0);
+        closeButton = new ImageButton("close.png", true);
+        closeButton.setActionCommand("close");
+        closeButton.addActionListener(editor);
+        closeButton.setLocation(660, 0);
+        infoButton = new ImageButton("showinfo.png");
+        infoButton.setActionCommand("showinfo");
+        infoButton.addActionListener(editor);
+        infoButton.setLocation(311, 47);
+        
+        addButtons();
 	}
 	
 	public void setShip(Ship s) {
@@ -161,6 +175,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 			add(slot);
     		slot.addMouseListener(this);
 		}
+		
+		//buttons back
+		addButtons();
 		
 		repaint();
 	}
@@ -319,6 +336,14 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     	g2d.setClip(x, y, (int)width, smallBarGlowImg.getHeight(null));
     	g2d.drawImage(smallBarGlowImg, x, y, null);
     	g2d.setClip(s);
+    }
+    
+    private void addButtons() {
+    	add(configButton);
+    	add(minButton);
+    	add(closeButton);
+    	add(strip);
+    	add(infoButton);
     }
     
     private void drawShipSpecs(Graphics2D g2d) {

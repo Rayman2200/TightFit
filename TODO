@@ -12,13 +12,14 @@
 * Preferences support
 * Plan export for EveMon
 * Finish Show Info Dialog
-* Damage calculations (DPS)
 + Fix armor calculation bug
 * Shield/Armor/Structure resistances calc
 * Buttons (Strip Fit, Export, Simulate)
 + Character import from EveMon
 * Skill calculates into all attributes
 + MarketListEntry needs to show requirement icons and slot type
+== Simulator ==
+* Damage calculations (DPS)
 * Estimated cap life
 * total effective shield HP
 * total effective armor HP

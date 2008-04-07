@@ -39,6 +39,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private Character myChar;
     private MarketDialog mdlg;
     private StatsDialog stats;
+    private ConfigurationDialog configDialog;
     
     private Point mousePressLocation;
     
@@ -70,6 +71,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
         mdlg = new MarketDialog(this);
         stats = new StatsDialog(this);
+        configDialog = new ConfigurationDialog(this);
         
         new Thread(new Runnable() {
             public void run() {
@@ -184,8 +186,18 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
     }
 
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equalsIgnoreCase("close")) {
+			System.exit(0); //TODO: catch for saving!
+		} else if(e.getActionCommand().equalsIgnoreCase("minimize")) {
+			appFrame.setState(Frame.ICONIFIED);
+		} else if(e.getActionCommand().equalsIgnoreCase("config")) {
+			configDialog.setVisible(true);
+		} else if(e.getActionCommand().equalsIgnoreCase("about")) {
+			
+		} else if(e.getActionCommand().equalsIgnoreCase("showinfo")) {
+			ShowInfoDialog sid = new ShowInfoDialog(appFrame, myShip);
+		}
 		
 	}
 
