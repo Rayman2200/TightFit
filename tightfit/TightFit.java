@@ -38,7 +38,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private Ship myShip;
     private Character myChar;
     private MarketDialog mdlg;
-    private StatsDialog stats;
     private ConfigurationDialog configDialog;
     
     private Point mousePressLocation;
@@ -70,7 +69,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         appFrame.setVisible(true); 
         
         mdlg = new MarketDialog(this);
-        stats = new StatsDialog(this);
         configDialog = new ConfigurationDialog(this);
         
         new Thread(new Runnable() {
@@ -81,12 +79,27 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     }
     
     private JPanel createContentPane() throws IllegalArgumentException, IOException {
+    	JPanel panel = new JPanel();
+    	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     	thePanel = new FitPanel(this);
     	//build drag-n-drop slots, put them in the right places
     	thePanel.addMouseListener(this);
         thePanel.addMouseMotionListener(this);
     	
-        return thePanel;
+    	panel.setBackground(new Color(.07f, .25f, .43f));
+
+        JTabbedPane jtp = new JTabbedPane();
+        
+        jtp.setOpaque(false);
+        jtp.addTab("Tank", new JPanel());
+        jtp.addTab("DPS",new JPanel());
+        jtp.addTab("Drones",new JPanel());
+        jtp.setPreferredSize(new Dimension(670,190));
+        
+        panel.add(thePanel);
+        panel.add(jtp);
+        
+        return panel;
     }
     
     private void initDatabase() {
@@ -152,6 +165,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 
 	public void keyPressed(KeyEvent e) {
 		//CTRL-v
+		System.out.println(KeyEvent.getKeyModifiersText(e.getModifiers()) + "-"+e.getKeyCode());
+		
 		if(KeyEvent.getKeyModifiersText(e.getModifiers()).equals("Ctrl") && e.getKeyCode() == 86) {
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
 			Transferable clipData = clipboard.getContents(clipboard);
@@ -197,6 +212,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 			
 		} else if(e.getActionCommand().equalsIgnoreCase("showinfo")) {
 			ShowInfoDialog sid = new ShowInfoDialog(appFrame, myShip);
+		} else if(e.getActionCommand().equalsIgnoreCase("strip")) {
+			if(JOptionPane.showConfirmDialog(appFrame, "Are you sure you wish to strip all modules from this ship?", "Are you sure",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+				myShip.strip();
+			}
 		}
 		
 	}

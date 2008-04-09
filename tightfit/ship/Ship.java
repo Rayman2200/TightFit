@@ -10,6 +10,8 @@
 
 package tightfit.ship;
 
+import java.util.*;
+
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 import tightfit.module.Module;
@@ -46,6 +48,8 @@ public class Ship extends Item {
     private float [] shieldReson;
     private float [] armorReson;
     private float [] structReson;
+    
+    private LinkedList listenerList = new LinkedList();
     
     public Ship() {
         super();
@@ -265,6 +269,12 @@ public class Ship extends Item {
     	return (int)Float.parseFloat(getAttribute("maxLockedTargets", "0"));
     }
     
+    public void strip() {
+    	for(int i=0;i<4;i++)
+    		for(int j=0;j<8;j++)
+    			removeModule(i, j);
+    }
+    
     public boolean testPutModule(Module m, int slotType, int slot) {
     	if(slotType != m.slotRequirement)
     		return false;
@@ -297,7 +307,7 @@ public class Ship extends Item {
     		rack[slot] = m;
     		cpu -= m.getCpuUsage();
     		grid -= m.getPowerUsage();
-    		//TODO: send out a message
+    		fireShipChange();
     		return true;
     	}
     	
@@ -318,14 +328,14 @@ public class Ship extends Item {
      	}
     	
     	
-    	if(slot <= rack.length) {
+    	if(slot < rack.length) {
 	    	Module m = rack[slot];
 	    	if(m != null) {
 		    	cpu += m.getCpuUsage();
 				grid += m.getPowerUsage();
 	    	}
 	    	rack[slot] = null;
-	    	//TODO: send out a message
+	    	fireShipChange();
     	}
     }
     
@@ -437,25 +447,25 @@ public class Ship extends Item {
     public float multiplyAttributeBonus(float att, String prop, boolean requiresOnline) {
     	for(int i=0;i<hiSlots.length;i++) {
     		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)hiSlots[i].getAttribute(prop, "1"))/100.0f);
+    			att *=  1+(Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"))/100.0f);
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
     		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)midSlots[i].getAttribute(prop, "1"))/100.0f);
+    			att *=  1+(Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"))/100.0f);
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)lowSlots[i].getAttribute(prop, "1"))/100.0f);
+    			att *=  1+(Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"))/100.0f);
     		}
     	}
     	
     	for(int i=0;i<rigSlots.length;i++) {
     		if(rigSlots[i] != null) {
-    			att *=  1+(Float.parseFloat((String)rigSlots[i].getAttribute(prop, "1"))/100.0f);
+    			att *=  1+(Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"))/100.0f);
     		}
     	}
     	return att;
@@ -584,5 +594,16 @@ public class Ship extends Item {
     private float calcFireRateBonus(Ammo charge) {
     	//TODO: also skills and tracking computers/stabs
     	return charge.getRateBonus();
+    }
+    
+    private void fireShipChange() {
+    	Iterator itr = listenerList.iterator();
+    	while(itr.hasNext()) {
+    		((ShipChangeListener)itr.next()).shipChanged(this);
+    	}
+    }
+    
+    public void addChangeListener(ShipChangeListener scl) {
+    	listenerList.add(scl);
     }
 }

@@ -17,13 +17,15 @@ import java.awt.geom.AffineTransform;
 import tightfit.Resources;
 import tightfit.TightFit;
 import tightfit.module.Module;
+import tightfit.ship.Ship;
+import tightfit.ship.ShipChangeListener;
 
 /**
  * A module slot on the ship. Handles it's own rendering of the slot graphic 
  * and module icon, as well as the activation indicator light.
  *
  */
-public class ModuleSlot extends Slot {
+public class ModuleSlot extends Slot implements ShipChangeListener {
     private static final long serialVersionUID = 1L;
 
     protected int myType, mySpot;
@@ -164,5 +166,9 @@ public class ModuleSlot extends Slot {
 			mounted.online();
 		}
 		parent.repaint();
+	}
+
+	public void shipChanged(Ship ship) {
+		mount(ship.getModule(myType, mySpot));
 	}
 }

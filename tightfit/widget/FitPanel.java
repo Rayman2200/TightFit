@@ -25,12 +25,13 @@ import tightfit.TightFit;
 import tightfit.actions.ShowInfoAction;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
+import tightfit.ship.ShipChangeListener;
 
 /**
  * FitPanel is the pretty face of TightFit. Renders similar to the actual eve fit window, 
  *
  */
-public class FitPanel extends JPanel implements DropTargetListener, MouseListener {
+public class FitPanel extends JPanel implements DropTargetListener, MouseListener, ShipChangeListener {
 
 	/**
 	 * 
@@ -111,8 +112,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         createMountPoints();
         
         strip = new JButton("STRIP FITTING");
+        strip.setActionCommand("strip");
         strip.addActionListener(editor);
-        strip.setLocation(500,452);
+        strip.setLocation(500,468);
         
         configButton = new ImageButton("config.png", true);
         configButton.setActionCommand("config");
@@ -146,6 +148,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
             slot.setLocation(mountPoints[Module.HI_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
+    		s.addChangeListener(slot);
 		}
         
 		//MED
@@ -155,6 +158,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
+    		s.addChangeListener(slot);
 		}
 		
 		//LOW
@@ -165,6 +169,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     		add(slot);
     		slot.addMouseListener(this);
     		slot.setBorder(new LineBorder(Color.BLACK, 0)); //goofy? ya.
+    		s.addChangeListener(slot);
 		}
 		
 		//RIG
@@ -174,7 +179,10 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 			slot.setLocation(x,450);
 			add(slot);
     		slot.addMouseListener(this);
+    		s.addChangeListener(slot);
 		}
+		
+		s.addChangeListener(this);
 		
 		//buttons back
 		addButtons();
@@ -557,6 +565,10 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	public void mouseExited(MouseEvent e) {
 		Slot s = (Slot)e.getSource();
 		s.setSelected(false);
+	}
+
+	public void shipChanged(Ship ship) {
+		repaint();
 	}
 
 }
