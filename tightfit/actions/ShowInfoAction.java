@@ -3,8 +3,6 @@ package tightfit.actions;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JDialog;
-
 import tightfit.dialogs.ShowInfoDialog;
 import tightfit.item.Item;
 

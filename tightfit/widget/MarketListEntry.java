@@ -10,6 +10,7 @@
 package tightfit.widget;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 import tightfit.Resources;
 import tightfit.TightFit;
@@ -85,6 +86,20 @@ public class MarketListEntry extends AbstractListEntry {
         Point imgPos = new Point(10, 15);
         
         g2d.drawImage(imgBack, imgPos.x-7, imgPos.y-7, null);
+        
+        //-- ok, neat trick- adding visual stimulation without any more graphics, nice CCP...
+        AffineTransform save = g2d.getTransform();
+        g2d.scale(1.5, 1.5);
+        Shape r = g2d.getClip();
+        g2d.setClip(0,0,50,53);
+        Composite saveComp = g2d.getComposite();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.15f));
+        g2d.drawImage(myItem.getImage(), imgPos.x, imgPos.y, null);
+        g2d.setComposite(saveComp);
+        g2d.setClip(r);
+        g2d.setTransform(save);
+        //-- 
+        
         g2d.drawImage(myItem.getImage(), imgPos.x, imgPos.y, null);
         
         //skill

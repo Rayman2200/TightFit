@@ -27,7 +27,7 @@ public class RigSlot extends ModuleSlot {
 		
 		slotImg = null;
 		try {
-			typeImg = Resources.getImage("icon68_01.png");
+			typeImg = Resources.getImage("icon68_01.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 		} catch (Exception e) {
 		}
 	}

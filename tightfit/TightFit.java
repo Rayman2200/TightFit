@@ -40,6 +40,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private MarketDialog mdlg;
     private ConfigurationDialog configDialog;
     
+    private TankPanel tankPanel;
+    
     private Point mousePressLocation;
     
     private static final int APP_WIDTH = 680;
@@ -90,8 +92,11 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 
         JTabbedPane jtp = new JTabbedPane();
         
+        tankPanel = new TankPanel(this);
+        tankPanel.setBackground(new Color(.07f, .25f, .43f));
+        
         jtp.setOpaque(false);
-        jtp.addTab("Tank", new JPanel());
+        jtp.addTab("Tank", tankPanel);
         jtp.addTab("DPS",new JPanel());
         jtp.addTab("Drones",new JPanel());
         jtp.setPreferredSize(new Dimension(670,190));
@@ -120,7 +125,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	myShip = s;
     	myShip.myChar = myChar;
         thePanel.setShip(myShip);
-    	//TODO: fire an event
+        myShip.addChangeListener(tankPanel);
+    	
+        
+        myShip.fireShipChange();
     }
     
     public Ship getShip() {

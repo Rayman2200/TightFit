@@ -64,15 +64,15 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		this.editor = editor;
 		
 		panelImg = Resources.getImage("panel.png");
-        rigImg = Resources.getImage("icon68_01.png");
+        rigImg = Resources.getImage("icon68_01.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         lnchrImg = Resources.getImage("icon12_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         turImg = Resources.getImage("icon12_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         sigRadImg = Resources.getImage("icon22_14.png");
         scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        maxTarImg = Resources.getImage("icon04_12.png");
+        maxTarImg = Resources.getImage("icon04_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         maxRanImg = Resources.getImage("icon22_15.png");
-        cargoImg = Resources.getImage("icon03_13.png");
-        shieldImg = Resources.getImage("icon01_13.png");
+        cargoImg = Resources.getImage("icon03_13.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        shieldImg = Resources.getImage("icon01_13.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
         armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
         structImg = Resources.getImage("icon02_12-small.png");
         
@@ -141,6 +141,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         
 		removeAll();
 		
+		//buttons back
+		addButtons();
+		
 		//HI
 		for(int i=0;i<ship.totalHiSlots();i++) {
 			ModuleSlot slot = new ModuleSlot(editor, this, Module.HI_SLOT, i);
@@ -175,7 +178,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		//RIG
 		for(int i=0, x=65;i<ship.totalRigSlots();i++,x+=34) {
 			RigSlot slot = new RigSlot(editor, this, Module.RIG_SLOT, i);
-			slot.mount(ship.getModule(Module.LOW_SLOT, i));
+			slot.mount(ship.getModule(Module.RIG_SLOT, i));
 			slot.setLocation(x,450);
 			add(slot);
     		slot.addMouseListener(this);
@@ -183,9 +186,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		}
 		
 		s.addChangeListener(this);
-		
-		//buttons back
-		addButtons();
 		
 		repaint();
 	}

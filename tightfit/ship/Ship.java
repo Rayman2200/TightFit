@@ -196,74 +196,7 @@ public class Ship extends Item {
     	return false;
     }
     
-    /**
-     * Calculates the generic DPS of the ship, does not account for ranges or damage types.
-     * This number will almost always be higher than actual DPS.
-     * 
-     * @return the generic DPS
-     */
-    public float calculateGenericDps() {
-    	float dps = 0.0f;
-        for(int i=0;i<hiSlots.length;i++) {
-        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
-        	float baseDmg = hiSlots[i].getCharge().getTotalDamage();
-        	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
-        	
-        	dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
-        }
-        return dps;
-    }
     
-    /**
-     * Calculates an aggregate of each of the damage types if all weapons are fired simultaniously
-     *  
-     * @return an array with the aggregate DPS for all damage types
-     */
-    public float[] calculateSpecificDps() {
-    	float dps[] = new float[4];
-    	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
-    	
-    	for(int i=0;i<hiSlots.length;i++) {
-    		float n[] = calculateSpecificDpsSlot(i);
-        	
-        	dps[0] += n[0];
-        	dps[1] += n[1];
-        	dps[2] += n[2];
-        	dps[3] += n[3];
-        }
-    	
-    	return dps;
-    }
-    
-    public float [] calculateSpecificDpsSlot(int i) {
-    	float dps[] = new float[4];
-    	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
-    	
-    	if(hiSlots[i] != null) {
-	    	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
-	    	Ammo charge = hiSlots[i].getCharge();
-	    	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
-	    	
-	    	dps[0] = (charge.getEmDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[1] = (charge.getKineticDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[2] = (charge.getThermalDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[3] = (charge.getExplosiveDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-    	}
-    	
-    	return dps;
-    }
-    
-    public float calculateScanResolution() {
-    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true);
-    }
-    
-    public float calculateRadius() {
-    	return sigRadius + (aggregateAllSlots("signatureRadiusBonus", false)/100);
-    }
-    
-    public float calculateRechargeRate() {
-    	return multiplyAttributeProperty(Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "shieldRechargeRateMultiplier", true)/1000.0f;
-    }
     
     public int getMaxLockedTargets() {
     	return (int)Float.parseFloat(getAttribute("maxLockedTargets", "0"));
@@ -357,9 +290,62 @@ public class Ship extends Item {
      	}
     	
     	
-    	if(slot <= rack.length)
+    	if(slot < rack.length)
 	    	return rack[slot];
 	    return null;
+    }
+    
+    public Module[] findModule(String name, int slotType) {
+    	Vector v = new Vector();
+    	Module rack[];
+    	
+    	if(slotType == Module.LOW_SLOT) {
+    		rack = lowSlots;
+    	} else if(slotType == Module.MID_SLOT) {
+    		rack = midSlots;
+    	} else if(slotType == Module.HI_SLOT) {
+     		rack = hiSlots;
+     	} else {
+     		rack = rigSlots;
+     	}
+    	
+    	for(int i=0;i<rack.length;i++) {
+    		if(rack[i] != null) {
+    			if(rack[i].name.contains(name))
+    				v.add(rack[i]);
+    		}
+    	}
+    	
+    	return (Module[])v.toArray();
+    }
+    
+    public Module[] findModuleByAttribute(String name, int slotType) {
+    	Vector v = new Vector();
+    	Module rack[];
+    	
+    	if(slotType == Module.LOW_SLOT) {
+    		rack = lowSlots;
+    	} else if(slotType == Module.MID_SLOT) {
+    		rack = midSlots;
+    	} else if(slotType == Module.HI_SLOT) {
+     		rack = hiSlots;
+     	} else {
+     		rack = rigSlots;
+     	}
+    	
+    	for(int i=0;i<rack.length;i++) {
+    		if(rack[i] != null) {
+    			try{
+    				if(rack[i].getAttributeKey(name) != null)
+    					v.add(rack[i]);
+    			}catch(Exception e) {}
+    		}
+    	}
+    	
+    	if(v.size() > 0) {
+    		return (Module[])v.toArray(new Module[v.size()]);
+    	}
+    	return null;
     }
     
     public float aggregateRack(String prop, int slotType, boolean requiresOnline) {
@@ -556,6 +542,77 @@ public class Ship extends Item {
     	return structReson;
     }
     
+    // -- CALCULATIONS -- //
+    
+    /**
+     * Calculates the generic DPS of the ship, does not account for ranges or damage types.
+     * This number will almost always be higher than actual DPS.
+     * 
+     * @return the generic DPS
+     */
+    public float calculateGenericDps() {
+    	float dps = 0.0f;
+        for(int i=0;i<hiSlots.length;i++) {
+        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
+        	float baseDmg = hiSlots[i].getCharge().getTotalDamage();
+        	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
+        	
+        	dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
+        }
+        return dps;
+    }
+    
+    /**
+     * Calculates an aggregate of each of the damage types if all weapons are fired simultaniously
+     *  
+     * @return an array with the aggregate DPS for all damage types
+     */
+    public float[] calculateSpecificDps() {
+    	float dps[] = new float[4];
+    	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
+    	
+    	for(int i=0;i<hiSlots.length;i++) {
+    		float n[] = calculateSpecificDpsSlot(i);
+        	
+        	dps[0] += n[0];
+        	dps[1] += n[1];
+        	dps[2] += n[2];
+        	dps[3] += n[3];
+        }
+    	
+    	return dps;
+    }
+    
+    public float [] calculateSpecificDpsSlot(int i) {
+    	float dps[] = new float[4];
+    	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
+    	
+    	if(hiSlots[i] != null) {
+	    	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
+	    	Ammo charge = hiSlots[i].getCharge();
+	    	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
+	    	
+	    	dps[0] = (charge.getEmDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+	    	dps[1] = (charge.getKineticDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+	    	dps[2] = (charge.getThermalDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+	    	dps[3] = (charge.getExplosiveDamage() * multiplier) / (rate * calcFireRateBonus(charge));
+    	}
+    	
+    	return dps;
+    }
+    
+    public float calculateScanResolution() {
+    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true);
+    }
+    
+    public float calculateRadius() {
+    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", false)/100.0f);
+    }
+    
+    public float calculateRechargeRate() {
+    	return multiplyAttributeProperty((1-myChar.getSkillLevel("3416")*0.05f) * Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "shieldRechargeRateMultiplier", true)/1000.0f;
+    }
+    
     public float calculateMaxCapacity() {
     	cap = capMax * (1+myChar.getSkillLevel("3418")*0.05f);
     	
@@ -576,7 +633,7 @@ public class Ship extends Item {
     }
     
     public float calculateMaxStructure() {
-    	return hp + aggregateAllSlots("hpBonusAdd", true);
+    	return multiplyAttributeProperty(hp + aggregateAllSlots("hpBonusAdd", true), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {
@@ -596,7 +653,7 @@ public class Ship extends Item {
     	return charge.getRateBonus();
     }
     
-    private void fireShipChange() {
+    public void fireShipChange() {
     	Iterator itr = listenerList.iterator();
     	while(itr.hasNext()) {
     		((ShipChangeListener)itr.next()).shipChanged(this);

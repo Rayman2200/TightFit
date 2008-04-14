@@ -40,6 +40,7 @@ public class InfoListEntry extends AbstractListEntry {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
 		Dimension size = getSize();
+		String dispName = null;
 		
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 		RenderingHints.VALUE_ANTIALIAS_ON);
@@ -59,9 +60,11 @@ public class InfoListEntry extends AbstractListEntry {
 		
         g2d.setFont(bigFont);
 		try {
-			FitPanel.drawShadowedString(g2d, Database.getInstance().getAttributeDisplayName(attribute), 23, 9, headerGrey);
+			dispName = Database.getInstance().getAttributeDisplayName(attribute);
 		} catch (Exception e) {
 		}
+		dispName = dispName != null ? dispName : attribute;
+		FitPanel.drawShadowedString(g2d, dispName, 23, 9, headerGrey);
 		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
 		
 		//g2d.scale(.25, .25);

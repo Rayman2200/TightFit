@@ -14,6 +14,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import tightfit.item.Item;
@@ -60,7 +61,7 @@ public class ShowInfoDialog extends JDialog {
         JTabbedPane pane = new JTabbedPane();
         scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setPreferredSize(new Dimension(200, 250));
-        scrollPane.getViewport().setView(new JTextArea(myItem.getAttribute("description", "No description in database")));
+        scrollPane.getViewport().setView(new JTextArea(myItem.getAttribute("description", "No description in database")+myItem.graphicId));
         ((JTextArea)scrollPane.getViewport().getView()).setEditable(false);
         ((JTextArea)scrollPane.getViewport().getView()).setLineWrap(true);
         pane.addTab("Description", scrollPane);
@@ -82,6 +83,12 @@ public class ShowInfoDialog extends JDialog {
 		list.add(new InfoListEntry(myItem, "capacity", null));
 		list.add(new InfoListEntry(myItem, "volume", null));
 		list.add(new InfoListEntry(myItem, "mass", null));
+		
+		Iterator itr = myItem.attributes.keySet().iterator();
+		while(itr.hasNext()) {
+			String key = (String)itr.next();
+			list.add(new InfoListEntry(myItem, key, null));
+		}
 		
         attribs.setListData(list);
         attribs.setBackground(Color.DARK_GRAY);

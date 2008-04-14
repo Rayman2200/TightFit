@@ -32,6 +32,7 @@ public class Character {
 	
 	public Character(String name) {
 		this();
+		this.name = name;
 	}
 	
 	public void addSkill(String id, String level) {
@@ -86,7 +87,13 @@ public class Character {
             	throw new Exception("Not a valid eveapi character export file.");
             }
             
-            NodeList l = doc.getElementsByTagName("row");
+            NodeList l = doc.getElementsByTagName("name");
+            for (int i = 0; (item = l.item(i)) != null; i++) {
+            	Node cdata = item.getFirstChild();
+            	name = cdata.getNodeValue().trim();
+            }
+            
+            l = doc.getElementsByTagName("row");
             for (int i = 0; (item = l.item(i)) != null; i++) {
             	skills.put(getAttributeValue(item, "typeID"), getAttributeValue(item, "level"));
             }
