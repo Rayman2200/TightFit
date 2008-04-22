@@ -16,10 +16,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 public class CustomListRenderer extends DefaultListCellRenderer {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private Color bgColor, bgLightColor;

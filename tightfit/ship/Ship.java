@@ -175,9 +175,15 @@ public class Ship extends Item {
     	return hiSlots.length;
     }
     
-    public boolean hasFreeSlot(int slotType) {
+    public boolean hasFreeSlot(Module m) {
     	Module rack[];
-    	
+    	int slotType = m.slotRequirement;
+        
+        if(m.getAttribute("launcherFitted", "0").equals("1") && countFreeLauncherHardpoints() == 0)
+    		return false;
+    	else if(m.getAttribute("turretFitted", "0").equals("1") && countFreeTurretHardpoints() == 0)
+    		return false;
+        
     	if(slotType == Module.LOW_SLOT) {
     		rack = lowSlots;
     	} else if(slotType == Module.MID_SLOT) {
@@ -209,7 +215,9 @@ public class Ship extends Item {
     }
     
     public boolean testPutModule(Module m, int slotType, int slot) {
-    	if(slotType != m.slotRequirement)
+    	Module rack[];
+        
+        if(slotType != m.slotRequirement)
     		return false;
     	
     	if(m.getAttribute("launcherFitted", "0").equals("1") && countFreeLauncherHardpoints() == 0)
@@ -217,6 +225,19 @@ public class Ship extends Item {
     	else if(m.getAttribute("turretFitted", "0").equals("1") && countFreeTurretHardpoints() == 0)
     		return false;
     	
+        if(slotType == Module.LOW_SLOT) {
+    		rack = lowSlots;
+    	} else if(slotType == Module.MID_SLOT) {
+    		rack = midSlots;
+    	} else if(slotType == Module.HI_SLOT) {
+     		rack = hiSlots;
+     	} else {
+     		rack = rigSlots;
+     	}
+        
+        if(rack[slot] != null)
+            return false;
+        
     	return true;
     }
     

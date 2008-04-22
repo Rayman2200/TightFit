@@ -44,6 +44,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     private DefaultMutableTreeNode top;
     private Database myDb; 
     private JList groups;
+    private MemoryList quickList;
     private DragSource ds;
     
     public MarketDialog(TightFit editor) {
@@ -69,7 +70,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		
 		ds = new DragSource();
 	    ds.createDefaultDragGestureRecognizer(groups, DnDConstants.ACTION_COPY, this);
-		
+        
         pack();
         setVisible(true);
     }
@@ -119,6 +120,12 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         search.add(b);
         jtp.addTab("Search", search);
         
+        quickList = new MemoryList();
+        quickList.setCellRenderer(new QuickListRenderer());
+        JScrollPane qsp = new JScrollPane();
+        qsp.getViewport().setView(quickList);
+        jtp.addTab("Quicklist", qsp);
+        
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, true);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -160,8 +167,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         		else System.err.println("failed adding "+g.name);
         	}
         }
-        
-        
     }
     
     public void valueChanged(TreeSelectionEvent e) {
@@ -238,7 +243,13 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	public void dragExit(DragSourceEvent arg0) {
 	}
 
-	public void dragDropEnd(DragSourceDropEvent arg0) {
+	public void dragDropEnd(DragSourceDropEvent e) {
+        if(e.getDropSuccess()) {
+            JList comp = (JList)e.getDragSourceContext().getComponent();
+            Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
+            System.out.println("boom");
+            quickList.remember(item);
+        }
 	}
 
 	public void dragGestureRecognized(DragGestureEvent e) {
@@ -260,7 +271,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 			
             Point rel = e.getComponent().getLocation();
 			Item item = mle.getItem();
-			buildPopup(item).show(this, pt.x+rel.x+350, pt.y+rel.y);
+			buildPopup(item).show(this, pt.x+rel.x+300, pt.y+rel.y);
 		}
 	}
 
@@ -280,8 +291,29 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		try {
 			if(ae.getActionCommand().equalsIgnoreCase("make active")) {
 				editor.setShip(new Ship(Database.getInstance().getType(((MarketListEntry)groups.getSelectedValue()).getName())));
-			} else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
-				//TODO
+                quickList.remember(((MarketListEntry)groups.getSelectedValue()).getItem());
+            } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
+                Ship ship = editor.getShip();
+                Module m = new Module(Database.getInstance().getType(((MarketListEntry)groups.getSelectedValue()).getName()));
+                if(ship.hasFreeSlot(m)) {
+                    int t;
+                    if(m.slotRequirement == Module.LOW_SLOT) {
+                        t = ship.totalLowSlots();
+                    } else if(m.slotRequirement == Module.MID_SLOT) {
+                        t = ship.totalMedSlots();
+                    } else if(m.slotRequirement == Module.HI_SLOT) {
+                        t = ship.totalHiSlots();
+                    } else {
+                        t = ship.totalRigSlots();
+                    }
+                    for(int s=0;s<t;s++) {
+                        if(ship.testPutModule(m, m.slotRequirement, s)) {
+                            ship.putModule(m, m.slotRequirement, s);
+                            break;
+                        }
+                    }
+                }
+                quickList.remember(((MarketListEntry)groups.getSelectedValue()).getItem());
 			}
 		} catch (Exception e) {
 		}

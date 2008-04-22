@@ -11,6 +11,7 @@
 package tightfit.module;
 
 import tightfit.item.*;
+import tightfit.ship.Ship;
 
 public class Module extends Item {
 
@@ -20,6 +21,8 @@ public class Module extends Item {
 	public static int RIG_SLOT = 3;
 	
     public int slotRequirement;
+    
+    private Ship myShip;
     
     private boolean bActive = false,
                 bOnline = true;
@@ -48,6 +51,10 @@ public class Module extends Item {
     	charge = m.charge;
     	slotRequirement = m.slotRequirement;
     	
+    }
+    
+    public void setShip(Ship s) {
+        myShip = s;
     }
     
     public Ammo getCharge() {
