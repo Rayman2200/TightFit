@@ -15,7 +15,6 @@ import java.awt.Component;
 import javax.swing.*;
 
 import tightfit.item.*;
-import tightfit.module.Module;
 
 public class QuickListRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;

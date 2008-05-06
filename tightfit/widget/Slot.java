@@ -13,14 +13,11 @@ package tightfit.widget;
 import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import tightfit.Resources;
 import tightfit.TightFit;
-import tightfit.module.Module;
 
 
 public abstract class Slot extends JPanel implements ActionListener {
@@ -29,18 +26,17 @@ public abstract class Slot extends JPanel implements ActionListener {
     /** NO_SLOT */
     public static int NO_SLOT = -1;
 
-    protected FitPanel parent;
+    protected JPanel parent;
     protected TightFit editor;
     
     protected boolean selected;
     
-    public Slot(FitPanel panel, TightFit editor) {
+    public Slot(JPanel panel, TightFit editor) {
         this.editor = editor;
         this.parent = panel;
         
-        DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY, parent, true, null);
+        DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY, (TightFitDropTargetPanel)parent, true, null);
         setDropTarget(dt);
-        
         
     }
     

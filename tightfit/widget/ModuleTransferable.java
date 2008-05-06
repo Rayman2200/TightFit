@@ -5,6 +5,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+import tightfit.item.Ammo;
 import tightfit.module.Module;
 
 public class ModuleTransferable implements Transferable {
@@ -16,10 +17,11 @@ public class ModuleTransferable implements Transferable {
 	}
 	
 	public DataFlavor[] getTransferDataFlavors() {
-		DataFlavor list[] = new DataFlavor[3];
+		DataFlavor list[] = new DataFlavor[4];
 		list[0] = new DataFlavor(Module.class, "Module");
-		list[1] = DataFlavor.imageFlavor;
-		list[2] = DataFlavor.stringFlavor;
+		list[1] = new DataFlavor(Ammo.class, "Ammo");  //FIXME: not fully supported
+		list[2] = DataFlavor.imageFlavor;
+		list[3] = DataFlavor.stringFlavor;
 		return list;
 	}
 

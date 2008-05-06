@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.util.Iterator;
 import java.util.Vector;
 
+import tightfit.Resources;
 import tightfit.item.Item;
 import tightfit.widget.CustomListRenderer;
 import tightfit.widget.InfoListEntry;
@@ -48,7 +49,7 @@ public class ShowInfoDialog extends JDialog {
     	panel.setBackground(new Color(.07f, .25f, .43f));
         panel.add(new JLabel(new ImageIcon(myItem.getImage())), c);
         c.gridx=1;
-        JLabel l = new JLabel(myItem.name);
+        JLabel l = new JLabel("   "+myItem.name);
         l.setForeground(Color.WHITE);
         panel.add(l, c);
         
@@ -64,6 +65,11 @@ public class ShowInfoDialog extends JDialog {
         scrollPane.getViewport().setView(new JTextArea(myItem.getAttribute("description", "No description in database")+myItem.graphicId));
         ((JTextArea)scrollPane.getViewport().getView()).setEditable(false);
         ((JTextArea)scrollPane.getViewport().getView()).setLineWrap(true);
+        ((JTextArea)scrollPane.getViewport().getView()).setBackground(Color.DARK_GRAY);
+        ((JTextArea)scrollPane.getViewport().getView()).setForeground(Color.WHITE);
+        try {
+        	((JTextArea)scrollPane.getViewport().getView()).setFont(Resources.getFont("stan07_55.ttf").deriveFont(8f));
+        } catch(Exception e){}
         pane.addTab("Description", scrollPane);
         
         scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

@@ -10,6 +10,7 @@
 
 package tightfit.io;
 
+import tightfit.item.Ammo;
 import tightfit.item.Database;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
@@ -39,7 +40,12 @@ public class EFTShipParser {
 					break;
 				slot=0;
 			} else {
-				ship.putModule(new Module(Database.getInstance().getType(lines[i])), slotType, slot++);
+				String [] parts = lines[i].split(",");
+				Module m = new Module(Database.getInstance().getType(parts[0]));
+				ship.putModule(m, slotType, slot++);
+				if(parts.length > 1) {
+					m.insertCharge(new Ammo(Database.getInstance().getType(parts[1])));
+				}
 			}
 		}
 		

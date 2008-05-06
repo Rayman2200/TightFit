@@ -85,8 +85,7 @@ public class Ship extends Item {
     
     public Ship(Item type) {
     	super(type);
-    	//myType = type;             //OMG, you're just my type! What's your sign?
-    	System.out.println(type.printAttributes());
+    	//System.out.println(type.printAttributes());
     	
     	lowSlots = new Module[(int)Float.parseFloat(type.getAttribute("lowSlots", "0"))];
     	midSlots = new Module[(int)Float.parseFloat(type.getAttribute("medSlots", "0"))];
@@ -215,7 +214,6 @@ public class Ship extends Item {
     }
     
     public boolean testPutModule(Module m, int slotType, int slot) {
-    	Module rack[];
         
         if(slotType != m.slotRequirement)
     		return false;
@@ -224,21 +222,8 @@ public class Ship extends Item {
     		return false;
     	else if(m.getAttribute("turretFitted", "0").equals("1") && countFreeTurretHardpoints() == 0)
     		return false;
-    	
-        if(slotType == Module.LOW_SLOT) {
-    		rack = lowSlots;
-    	} else if(slotType == Module.MID_SLOT) {
-    		rack = midSlots;
-    	} else if(slotType == Module.HI_SLOT) {
-     		rack = hiSlots;
-     	} else {
-     		rack = rigSlots;
-     	}
         
-        if(rack[slot] != null)
-            return false;
-        
-    	return true;
+    	return !hasModule(slotType, slot);
     }
     
     public boolean putModule(Module m, int slotType, int slot) {
@@ -392,29 +377,29 @@ public class Ship extends Item {
     	return a;
     }
     
-    public float aggregateAllSlots(String prop, boolean requiresOnline) {
+    public float aggregateAllSlots(String prop, String hasProp, boolean requiresOnline) {
     	float a = 0f;
     	
     	for(int i=0;i<hiSlots.length;i++) {
-    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
+    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || hiSlots[i].attributes.containsKey(hasProp))) {
     			a +=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"));
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
-    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
+    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || midSlots[i].attributes.containsKey(hasProp))) {
     			a +=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"));
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
-    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
+    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || lowSlots[i].attributes.containsKey(hasProp))) {
     			a +=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"));
     		}
     	}
     	
     	for(int i=0;i<rigSlots.length;i++) {
-    		if(rigSlots[i] != null) {
+    		if(rigSlots[i] != null && (hasProp.equals("*") || rigSlots[i].attributes.containsKey(hasProp))) {
     			a +=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"));
     		}
     	}
@@ -552,15 +537,42 @@ public class Ship extends Item {
     }
     
     public float [] getShieldResonance() {
-    	return shieldReson;
+    	float [] reson = new float[4];
+    	reson[0] = shieldReson[0] + aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
+    					aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    					(1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true)));
+    	reson[1] = shieldReson[1] + aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
+    					aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    					(1-checkResonance(aggregateAllSlots("shieldKineticDamageResonance", "*", true)));
+    	reson[2] = shieldReson[2] + aggregateAllSlots("thermalDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
+    					aggregateAllSlots("thermalDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    					(1-checkResonance(aggregateAllSlots("shieldThermalDamageResonance", "*", true)));
+    	reson[3] = shieldReson[3] + aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
+    					aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    					(1-checkResonance(aggregateAllSlots("shieldExplosiveDamageResonance", "*", true)));
+    	return reson;
     }
     
     public float [] getArmorResonance() {
-    	return armorReson;
+    	float [] reson = new float[4];
+    	reson[0] = armorReson[0] + aggregateAllSlots("emDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+						(1-checkResonance(aggregateAllSlots("armorEmDamageResonance", "*", true)));
+    	reson[1] = armorReson[1] + aggregateAllSlots("kineticDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+						(1-checkResonance(aggregateAllSlots("armorKineticDamageResonance", "*", true)));
+    	reson[2] = armorReson[2] + aggregateAllSlots("thermalDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+						(1-checkResonance(aggregateAllSlots("armorThermalDamageResonance", "*", true)));
+    	reson[3] = armorReson[3] + aggregateAllSlots("explosiveDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+						(1-checkResonance(aggregateAllSlots("armorExplosiveDamageResonance", "*", true)));
+    	return reson;
     }
     
     public float [] getStructureResonance() {
-    	return structReson;
+    	float [] reson = new float[4];
+    	reson[0] = structReson[0] - (1-checkResonance(aggregateAllSlots("hullEmDamageResonance", "*", true)));
+    	reson[1] = structReson[1] - (1-checkResonance(aggregateAllSlots("hullKineticDamageResonance", "*", true)));
+    	reson[2] = structReson[2] - (1-checkResonance(aggregateAllSlots("hullThermalDamageResonance", "*", true)));
+    	reson[3] = structReson[3] - (1-checkResonance(aggregateAllSlots("hullExplosiveDamageResonance", "*", true)));
+    	return reson;
     }
     
     // -- CALCULATIONS -- //
@@ -573,12 +585,32 @@ public class Ship extends Item {
      */
     public float calculateGenericDps() {
     	float dps = 0.0f;
+    	float baseDmg = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
-        	float baseDmg = hiSlots[i].getCharge().getTotalDamage();
-        	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
-        	
-        	dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
+        	if(hiSlots[i] != null && hiSlots[i].isReady()) {
+	        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "0")));
+	        	if(hiSlots[i].getCharge() != null) {
+	        		baseDmg = hiSlots[i].getCharge().getTotalDamage();
+	        		float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")))/1000.0f;
+	        	
+	        		dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
+	        	}
+        	}
+        }
+        return dps;
+    }
+    
+    public float calculateGenericVolley() {
+    	float dps = 0.0f;
+    	float baseDmg = 0.0f;
+        for(int i=0;i<hiSlots.length;i++) {
+        	if(hiSlots[i] != null && hiSlots[i].isReady()) {
+	        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "0")));
+	        	if(hiSlots[i].getCharge() != null) {
+	        		baseDmg = hiSlots[i].getCharge().getTotalDamage();
+	        		dps += (baseDmg * multiplier);
+	        	}
+        	}
         }
         return dps;
     }
@@ -627,7 +659,7 @@ public class Ship extends Item {
     }
     
     public float calculateRadius() {
-    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", false)/100.0f);
+    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", "*", false)/100.0f);
     }
     
     public float calculateRechargeRate() {
@@ -645,16 +677,43 @@ public class Ship extends Item {
         return multiplyAttributeProperty(recharge, "capacitorRechargeRateMultiplier", true) / 1000.0f;
     }
     
+    public float calculateCapacitorUsage() {
+    	float capu = 0;
+    	
+    	//HI
+    	for(int i=0;i<hiSlots.length;i++) {
+    		if(hiSlots[i] != null && hiSlots[i].requiresActivation() && hiSlots[i].isActive()) {
+    			capu += hiSlots[i].getCapNeed();
+    		}
+    	}
+    	
+    	//MID
+    	for(int i=0;i<midSlots.length;i++) {
+    		if(midSlots[i] != null && midSlots[i].requiresActivation() && midSlots[i].isActive()) {
+    			capu += midSlots[i].getCapNeed();
+    		}
+    	}
+    	
+    	//LOW
+    	for(int i=0;i<lowSlots.length;i++) {
+    		if(lowSlots[i] != null && lowSlots[i].requiresActivation() && lowSlots[i].isActive()) {
+    			capu += lowSlots[i].getCapNeed();
+    		}
+    	}
+    	
+    	return capu;
+    }
+    
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp * (1+myChar.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", true), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * (1+myChar.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
-    	return armorHp + aggregateAllSlots("armorHPBonusAdd", true);
+    	return armorHp + aggregateAllSlots("armorHPBonusAdd", "*", true);
     }
     
     public float calculateMaxStructure() {
-    	return multiplyAttributeProperty(hp + aggregateAllSlots("hpBonusAdd", true), "structureHPMultiplier", true);
+    	return multiplyAttributeProperty(hp + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {
@@ -672,6 +731,10 @@ public class Ship extends Item {
     private float calcFireRateBonus(Ammo charge) {
     	//TODO: also skills and tracking computers/stabs
     	return charge.getRateBonus();
+    }
+    
+    private float checkResonance(float a) {
+    	return a > 0 ? a : 1;
     }
     
     public void fireShipChange() {

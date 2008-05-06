@@ -68,6 +68,34 @@ public class Item {
     	return attributes.containsKey("chargeGroup1");
     }
     
+    public boolean accepts(Item a) {
+    	
+    	for(int i=1;i<4;i++) {
+    		if(attributes.containsKey("chargeGroup"+i)) {
+    			if(a.groupId == Integer.parseInt((String)attributes.get("chargeGroup"+i))) {
+    				if(a.attributes.containsKey("missileLaunching")) {
+    					if(a.attributes.get("launcherGroup").equals(""+groupId)) {
+    						return true;
+    					}
+    				} else {
+	    				if(attributes.get("chargeSize").equals(a.attributes.get("chargeSize"))) {
+	    					return true;
+	    				}
+    				}
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isAmmo() {
+    	return attributes.containsKey("ammoInfluenceCapNeed") || attributes.containsKey("missileLaunching");
+    }
+    
+    public boolean isShip() {
+    	return attributes.containsKey("lowSlots");
+    }
+    
     /**
      * Retrieves an attribute value from the hash
      * 
@@ -100,7 +128,11 @@ public class Item {
     	if(icon == null) {
     		String filename = "";
     		try {
-    			filename = "icon"+graphicId+".png";
+    			if(isShip()) {
+    				filename = ""+typeId+".png";
+    			} else {
+    				filename = "icon"+graphicId+".png";
+    			}
 				icon = Resources.getImage(filename);
 			} catch (Exception e) {
 	            System.out.println("Failed to load as image: " + filename);

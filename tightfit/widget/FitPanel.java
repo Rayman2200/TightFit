@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 import tightfit.Resources;
 import tightfit.TightFit;
 import tightfit.actions.ShowInfoAction;
+import tightfit.item.Ammo;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
 import tightfit.ship.ShipChangeListener;
@@ -31,7 +32,7 @@ import tightfit.ship.ShipChangeListener;
  * FitPanel is the pretty face of TightFit. Renders similar to the actual eve fit window, 
  *
  */
-public class FitPanel extends JPanel implements DropTargetListener, MouseListener, ShipChangeListener {
+public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseListener, ShipChangeListener {
 
 	/**
 	 * 
@@ -41,7 +42,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 	private TightFit editor;
 	private Ship ship;
 	
-	private JButton strip, closeButton, minButton, configButton, infoButton;
+	private JButton strip, closeButton, minButton, configButton, infoButton, aboutButton;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
@@ -92,7 +93,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
             big = Resources.getFont("agencyr.ttf");
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
             shipTitleFont = big.deriveFont(Font.BOLD, 14f);
-			smallFont = Resources.getFont("stan07_55.ttf");
+			smallFont = Resources.getFont("uni05_53.ttf");
             smallFont = smallFont.deriveFont(6f);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,6 +117,10 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         strip.addActionListener(editor);
         strip.setLocation(500,468);
         
+        aboutButton = new ImageButton("about.png", true);
+        aboutButton.setActionCommand("about");
+        aboutButton.addActionListener(editor);
+        aboutButton.setLocation(612, 0);
         configButton = new ImageButton("config.png", true);
         configButton.setActionCommand("config");
         configButton.addActionListener(editor);
@@ -197,8 +202,8 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
         
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        //g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+        //                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
         					RenderingHints.VALUE_RENDER_QUALITY);
@@ -280,7 +285,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, "TIGHTFIT v0.6a - " + ship.title, 6, 13, Color.white);
+        drawShadowedString(g2d, "TIGHTFIT v0.1.1a - " + ship.title, 6, 13, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
         drawShadowedString(g2d, "Speed", 401, 421, Color.white);
         drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
@@ -347,6 +352,7 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
     }
     
     private void addButtons() {
+    	add(aboutButton);
     	add(configButton);
     	add(minButton);
     	add(closeButton);
@@ -457,11 +463,11 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 		
 		s.setSelected(true);
 		
-		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
+		//if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
 			try {
 				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
 					Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
-					if(ship.testPutModule(m, s.getRack(), s.getSlotNumber())) {
+					if(ship.testPutModule(m, s.getRack(), s.getSlotNumber()) || m.isAmmo()) {
 						e.acceptDrag(DnDConstants.ACTION_COPY);
 						//TODO: set attributes in yellow as per this module
 					} else {
@@ -473,9 +479,9 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-		} else {
-			e.rejectDrag();
-		}
+		//} else {
+		//	e.rejectDrag();
+		//}
 	}
 
 	public void dragOver(DropTargetDragEvent e) {
@@ -491,27 +497,31 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 
 	public void drop(DropTargetDropEvent e) {
 		ModuleSlot s = (ModuleSlot)((DropTarget)e.getSource()).getComponent();
-		if(!ship.hasModule(s.getRack(), s.getSlotNumber())) {
-			try {
-				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
-					Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
-					if(ship.putModule(m, s.getRack(), s.getSlotNumber())) {
-						s.mount(m);
+		try {
+			if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
+				Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+				if(m.isAmmo()) {
+					Ammo a = new Ammo(m);
+					if(s.getModule() != null && s.getModule().accepts(a)) {
+						ship.getModule(s.getRack(), s.getSlotNumber()).insertCharge(a);
+						s.getModule().insertCharge(a);
 						e.acceptDrop(DnDConstants.ACTION_COPY);
 						repaint();
-					} else {
-						e.rejectDrop();
 					}
+				} else if(ship.testPutModule(m, s.getRack(), s.getSlotNumber())) {
+					e.acceptDrop(DnDConstants.ACTION_COPY);
+					s.mount(m);
+					ship.putModule(m, s.getRack(), s.getSlotNumber());
 				} else {
 					e.rejectDrop();
-				} 
-			} catch (UnsupportedFlavorException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			e.rejectDrop();
+				}
+			} else {
+				e.rejectDrop();
+			} 
+		} catch (UnsupportedFlavorException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -540,12 +550,6 @@ public class FitPanel extends JPanel implements DropTargetListener, MouseListene
 				}
 
 				menu.show(this, pt.x, pt.y);
-			}
-		} else if (e.getButton() == MouseEvent.BUTTON1) {
-			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
-				Module m = ship.getModule(s.getRack(), s.getSlotNumber());
-				//TODO: if the module can be activated, activate it
-				System.out.println("activate me: "+m.name);
 			}
 		}
 	}

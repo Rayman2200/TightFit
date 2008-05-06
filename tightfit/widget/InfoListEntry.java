@@ -32,8 +32,8 @@ public class InfoListEntry extends AbstractListEntry {
         headerGrey = new Color(.75f,.75f,.75f,.75f);
 		
         try {
-			Font big = Resources.getFont("stan07_55.ttf");
-            bigFont = big.deriveFont(6f);
+			Font big = Resources.getFont("uni05_53.ttf");
+            bigFont = big.deriveFont(8f);
         } catch (Exception e) {}
 	}
 	
@@ -45,8 +45,8 @@ public class InfoListEntry extends AbstractListEntry {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 		RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-		                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		//g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+		//                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
 						RenderingHints.VALUE_RENDER_QUALITY);

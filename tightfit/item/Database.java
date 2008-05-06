@@ -162,7 +162,7 @@ public class Database {
         public void characters(char buf[], int offset, int len) throws SAXException {
         	if(inDesc) {
         		String sbuf = (new String(buf)).substring(offset, offset+len);
-        		sbuf = sbuf.replaceAll("\n", "");
+        		//sbuf = sbuf.replaceAll("\n", "");
         		//System.out.println(sbuf);
         		if(currentElement instanceof Item) {
         			String desc = (String)((Item)currentElement).attributes.get("description");

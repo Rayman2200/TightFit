@@ -13,7 +13,6 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-import tightfit.TightFit;
 import tightfit.item.Item;
 
 public abstract class AbstractListEntry extends JPanel {

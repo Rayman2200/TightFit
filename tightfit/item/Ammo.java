@@ -16,38 +16,36 @@ public class Ammo extends Item {
 		
 	}
 	
+	public Ammo(Item type) {
+		super(type);
+	}
+	
 	public float getTotalDamage() {
 		return getEmDamage() + getKineticDamage() + getThermalDamage() + getExplosiveDamage();
 	}
 	
 	public float getEmDamage() {
-		if(attributes.contains("emDamage"))
-			return Float.parseFloat((String)attributes.get("emDamage"));
-		return 0.0f;
+		return Float.parseFloat(getAttribute("emDamage", "0"));
 	}
 	
 	public float getKineticDamage() {
-		if(attributes.contains("kineticDamage"))
-			return Float.parseFloat((String)attributes.get("kineticDamage"));
-		return 0.0f;
+		return Float.parseFloat(getAttribute("kineticDamage", "0"));
 	}
 	
 	public float getThermalDamage() {
-		if(attributes.contains("thermalDamage"))
-			return Float.parseFloat((String)attributes.get("thermalDamage"));
-		return 0.0f;
+		return Float.parseFloat(getAttribute("thermalDamage", "0"));
 	}
 	
 	public float getExplosiveDamage() {
-		if(attributes.contains("explosiveDamage"))
-			return Float.parseFloat((String)attributes.get("explosiveDamage"));
-		return 0.0f;
+		return Float.parseFloat(getAttribute("explosiveDamage", "0"));
 	}
 	
 	public float getRateBonus() {
-		if(attributes.contains("speedBonus"))
-			return Float.parseFloat((String)attributes.get("speedBonus"));
-		return 1.0f;
+		return Float.parseFloat(getAttribute("speedBonus", "1.0"));
+	}
+	
+	public int getSize() {
+		return Integer.parseInt(getAttribute("chargeSize", "1"));
 	}
 	
 	public float getRangeBonus() {

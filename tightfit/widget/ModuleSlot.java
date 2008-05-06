@@ -14,8 +14,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 
+import javax.swing.JPanel;
+
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.item.Ammo;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
 import tightfit.ship.ShipChangeListener;
@@ -34,7 +37,7 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
     
     protected Image slotImg, typeImg, inactiveImg, activeImg;
     
-    public ModuleSlot(TightFit editor, FitPanel parent, int type, int spot) {
+    public ModuleSlot(TightFit editor, JPanel parent, int type, int spot) {
         super(parent, editor);
         myType = type;
         mySpot = spot;
@@ -78,16 +81,21 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
     
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
+        int x, y;
+        double r = Math.toRadians(rotate());
+        
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
         
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
 				RenderingHints.VALUE_RENDER_QUALITY);
-        
-        double r = Math.toRadians(rotate());
         
         //g2d.translate(pt.x, pt.y);
 
         //g2d.clearRect(0,0,64,64);
         //g2d.fillRect(0,0,64,64);
+        
+        g2d.setClip(-10, -10, 84, 84);
         
         AffineTransform t = g2d.getTransform();
         g2d.rotate(r, 32, 32);
@@ -98,10 +106,13 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
         if(selected)
         	g2d.drawImage(slotImg, 0, 0, null);
         
-        //int x=8, y=8;
-    	//int dx = (int)(x * Math.cos(r) - y * Math.sin(r));
-    	//int dy = (int)(x * Math.sin(r) + y * Math.cos(r));
-        
+        if(mySpot < 4) { 
+        	x=25-32; y=50-32;
+        } else {
+        	x=60-32; y=5-32;
+        }
+    	int dx = (int)(x * Math.cos(r) - y * Math.sin(r))+32;
+    	int dy = (int)(x * Math.sin(r) + y * Math.cos(r))+32;
         if(mounted != null) {
         	
         	if(mounted.isOnline())
@@ -114,10 +125,18 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 	        g2d.drawImage(mounted.getImage(), 8, 8, null);
 	        
 	        if(mounted.acceptsCharges()) {
-                //TODO: draw circle
+	        	g2d.setColor(Color.white);
+	        	g2d.setStroke(new BasicStroke(2));
+	        	Composite saveComp = g2d.getComposite();
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.55f));
+                g2d.drawOval(dx, dy, 40, 40);
+                g2d.setComposite(saveComp);
                 
-                g2d.scale(0.15f, 0.15f);
-                //TODO: draw charge
+                Ammo ammo = mounted.getCharge();
+                if(ammo != null) {
+                	g2d.scale(0.55f, 0.55f);
+                	g2d.drawImage(ammo.getImage(), (int)(dx/0.55f)+4, (int)(dy/0.55f)+4, null);
+                }
 	        }
         } else {
             //g2d.rotate(r, 32, 32);

@@ -41,6 +41,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private ConfigurationDialog configDialog;
     
     private TankPanel tankPanel;
+    private DpsPanel dpsPanel;
     
     private Point mousePressLocation;
     
@@ -49,7 +50,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     
     public TightFit() throws IllegalArgumentException, IOException {
         appFrame = new JFrame(Resources.getString("dialog.main.title"));
-        appFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         appFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 //FIXME: exitAction.actionPerformed(null);
@@ -87,6 +88,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	//build drag-n-drop slots, put them in the right places
     	thePanel.addMouseListener(this);
         thePanel.addMouseMotionListener(this);
+    	thePanel.addKeyListener(this);
     	
     	panel.setBackground(new Color(.07f, .25f, .43f));
 
@@ -95,9 +97,12 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         tankPanel = new TankPanel(this);
         tankPanel.setBackground(new Color(.07f, .25f, .43f));
         
+        dpsPanel = new DpsPanel(this);
+        dpsPanel.setBackground(new Color(.07f, .25f, .43f));
+        
         jtp.setOpaque(false);
         jtp.addTab("Tank", tankPanel);
-        jtp.addTab("DPS",new JPanel());
+        jtp.addTab("DPS",dpsPanel);
         jtp.addTab("Drones",new JPanel());
         jtp.setPreferredSize(new Dimension(670,190));
         
@@ -126,7 +131,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	myShip.myChar = myChar;
         thePanel.setShip(myShip);
         myShip.addChangeListener(tankPanel);
-    	
+        myShip.addChangeListener(dpsPanel);
         
         myShip.fireShipChange();
     }
@@ -168,7 +173,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     public void mouseExited(MouseEvent e) {
     }
     
-    public void keyTyped(KeyEvent arg0) {
+    public void keyTyped(KeyEvent e) {
+    	System.out.println(KeyEvent.getKeyModifiersText(e.getModifiers()) + "-"+e.getKeyCode());
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -211,13 +217,15 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equalsIgnoreCase("close")) {
+			appFrame.dispose();
 			System.exit(0); //TODO: catch for saving!
 		} else if(e.getActionCommand().equalsIgnoreCase("minimize")) {
 			appFrame.setState(Frame.ICONIFIED);
 		} else if(e.getActionCommand().equalsIgnoreCase("config")) {
 			configDialog.setVisible(true);
 		} else if(e.getActionCommand().equalsIgnoreCase("about")) {
-			
+			AboutDialog abt = new AboutDialog(appFrame);
+			abt.setVisible(true);
 		} else if(e.getActionCommand().equalsIgnoreCase("showinfo")) {
 			ShowInfoDialog sid = new ShowInfoDialog(appFrame, myShip);
 		} else if(e.getActionCommand().equalsIgnoreCase("strip")) {

@@ -61,6 +61,10 @@ public class Module extends Item {
     	return charge;
     }
     
+    public void insertCharge(Ammo a) {
+    	charge = a;
+    }
+    
     public float getCpuUsage() {
     	//TODO: also calc bonus for skills
     	return Float.parseFloat(getAttribute("cpu", "0"));
@@ -69,6 +73,14 @@ public class Module extends Item {
     public float getPowerUsage() {
     	//TODO: also calc bonus for skills
     	return Float.parseFloat(getAttribute("power", "0"));
+    }
+    
+    public float getCapNeed() {
+    	float dur = (Float.parseFloat(getAttribute("duration", "1000"))/1000.0f);
+    	if(attributes.containsKey("speed")) {
+    		dur = (Float.parseFloat(getAttribute("speed", "1000"))/1000.0f);
+    	}
+    	return Math.abs(Float.parseFloat(getAttribute("capacitorNeed", "0")) / dur);
     }
     
     public boolean isReady() {
@@ -93,9 +105,11 @@ public class Module extends Item {
     }
     
     public void activate() throws Exception {
-        if(bOnline)
-            bActive = true;
-        else throw new Exception("Module not online!");
+    	if(requiresActivation()) {
+	        if(bOnline)
+	            bActive = true;
+	        else throw new Exception("Module not online!");
+    	}
     }
     
     public void deactivate() {
