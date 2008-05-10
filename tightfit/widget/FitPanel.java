@@ -60,34 +60,34 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     
     private Point mountPoints[][];
     
-	public FitPanel(TightFit editor) throws IllegalArgumentException, IOException {
+	public FitPanel(TightFit editor) {
 		super();
 		this.editor = editor;
 		
-		panelImg = Resources.getImage("panel.png");
-        rigImg = Resources.getImage("icon68_01.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        lnchrImg = Resources.getImage("icon12_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        turImg = Resources.getImage("icon12_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        sigRadImg = Resources.getImage("icon22_14.png");
-        scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        maxTarImg = Resources.getImage("icon04_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        maxRanImg = Resources.getImage("icon22_15.png");
-        cargoImg = Resources.getImage("icon03_13.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        shieldImg = Resources.getImage("icon01_13.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-        armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-        structImg = Resources.getImage("icon02_12-small.png");
-        
-        rstEmImg = Resources.getImage("icon22_20.png");
-        rstExImg = Resources.getImage("icon22_19.png");
-        rstThImg = Resources.getImage("icon22_18.png");
-        rstKnImg = Resources.getImage("icon22_17.png");
-	    
-	    bigBarImg = Resources.getImage("bar.png");
-	    bigBarGlowImg = Resources.getImage("barglow.png");
-	    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
-	    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
-	    
 		try {
+			panelImg = Resources.getImage("panel.png");
+	        rigImg = Resources.getImage("icon68_01.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        lnchrImg = Resources.getImage("icon12_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        turImg = Resources.getImage("icon12_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        sigRadImg = Resources.getImage("icon22_14.png");
+	        scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        maxTarImg = Resources.getImage("icon04_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        maxRanImg = Resources.getImage("icon22_15.png");
+	        cargoImg = Resources.getImage("icon03_13.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        shieldImg = Resources.getImage("icon01_13.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+	        armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+	        structImg = Resources.getImage("icon02_12-small.png");
+	        
+	        rstEmImg = Resources.getImage("icon22_20.png");
+	        rstExImg = Resources.getImage("icon22_19.png");
+	        rstThImg = Resources.getImage("icon22_18.png");
+	        rstKnImg = Resources.getImage("icon22_17.png");
+		    
+		    bigBarImg = Resources.getImage("bar.png");
+		    bigBarGlowImg = Resources.getImage("barglow.png");
+		    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
+		    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
+	    
 			Font big = Resources.getFont("stan07_57.ttf");
             bigFont = big.deriveFont(8f);
             big = Resources.getFont("agencyr.ttf");
@@ -117,28 +117,31 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         strip.addActionListener(editor);
         strip.setLocation(500,468);
         
-        aboutButton = new ImageButton("about.png", true);
-        aboutButton.setActionCommand("about");
-        aboutButton.addActionListener(editor);
-        aboutButton.setLocation(612, 0);
-        configButton = new ImageButton("config.png", true);
-        configButton.setActionCommand("config");
-        configButton.addActionListener(editor);
-        configButton.setLocation(628, 0);
-        minButton = new ImageButton("minimize.png", true);
-        minButton.setActionCommand("minimize");
-        minButton.addActionListener(editor);
-        minButton.setLocation(644, 0);
-        closeButton = new ImageButton("close.png", true);
-        closeButton.setActionCommand("close");
-        closeButton.addActionListener(editor);
-        closeButton.setLocation(660, 0);
-        infoButton = new ImageButton("showinfo.png");
-        infoButton.setActionCommand("showinfo");
-        infoButton.addActionListener(editor);
-        infoButton.setLocation(311, 47);
-        
-        addButtons();
+        try {
+	        aboutButton = new ImageButton("about.png", true);
+	        aboutButton.setActionCommand("about");
+	        aboutButton.addActionListener(editor);
+	        aboutButton.setLocation(612, 0);
+	        configButton = new ImageButton("config.png", true);
+	        configButton.setActionCommand("config");
+	        configButton.addActionListener(editor);
+	        configButton.setLocation(628, 0);
+	        minButton = new ImageButton("minimize.png", true);
+	        minButton.setActionCommand("minimize");
+	        minButton.addActionListener(editor);
+	        minButton.setLocation(644, 0);
+	        closeButton = new ImageButton("close.png", true);
+	        closeButton.setActionCommand("close");
+	        closeButton.addActionListener(editor);
+	        closeButton.setLocation(660, 0);
+	        infoButton = new ImageButton("showinfo.png");
+	        infoButton.setActionCommand("showinfo");
+	        infoButton.addActionListener(editor);
+	        infoButton.setLocation(311, 47);
+	        
+	        addButtons();
+        } catch(IOException ioe) {
+        }
 	}
 	
 	public void setShip(Ship s) {

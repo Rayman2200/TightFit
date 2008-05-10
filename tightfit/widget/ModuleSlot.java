@@ -107,12 +107,16 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
         	g2d.drawImage(slotImg, 0, 0, null);
         
         if(mySpot < 4) { 
-        	x=25-32; y=50-32;
+        	x=25; y=55;
+        	if(rotate()>0)
+        		x-=20;
         } else {
-        	x=60-32; y=5-32;
+        	x=60; y=15;
         }
-    	int dx = (int)(x * Math.cos(r) - y * Math.sin(r))+32;
-    	int dy = (int)(x * Math.sin(r) + y * Math.cos(r))+32;
+        
+        
+    	//int dx = (int)(x * Math.cos(r) - y * Math.sin(r))+32;
+    	//int dy = (int)(x * Math.sin(r) + y * Math.cos(r))+32;
         if(mounted != null) {
         	
         	if(mounted.isOnline())
@@ -125,17 +129,18 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 	        g2d.drawImage(mounted.getImage(), 8, 8, null);
 	        
 	        if(mounted.acceptsCharges()) {
+	        	Point pt = chargePoint();
 	        	g2d.setColor(Color.white);
 	        	g2d.setStroke(new BasicStroke(2));
 	        	Composite saveComp = g2d.getComposite();
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.55f));
-                g2d.drawOval(dx, dy, 40, 40);
+                g2d.drawOval(pt.x, pt.y, 40, 40);
                 g2d.setComposite(saveComp);
                 
                 Ammo ammo = mounted.getCharge();
                 if(ammo != null) {
                 	g2d.scale(0.55f, 0.55f);
-                	g2d.drawImage(ammo.getImage(), (int)(dx/0.55f)+4, (int)(dy/0.55f)+4, null);
+                	g2d.drawImage(ammo.getImage(), (int)(pt.x/0.55f)+4, (int)(pt.y/0.55f)+4, null);
                 }
 	        }
         } else {
@@ -175,6 +180,24 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
     	return 0;
     }
 
+    private Point chargePoint() {
+    	if(mySpot==0)
+        	return new Point(45, 45);
+    	if(mySpot==2)
+    		return new Point(10, 50);
+    	if(mySpot==3)
+    		return new Point(-7, 36);
+    	if(mySpot==4)
+    		return new Point(50, 37);
+    	if(mySpot==5)
+    		return new Point(35, 50);
+    	if(mySpot==6)
+    		return new Point(17, 55);
+    	if(mySpot==7)
+    		return new Point(10, 45);
+    	return new Point(25, 55);
+    }
+    
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equalsIgnoreCase("unfit")) {
 			mounted = null;

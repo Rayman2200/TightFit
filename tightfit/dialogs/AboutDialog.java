@@ -48,16 +48,16 @@ public class AboutDialog extends JDialog {
     					"                                      \n" +
     					"              Thanks To:              \n" +
     					"       Modulus Zero & Gnomercie       \n" +
-    					"     Caldari Deep Space Industrial    \n" +
     					"                DEFI4NT               \n" +
+    					"     Caldari Deep Space Industrial    \n" +
     					"                                      \n" +
     					"                                      \n" +
     					"  ----------================--------  \n" +
-    					" This is a feature-incomplete version \n" +
+    					"(This is a feature-incomplete version)\n" +
     					"                                      \n" +
-    					" Skill-based Calculations:        50% \n" +
-    					" Module-based Calculations:       45% \n" +
-    					" Fit Panel:                       90% \n" +
+    					" Skill-based Calculations:        25% \n" +
+    					" Module-based Calculations:       15% \n" +
+    					" Fit Panel:                       95% \n" +
     					" Tank Tab:                        85% \n" +
     					" DPS Tab:                         60% \n" +
     					" Drone Info Tab:                   0% \n" +
@@ -65,12 +65,12 @@ public class AboutDialog extends JDialog {
     					" Market Dialog                    75% \n" +
     					" Import EFT2.5 Data              100% \n" +
     					" Preferences & Memory              0% \n" +
-    					" Java L&F                          0% \n" +
+    					" Java L&F Mod                      0% \n" +
     					"  ----------================--------  \n" +
     					"                                      \n" +
     					"                *  *  *               \n" +
     					" I know! I'll make a game where peepz \n" +
-    					" can lie, cheat, and steal and I'll   \n" +
+    					" can lie, kill, and steal and I'll    \n" +
     					" make it so there's a police force and\n" +
     					" bounties, and stuff- but no truly    \n" +
     					" safe zones, and then I'll call the   \n" +

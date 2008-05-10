@@ -41,7 +41,7 @@ public class Ammo extends Item {
 	}
 	
 	public float getRateBonus() {
-		return Float.parseFloat(getAttribute("speedBonus", "1.0"));
+		return Float.parseFloat(getAttribute("speedMultiplier", "1.0"));
 	}
 	
 	public int getSize() {

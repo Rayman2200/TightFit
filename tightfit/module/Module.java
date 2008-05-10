@@ -10,6 +10,8 @@
 
 package tightfit.module;
 
+import tightfit.TightFit;
+import tightfit.character.Skill;
 import tightfit.item.*;
 import tightfit.ship.Ship;
 
@@ -27,7 +29,7 @@ public class Module extends Item {
     private boolean bActive = false,
                 bOnline = true;
     
-    private Ammo charge;
+    protected Ammo charge;
     
     public Module() {
     }
@@ -35,7 +37,7 @@ public class Module extends Item {
     public Module(Item type) {
     	super(type);
     	
-    	slotRequirement = RIG_SLOT;
+    	slotRequirement = -1;
     	//figure out slot requirement...
     	if(!type.getAttribute("loPower", "-1").equals("-1")) {
     		slotRequirement = LOW_SLOT; 
@@ -43,6 +45,8 @@ public class Module extends Item {
     		slotRequirement = HI_SLOT;
     	} else if(!type.getAttribute("medPower", "-1").equals("-1")) {
     		slotRequirement = MID_SLOT;
+    	} else if(!type.getAttribute("rigSlot", "-1").equals("-1")) {
+    		slotRequirement = RIG_SLOT;
     	}
     }
     
@@ -66,8 +70,13 @@ public class Module extends Item {
     }
     
     public float getCpuUsage() {
+    	float cpu = Float.parseFloat(getAttribute("cpu", "0"));
+    	if(TightFit.getInstance().getChar().hasRequiredSkill(this)) {
+    		Skill skill = TightFit.getInstance().getChar().getSkill(getAttribute("requiredSkill1", "0"));
+    	}
+    	
     	//TODO: also calc bonus for skills
-    	return Float.parseFloat(getAttribute("cpu", "0"));
+    	return cpu;
     }
     
     public float getPowerUsage() {

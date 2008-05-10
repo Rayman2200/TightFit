@@ -48,7 +48,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private static final int APP_WIDTH = 680;
     private static final int APP_HEIGHT = 500;
     
-    public TightFit() throws IllegalArgumentException, IOException {
+    private static TightFit editor;
+    
+    public TightFit() {
         appFrame = new JFrame(Resources.getString("dialog.main.title"));
         appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         appFrame.addWindowListener(new WindowAdapter() {
@@ -81,7 +83,13 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         }).start();
     }
     
-    private JPanel createContentPane() throws IllegalArgumentException, IOException {
+    public static TightFit getInstance() {
+    	if(editor == null)
+    		editor = new TightFit();
+    	return editor;
+    }
+    
+    private JPanel createContentPane() {
     	JPanel panel = new JPanel();
     	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     	thePanel = new FitPanel(this);
@@ -208,7 +216,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
      */
     public static void main(String[] args) {
     	try{
-    		TightFit fit = new TightFit();
+    		TightFit.getInstance();
     	} catch(Throwable e) {
     		e.printStackTrace();
     	}

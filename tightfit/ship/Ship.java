@@ -15,6 +15,7 @@ import java.util.*;
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 import tightfit.module.Module;
+import tightfit.module.Weapon;
 import tightfit.character.Character;
 
 /**
@@ -637,19 +638,13 @@ public class Ship extends Item {
     }
     
     public float [] calculateSpecificDpsSlot(int i) {
+    	
+    	if(hiSlots[i] != null && hiSlots[i] instanceof Weapon) {
+	    	return ((Weapon)hiSlots[i]).calculateSpecificDps(); 
+    	}
+    	
     	float dps[] = new float[4];
     	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;
-    	
-    	if(hiSlots[i] != null) {
-	    	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "1")));
-	    	Ammo charge = hiSlots[i].getCharge();
-	    	float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")));
-	    	
-	    	dps[0] = (charge.getEmDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[1] = (charge.getKineticDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[2] = (charge.getThermalDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-	    	dps[3] = (charge.getExplosiveDamage() * multiplier) / (rate * calcFireRateBonus(charge));
-    	}
     	
     	return dps;
     }

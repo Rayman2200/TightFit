@@ -309,16 +309,17 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	private void fitToShip(Module m) {
 		Ship ship = editor.getShip();
         if(ship.hasFreeSlot(m)) {
-            int t;
+            int t=0;
             if(m.slotRequirement == Module.LOW_SLOT) {
                 t = ship.totalLowSlots();
             } else if(m.slotRequirement == Module.MID_SLOT) {
                 t = ship.totalMedSlots();
             } else if(m.slotRequirement == Module.HI_SLOT) {
                 t = ship.totalHiSlots();
-            } else {
+            } else if(m.slotRequirement == Module.RIG_SLOT) {
                 t = ship.totalRigSlots();
             }
+            
             for(int s=0;s<t;s++) {
                 if(ship.testPutModule(m, m.slotRequirement, s)) {
                     ship.putModule(m, m.slotRequirement, s);

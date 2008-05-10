@@ -36,19 +36,28 @@ public class Character {
 	}
 	
 	public void addSkill(String id, String level) {
-		skills.put(id, level);
+		try {
+			skills.put(id, new Skill(id, Integer.parseInt(level)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public int getSkillLevel(String id) {
 		if(skills.containsKey(id))
-			return Integer.parseInt((String)skills.get(id));
+			return ((Skill)skills.get(id)).getLevel();
 		return 0;
 	}
 	
+	public Skill getSkill(String id) {
+		return (Skill)skills.get(id);
+	}
+	
 	public boolean hasRequiredSkill(String skillId, int level) {
-		String skill = (String) skills.get(skillId);
+		Skill skill = (Skill) skills.get(skillId);
 		if(skill != null) {
-			
+			if(skill.getLevel() >= level)
+				return true;
 		}
 		return false;
 	}
@@ -58,9 +67,9 @@ public class Character {
 			String [] reqSkills = item.getAttributeKey("requiredSkill");
 			for(int i = 0; i < reqSkills.length; i++) {
 				if(reqSkills[i] != null && !reqSkills[i].contains("Level")) {
-					String level;
-					if((level = (String) skills.get(item.getAttribute(reqSkills[i], "-1"))) != null) {
-						if(Integer.parseInt(level) < Integer.parseInt(item.getAttribute(reqSkills[i]+"Level", "0"))) {
+					Skill skill = (Skill)skills.get(item.getAttribute(reqSkills[i], "-1"));
+					if(skill != null) {
+						if(skill.getLevel() < Integer.parseInt(item.getAttribute(reqSkills[i]+"Level", "0"))) {
 							return false;
 						}
 					} else return false;
@@ -95,7 +104,7 @@ public class Character {
             
             l = doc.getElementsByTagName("row");
             for (int i = 0; (item = l.item(i)) != null; i++) {
-            	skills.put(getAttributeValue(item, "typeID"), getAttributeValue(item, "level"));
+            	skills.put(getAttributeValue(item, "typeID"), new Skill(getAttributeValue(item, "typeID"), Integer.parseInt(getAttributeValue(item, "level"))));
             }
         } catch (SAXException e) {
             e.printStackTrace();
