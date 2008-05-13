@@ -21,7 +21,7 @@ public class MarketListEntry extends AbstractListEntry {
 	
 	private TightFit editor;
 	
-	private Image imgSkill, imgCpu, imgPower, imgSlot, imgBack;
+	private Image imgSkill, imgCpu, imgPower, imgSlot, imgBack, tech2Img;
 	
 	private Color green = new Color(.22f,.52f,.26f);
 	private Color red = new Color(.52f,.22f,.26f);
@@ -45,6 +45,7 @@ public class MarketListEntry extends AbstractListEntry {
 			imgCpu = Resources.getImage("icon12_07.png").getScaledInstance(22,22,Image.SCALE_SMOOTH);
 			imgSkill = Resources.getImage("icon50_11.png").getScaledInstance(22,22,Image.SCALE_SMOOTH);
 			imgBack = Resources.getImage("icon-back.png");
+			tech2Img = Resources.getImage("t2.png");
 			
 			if(!item.getAttribute("loPower", "-1").equals("-1")) {
 	    		imgSlot =  Resources.getImage("icon08_09.png").getScaledInstance(16,16,Image.SCALE_FAST);
@@ -101,6 +102,10 @@ public class MarketListEntry extends AbstractListEntry {
         //-- 
         
         g2d.drawImage(myItem.getImage(), imgPos.x, imgPos.y, null);
+        
+        if(myItem.getAttribute("techLevel", "1").equals("2")) {
+        	g2d.drawImage(tech2Img, imgPos.x, imgPos.y, null);
+        }
         
         //skill
         if(editor.getChar().hasRequiredSkill(myItem))

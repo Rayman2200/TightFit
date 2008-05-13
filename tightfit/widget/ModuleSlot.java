@@ -63,15 +63,18 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
     }
     
     public boolean mount(Module m) {
-        //if(mounted != null || m.slotRequirement != myType)
-        //    return false;
+        String tip = "";
         
         mounted = m;
         if(m != null) {
-        	setToolTipText("TYPE: "+m.name + "\r\nRequired CPU: "+m.getCpuUsage()+"\r\nRequired Power: "+ m.getPowerUsage());
-        } else {
-            setToolTipText("");
+        	tip += "TYPE: "+m.name + "\r\nRequired CPU: "+m.getCpuUsage()+"\r\nRequired Power: "+ m.getPowerUsage();
+        	if(m.acceptsCharges() && m.getCharge() != null) {
+        		tip += "\r\nCharge: "+m.getCharge().name+" ("+m.getChargeCount()+"pcs)";
+        	}
         }
+        
+        setToolTipText(tip);
+        
         return true;
     }
     

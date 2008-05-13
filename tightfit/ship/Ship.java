@@ -723,6 +723,10 @@ public class Ship extends Item {
         return getTotalCargoCapacity() - 0; //TODO
     }
     
+    public float getTotalDroneCapacity() {
+    	return Float.parseFloat(getAttribute("droneCapacity", "0"));
+    }
+    
     private float calcFireRateBonus(Ammo charge) {
     	//TODO: also skills and tracking computers/stabs
     	return charge.getRateBonus();

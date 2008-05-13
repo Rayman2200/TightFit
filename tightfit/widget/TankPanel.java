@@ -35,7 +35,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 	
 	private Font bigFont;
 	
-	private Image totalHpImg, shieldImg, armorImg, emDmgImg, expDmgImg, thDmgImg, bgImg;
+	private Image totalHpImg, shieldImg, armorImg, emDmgImg, expDmgImg, thDmgImg, bgImg, capImg;
 	
 	public TankPanel(TightFit editor) {
 		this.editor = editor;
@@ -48,6 +48,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 			expDmgImg = Resources.getImage("icon22_19.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 			thDmgImg = Resources.getImage("icon22_18.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 			bgImg = Resources.getImage("panelgrad.png");
+			capImg = Resources.getImage("icon39_06.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 			Font big = Resources.getFont("stan07_57.ttf");
 	        bigFont = big.deriveFont(8f);
 		} catch (Exception e) {
@@ -136,6 +137,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         //cap
         g2d.setColor(bgLightColor);
         g2d.fillRoundRect(8, 120, 230, 30, 20, 20);
+        g2d.drawImage(capImg, 10, 118, null);
         float capChargeRate = ship.calculateMaxCapacity() / ship.calculateCapacitorRechargeRate();
         float usage = ship.calculateCapacitorUsage();
         Color capColor = Color.white;

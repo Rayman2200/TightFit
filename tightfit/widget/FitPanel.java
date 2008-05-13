@@ -25,6 +25,7 @@ import tightfit.TightFit;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.Ammo;
 import tightfit.module.Module;
+import tightfit.module.Weapon;
 import tightfit.ship.Ship;
 import tightfit.ship.ShipChangeListener;
 
@@ -46,7 +47,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
-                cargoImg, shieldImg, armorImg, structImg;
+                cargoImg, shieldImg, armorImg, structImg,
+                droneImg;
     
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
     private Image bigBarImg, smallBarImg, bigBarGlowImg, smallBarGlowImg;
@@ -74,6 +76,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	        maxTarImg = Resources.getImage("icon04_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        maxRanImg = Resources.getImage("icon22_15.png");
 	        cargoImg = Resources.getImage("icon03_13.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+	        droneImg = Resources.getImage("icon11_16.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        shieldImg = Resources.getImage("icon01_13.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
 	        armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
 	        structImg = Resources.getImage("icon02_12-small.png");
@@ -281,6 +284,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         g2d.drawImage(rstExImg, 458, 367, null); g2d.drawImage(rstThImg, 566, 367, null);
         
         g2d.drawImage(cargoImg, 393, 432, null);
+        g2d.drawImage(droneImg, 532, 432, null);
         g2d.drawImage(shieldImg, 399, 180, null);
         g2d.drawImage(armorImg, 399, 273, null);
         g2d.drawImage(structImg, 399, 345, null);
@@ -425,6 +429,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
         
         drawShadowedString(g2d, "" + (ship.getTotalCargoCapacity()-ship.getFreeCargoCapacity()) + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
+        
+        drawShadowedString(g2d, "0.0 / "+ship.getTotalDroneCapacity(), 575, 453, statWhite);
     }
     
     private void createMountPoints() {
@@ -513,8 +519,14 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 					}
 				} else if(ship.testPutModule(m, s.getRack(), s.getSlotNumber())) {
 					e.acceptDrop(DnDConstants.ACTION_COPY);
-					s.mount(m);
-					ship.putModule(m, s.getRack(), s.getSlotNumber());
+					if(m.isWeapon()) {
+						Weapon w = new Weapon(m);
+						s.mount(w);
+						ship.putModule(w, s.getRack(), s.getSlotNumber());
+					} else {
+						s.mount(m);
+						ship.putModule(m, s.getRack(), s.getSlotNumber());
+					}
 				} else {
 					e.rejectDrop();
 				}

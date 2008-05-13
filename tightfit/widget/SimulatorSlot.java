@@ -68,7 +68,7 @@ public class SimulatorSlot extends ModuleSlot {
         		}
         		AffineTransform save = g2d.getTransform();
                 g2d.scale(0.5, 0.5);
-                if(mounted.acceptsCharges() && mounted.getCharge() != null /*&& mounted.getAttribute()*/)
+                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 /*&& mounted.getAttribute()*/)
                 	g2d.drawImage(mounted.getCharge().getImage(),0,0,null);
                 else g2d.drawImage(mounted.getImage(),0,0,null); 
                 g2d.setTransform(save);
@@ -77,7 +77,7 @@ public class SimulatorSlot extends ModuleSlot {
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.35f));
                 AffineTransform save = g2d.getTransform();
                 g2d.scale(0.5, 0.5);
-                if(mounted.getCharge() != null) {
+                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0) {
                 	g2d.drawImage(mounted.getCharge().getImage(),0,0,null);
                 } else {
                 	g2d.drawImage(mounted.getImage(),0,0,null);

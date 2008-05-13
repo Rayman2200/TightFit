@@ -15,7 +15,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
-import java.io.IOException;
 
 import javax.swing.*;
 
@@ -66,7 +65,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         appFrame.setResizable(false); 
         
         myShip = new Ship();
-        myChar = new Character("");
+        myChar = new Character("Pilot");
         
         appFrame.setLocationRelativeTo(null);
         
@@ -124,7 +123,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
         try {
         	mdlg.updateTree(Database.getInstance());
-        	myChar.parse("C:\\Documents and Settings\\Administrator\\Desktop\\biggeruniverse.xml");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -146,6 +144,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     
     public Ship getShip() {
     	return myShip;
+    }
+    
+    public void setChar(Character c) {
+    	myChar = c;
     }
     
     public Character getChar() {

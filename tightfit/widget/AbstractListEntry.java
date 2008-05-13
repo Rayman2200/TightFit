@@ -28,5 +28,7 @@ public abstract class AbstractListEntry extends JPanel {
 		
 		setName(item.name);
 		setToolTipText(item.name);
+		
+		setTransferHandler(new ModuleTransferHandler(item));
 	}
 }

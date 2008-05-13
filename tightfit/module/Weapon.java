@@ -27,6 +27,14 @@ public class Weapon extends Module {
 		return Float.parseFloat(((String)getAttribute("speed", "1.0"))) * getCharge().getRateBonus();
 	}
 	
+	public float calculateAggregateDps() {
+		float baseDmg = getCharge().getTotalDamage();
+		float rate = Float.parseFloat(((String)getAttribute("speed", "1")))/1000.0f;
+		float multiplier = Float.parseFloat(((String)getAttribute("damageMultiplier", "0")));
+		
+		return (baseDmg * multiplier) / (rate * getCharge().getRateBonus());
+	}
+	
 	public float [] calculateSpecificDps() {
 		float dps[] = new float[4];
     	dps[0] = dps[1] = dps[2] = dps[3] = 0.0f;

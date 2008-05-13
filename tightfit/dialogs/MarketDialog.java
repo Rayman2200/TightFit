@@ -31,6 +31,7 @@ import tightfit.TightFit;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.*;
 import tightfit.module.Module;
+import tightfit.module.Weapon;
 import tightfit.ship.Ship;
 import tightfit.widget.*;
 
@@ -164,7 +165,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) nodes.get(""+g.parentGroupId);
         		if(parent != null)
         			parent.add(node);
-        		else System.err.println("failed adding "+g.name);
+        		//else System.err.println("failed adding "+g.name);
         	}
         }
     }
@@ -186,9 +187,31 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	if(itr.hasNext())
     		groups.removeAll();
     	while(itr.hasNext()) {
+    		boolean inserted = false;
     		Item i = (Item)itr.next();
     		MarketListEntry mle = new MarketListEntry(i, editor);
-    		list.add(mle);
+    		if(!list.isEmpty()) {
+	    		for(int in=0;in<list.size();in++) {
+	    			MarketListEntry e = (MarketListEntry) list.get(in);
+	    			if(e != null) {
+	    				if(e.getItem().name.compareTo(i.name) >= 0) {
+	    					list.insertElementAt(mle, in);
+	    					inserted = true;
+	    					break;
+	    				}
+	    			} else {
+	    				list.add(in, mle);
+	    				inserted = true;
+	    				break;
+	    			}
+	    		}
+	    		
+	    		if(!inserted) {
+	    			list.add(mle);
+	    		}
+    		} else {
+    			list.add(mle);
+    		}
     	}
     	
         groups.setListData(list);
@@ -221,7 +244,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 
 		public Icon getVisualRepresentation(Transferable t) {
     		try {
-				return new ImageIcon(((Module)((ModuleTransferable)t).getTransferData(new DataFlavor(Module.class, "Module"))).getImage());
+				return new ImageIcon(((Module)((ModuleTransferHandler)t).getTransferData(new DataFlavor(Module.class, "Module"))).getImage());
 			} catch (UnsupportedFlavorException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -255,7 +278,9 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	public void dragGestureRecognized(DragGestureEvent e) {
 		JList comp = (JList)e.getComponent();
 		Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
-		Transferable transferable = new ModuleTransferable(new Module(item));
+		
+		//comp.getTransferHandler().exportAsDrag(comp, e.getTriggerEvent(), TransferHandler.COPY);
+		Transferable transferable = new ModuleTransferHandler(new Module(item));
 		
 		if(DragSource.isDragImageSupported())
 			e.startDrag(DragSource.DefaultCopyDrop, item.getImage(), new Point(-5,-5), transferable, this);
@@ -322,7 +347,12 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
             
             for(int s=0;s<t;s++) {
                 if(ship.testPutModule(m, m.slotRequirement, s)) {
-                    ship.putModule(m, m.slotRequirement, s);
+                	if(m.isWeapon()) {
+						Weapon w = new Weapon(m);
+						ship.putModule(w, m.slotRequirement, s);
+					} else {
+						ship.putModule(m, m.slotRequirement, s);
+					}
                     break;
                 }
             }

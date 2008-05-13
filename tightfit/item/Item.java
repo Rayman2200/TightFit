@@ -96,6 +96,10 @@ public class Item {
     	return attributes.containsKey("lowSlots");
     }
     
+    public boolean isWeapon() {
+    	return attributes.containsKey("chargeSize"); //FIXME: be more precise
+    }
+    
     /**
      * Retrieves an attribute value from the hash
      * 

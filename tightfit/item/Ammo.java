@@ -13,7 +13,7 @@ package tightfit.item;
 public class Ammo extends Item {
 
 	public Ammo() {
-		
+		graphicId = "09_13";
 	}
 	
 	public Ammo(Item type) {

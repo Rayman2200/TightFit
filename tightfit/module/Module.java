@@ -29,7 +29,7 @@ public class Module extends Item {
     private boolean bActive = false,
                 bOnline = true;
     
-    protected Ammo charge;
+    protected Ammo charge = new Ammo();
     
     public Module() {
     }
@@ -67,6 +67,16 @@ public class Module extends Item {
     
     public void insertCharge(Ammo a) {
     	charge = a;
+    }
+    
+    public int getChargeCount() {
+    	if(charge != null) {
+    		float cvol = Float.parseFloat(charge.getAttribute("volume", "1"));
+    		float cap = Float.parseFloat(getAttribute("capacity", "0"));
+    		return (int)(cap / cvol);
+    	}
+    	
+    	return 0;
     }
     
     public float getCpuUsage() {

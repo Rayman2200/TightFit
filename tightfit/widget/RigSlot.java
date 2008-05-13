@@ -51,7 +51,10 @@ public class RigSlot extends ModuleSlot {
         	g2d.scale(.5, .5);
         	g2d.drawImage(mounted.getImage(), 1, 1, null);
         } else {
+        	Composite saveComp = g2d.getComposite();
+            //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.55f));
         	g2d.drawImage(typeImg, 1, 1, null);
+        	g2d.setComposite(saveComp);
         }
 	}
 }
