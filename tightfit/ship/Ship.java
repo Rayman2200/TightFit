@@ -704,15 +704,15 @@ public class Ship extends Item {
     }
     
     public float calculateMaxArmor() {
-    	return armorHp + aggregateAllSlots("armorHPBonusAdd", "*", true);
+    	return armorHp * (1+myChar.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true);
     }
     
     public float calculateMaxStructure() {
-    	return multiplyAttributeProperty(hp + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
+    	return multiplyAttributeProperty(hp * (1+myChar.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {
-    	return maxRange * (1+myChar.getSkillLevel("3428")*0.05f);
+    	return multiplyAttributeBonus(maxRange * (1+myChar.getSkillLevel("3428")*0.05f), "maxTargetRangeBonus", true);
     }
     
     public float getTotalCargoCapacity() {

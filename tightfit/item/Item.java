@@ -97,7 +97,7 @@ public class Item {
     }
     
     public boolean isWeapon() {
-    	return attributes.containsKey("chargeSize"); //FIXME: be more precise
+    	return attributes.containsKey("chargeSize") || attributes.containsKey("useMissiles"); //FIXME: be more precise
     }
     
     /**

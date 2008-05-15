@@ -77,10 +77,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int ret = chooser.showOpenDialog(editor.appFrame);
 			if(ret == JFileChooser.APPROVE_OPTION) {
-				Character c = new Character();
 				try {
-					c.parse(chooser.getSelectedFile().getAbsolutePath());
-					editor.setChar(c);
+					editor.getChar().parse(chooser.getSelectedFile().getAbsolutePath());
 					TightPreferences.root();
 				} catch (Exception e1) {
 				}

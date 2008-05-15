@@ -138,7 +138,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         g2d.setColor(bgLightColor);
         g2d.fillRoundRect(8, 120, 230, 30, 20, 20);
         g2d.drawImage(capImg, 10, 118, null);
-        float capChargeRate = ship.calculateMaxCapacity() / ship.calculateCapacitorRechargeRate();
+        float capChargeRate = (ship.calculateMaxCapacity() / ship.calculateCapacitorRechargeRate()) * 2.5f;
         float usage = ship.calculateCapacitorUsage();
         Color capColor = Color.white;
         if(capChargeRate < usage) {
@@ -163,7 +163,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         
         // -- SIM -- //
         g2d.setColor(bgLightColor);
-        g2d.fillRoundRect(392, 8, 270, 150, 40, 40);
+        g2d.fillRoundRect(392, 8, 275, 150, 40, 40);
         FitPanel.drawShadowedString(g2d, "Simulation", 410, 19, Color.white);
         
         FitPanel.drawShadowedString(g2d, "Timeframe", 400, 140, Color.white);
@@ -330,7 +330,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
 				Module m = ship.getModule(s.getRack(), s.getSlotNumber());
 				try {
-					if(m.requiresActivation()) {
+					if(m.requiresActivation() || m.isWeapon()) {
 						if(!m.isActive())
 							m.activate();
 						else m.deactivate();

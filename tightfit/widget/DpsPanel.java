@@ -71,7 +71,8 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		ammoListPanel.setVisibleRowCount(-1);
 		sp.getViewport().setView(ammoListPanel);
 		add(sp);
-		sp.setAutoscrolls(true);
+		//sp.setAutoscrolls(true);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 	}
 	
@@ -206,10 +207,13 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 			Iterator itr = group.iterator();
 			
 			while(itr.hasNext()) {
-				Ammo a = new Ammo((Item) itr.next());
-				if(a.getSize() == size) {
-					data.add(new ItemIcon(a));
-					//x+=84;
+				Item i = (Item)itr.next();
+				if(i != null) {
+					Ammo a = new Ammo(i);
+					if(a.getSize() == size) {
+						data.add(new ItemIcon(a));
+						//x+=84;
+					}
 				}
 			}
 			

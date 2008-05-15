@@ -146,10 +146,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     	return myShip;
     }
     
-    public void setChar(Character c) {
-    	myChar = c;
-    }
-    
     public Character getChar() {
     	return myChar;
     }
