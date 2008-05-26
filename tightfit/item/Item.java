@@ -61,11 +61,16 @@ public class Item {
     }
     
     public boolean requiresActivation() {
-    	return attributes.containsKey("capacitorNeed");
+    	return attributes.containsKey("capacitorNeed") || isWeapon();
     }
     
     public boolean acceptsCharges() {
-    	return attributes.containsKey("chargeGroup1");
+    	for(int i=1;i<4;i++) {
+    		if(attributes.containsKey("chargeGroup"+i)) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
     public boolean accepts(Item a) {

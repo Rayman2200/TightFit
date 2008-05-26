@@ -330,7 +330,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
 				Module m = ship.getModule(s.getRack(), s.getSlotNumber());
 				try {
-					if(m.requiresActivation() || m.isWeapon()) {
+					if(m.requiresActivation()) {
 						if(!m.isActive())
 							m.activate();
 						else m.deactivate();

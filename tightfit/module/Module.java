@@ -24,7 +24,7 @@ public class Module extends Item {
 	
     public int slotRequirement;
     
-    private Ship myShip;
+    protected Ship myShip;
     
     private boolean bActive = false,
                 bOnline = true;
@@ -124,7 +124,7 @@ public class Module extends Item {
     }
     
     public void activate() throws Exception {
-    	if(requiresActivation()) {
+    	if(requiresActivation() || isWeapon()) {
 	        if(bOnline)
 	            bActive = true;
 	        else throw new Exception("Module not online!");

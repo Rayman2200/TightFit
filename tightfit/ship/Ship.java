@@ -12,7 +12,6 @@ package tightfit.ship;
 
 import java.util.*;
 
-import tightfit.item.Ammo;
 import tightfit.item.Item;
 import tightfit.module.Module;
 import tightfit.module.Weapon;
@@ -26,7 +25,7 @@ import tightfit.character.Character;
 public class Ship extends Item {
 
 	public String title;
-	public Character myChar = new Character();
+	public Character pilot = new Character();
 	
     private Module hiSlots[];
     private Module midSlots[];
@@ -247,6 +246,7 @@ public class Ship extends Item {
     		rack[slot] = m;
     		cpu -= m.getCpuUsage();
     		grid -= m.getPowerUsage();
+    		m.setShip(this);
     		fireShipChange();
     		return true;
     	}
@@ -408,6 +408,35 @@ public class Ship extends Item {
     	return a;
     }
     
+    public float multiplyAllSlots(float a, String prop, String hasProp, boolean requiresOnline) {
+    	
+    	for(int i=0;i<hiSlots.length;i++) {
+    		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || hiSlots[i].attributes.containsKey(hasProp))) {
+    			a *=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"));
+    		}
+    	}
+    	
+    	for(int i=0;i<midSlots.length;i++) {
+    		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || midSlots[i].attributes.containsKey(hasProp))) {
+    			a *=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"));
+    		}
+    	}
+    	
+    	for(int i=0;i<lowSlots.length;i++) {
+    		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || lowSlots[i].attributes.containsKey(hasProp))) {
+    			a *=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"));
+    		}
+    	}
+    	
+    	for(int i=0;i<rigSlots.length;i++) {
+    		if(rigSlots[i] != null && (hasProp.equals("*") || rigSlots[i].attributes.containsKey(hasProp))) {
+    			a *=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"));
+    		}
+    	}
+    	
+    	return a;
+    }
+    
     public float multiplyAttributeProperty(float att, String prop, boolean requiresOnline) {
     	
     	for(int i=0;i<hiSlots.length;i++) {
@@ -465,7 +494,7 @@ public class Ship extends Item {
     }
     
     public float getMaxPower() {
-    	float output = gridMax*(1+myChar.getSkillLevel("3413")*0.05f);
+    	float output = gridMax*(1+pilot.getSkillLevel("3413")*0.05f);
     	
     	output = multiplyAttributeBonus(output, "powerEngineeringOutputBonus", true);
     	
@@ -473,7 +502,7 @@ public class Ship extends Item {
     }
     
     public float getMaxCpu() {
-    	float c = cpuMax*(1+myChar.getSkillLevel("3426")*0.05f);
+    	float c = cpuMax*(1+pilot.getSkillLevel("3426")*0.05f);
     	
     	return multiplyAttributeProperty(c, "cpuMultiplier", true);
     }
@@ -586,16 +615,9 @@ public class Ship extends Item {
      */
     public float calculateGenericDps() {
     	float dps = 0.0f;
-    	float baseDmg = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	if(hiSlots[i] != null && hiSlots[i].isReady()) {
-	        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "0")));
-	        	if(hiSlots[i].getCharge() != null) {
-	        		baseDmg = hiSlots[i].getCharge().getTotalDamage();
-	        		float rate = Float.parseFloat(((String)hiSlots[i].getAttribute("speed", "1")))/1000.0f;
-	        	
-	        		dps += (baseDmg * multiplier) / (rate * calcFireRateBonus(hiSlots[i].getCharge()));
-	        	}
+        	if(hiSlots[i] != null && hiSlots[i].isReady() && hiSlots[i] instanceof Weapon) {
+	        	dps += ((Weapon)hiSlots[i]).calculateAggregateDps();
         	}
         }
         return dps;
@@ -605,8 +627,8 @@ public class Ship extends Item {
     	float dps = 0.0f;
     	float baseDmg = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	if(hiSlots[i] != null && hiSlots[i].isReady()) {
-	        	float multiplier = Float.parseFloat(((String)hiSlots[i].getAttribute("damageMultiplier", "0")));
+        	if(hiSlots[i] != null && hiSlots[i].isReady() && hiSlots[i] instanceof Weapon) {
+	        	float multiplier = ((Weapon)hiSlots[i]).calculateDamageMultiplier();
 	        	if(hiSlots[i].getCharge() != null) {
 	        		baseDmg = hiSlots[i].getCharge().getTotalDamage();
 	        		dps += (baseDmg * multiplier);
@@ -654,21 +676,21 @@ public class Ship extends Item {
     }
     
     public float calculateRadius() {
-    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", "*", false)/100.0f);
+    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", "*", false));
     }
     
     public float calculateRechargeRate() {
-    	return multiplyAttributeProperty((1-myChar.getSkillLevel("3416")*0.05f) * Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "shieldRechargeRateMultiplier", true)/1000.0f;
+    	return multiplyAttributeProperty((1-pilot.getSkillLevel("3416")*0.05f) * Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "shieldRechargeRateMultiplier", true)/1000.0f;
     }
     
     public float calculateMaxCapacity() {
-    	cap = capMax * (1+myChar.getSkillLevel("3418")*0.05f);
+    	cap = capMax * (1+pilot.getSkillLevel("3418")*0.05f);
     	
         return multiplyAttributeProperty(cap, "capacitorCapacityMultiplier", true);
     }
     
     public float calculateCapacitorRechargeRate() {
-    	float recharge = Float.parseFloat(getAttribute("rechargeRate", "0")) * (1-myChar.getSkillLevel("3417")*0.05f);
+    	float recharge = Float.parseFloat(getAttribute("rechargeRate", "0")) * (1-pilot.getSkillLevel("3417")*0.05f);
         return multiplyAttributeProperty(recharge, "capacitorRechargeRateMultiplier", true) / 1000.0f;
     }
     
@@ -700,19 +722,19 @@ public class Ship extends Item {
     }
     
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp * (1+myChar.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * (1+pilot.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
-    	return armorHp * (1+myChar.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true);
+    	return armorHp * (1+pilot.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true);
     }
     
     public float calculateMaxStructure() {
-    	return multiplyAttributeProperty(hp * (1+myChar.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
+    	return multiplyAttributeProperty(hp * (1+pilot.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {
-    	return multiplyAttributeBonus(maxRange * (1+myChar.getSkillLevel("3428")*0.05f), "maxTargetRangeBonus", true);
+    	return multiplyAttributeBonus(maxRange * (1+pilot.getSkillLevel("3428")*0.05f), "maxTargetRangeBonus", true);
     }
     
     public float getTotalCargoCapacity() {
@@ -725,11 +747,6 @@ public class Ship extends Item {
     
     public float getTotalDroneCapacity() {
     	return Float.parseFloat(getAttribute("droneCapacity", "0"));
-    }
-    
-    private float calcFireRateBonus(Ammo charge) {
-    	//TODO: also skills and tracking computers/stabs
-    	return charge.getRateBonus();
     }
     
     private float checkResonance(float a) {

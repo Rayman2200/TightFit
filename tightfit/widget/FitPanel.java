@@ -292,7 +292,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, "TIGHTFIT v0.1.1a - " + ship.title, 6, 13, Color.white);
+        drawShadowedString(g2d, "TIGHTFIT v0.1.2a - " + ship.title, 6, 13, Color.white);
         drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
         drawShadowedString(g2d, "Speed", 401, 421, Color.white);
         drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);

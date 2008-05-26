@@ -64,7 +64,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		sp.setLocation(20, 107);
 		sp.setVisible(false);
 		sp.setOpaque(false);
-		ammoListPanel.setPreferredSize(new Dimension(150, 32));
+		ammoListPanel.setPreferredSize(new Dimension(300, 32));
 		ammoListPanel.setOpaque(false);
 		ammoListPanel.setCellRenderer(new IconListRenderer());
 		ammoListPanel.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -250,15 +250,15 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 			e.printStackTrace();
 		}*/
 	}
-	
+
 	private void paintDetails(Graphics2D g2d, Weapon weapon) {
-		float seconds = (weapon.calculateRoF() * weapon.getChargeCount())/1000.0f;
+		float seconds = (weapon.calculateRoF() * weapon.getChargeCount());
 		
-		g2d.fillRoundRect(400, 10, 200, 135, 40, 40);
+		g2d.fillRoundRect(400, 10, 230, 135, 40, 40);
 		g2d.drawImage(weapon.getImage(), 410,20,null);
 		
 		FitPanel.drawShadowedString(g2d, "Type:  "+weapon.name, 485, 29, Color.white);
-		FitPanel.drawShadowedString(g2d, "RoF:   "+(weapon.calculateRoF()/1000.0f)+"s", 485, 45, Color.white);
+		FitPanel.drawShadowedString(g2d, "RoF:   "+(weapon.calculateRoF())+"s", 485, 45, Color.white);
 		FitPanel.drawShadowedString(g2d, "DPS:   "+weapon.calculateAggregateDps(), 485, 61, Color.white);
 		FitPanel.drawShadowedString(g2d, "MTBR:  "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 77, Color.white);
 	}
