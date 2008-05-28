@@ -532,7 +532,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 				}
 			} else {
 				e.rejectDrop();
-			} 
+			}
+            e.dropComplete(true);
 		} catch (UnsupportedFlavorException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {

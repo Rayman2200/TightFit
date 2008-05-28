@@ -270,7 +270,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         if(e.getDropSuccess()) {
             JList comp = (JList)e.getDragSourceContext().getComponent();
             Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
-            System.out.println("boom");
             quickList.remember(item);
         }
 	}
