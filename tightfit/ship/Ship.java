@@ -158,20 +158,17 @@ public class Ship extends Item {
         return rigSlots.length; //FIXME
     }
     
-    public int totalRigSlots() {
-    	return rigSlots.length;
-    }
-    
-    public int totalLowSlots() {
-    	return lowSlots.length;
-    }
-    
-    public int totalMedSlots() {
-    	return midSlots.length;
-    }
-    
-    public int totalHiSlots() {
-    	return hiSlots.length;
+    public int totalSlots(int slotType) {
+    	if(slotType == Module.LOW_SLOT) {
+    		return lowSlots.length;
+    	} else if(slotType == Module.MID_SLOT) {
+    		return midSlots.length;
+    	} else if(slotType == Module.HI_SLOT) {
+     		return hiSlots.length;
+     	} else {
+     		return rigSlots.length;
+     	}
+        
     }
     
     public boolean hasFreeSlot(Module m) {

@@ -150,6 +150,10 @@ public class MarketListEntry extends AbstractListEntry {
         drawDescription(g2d, 42, 109);
 	}
 	
+    public String toString() {
+        return myItem.name;
+    }
+    
 	private void drawDescription(Graphics2D g2d, int x, int y) {
 		FontMetrics metrics = g2d.getFontMetrics();
 		String desc = myItem.getAttribute("description", "No data in database");

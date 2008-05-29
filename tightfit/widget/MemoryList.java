@@ -16,6 +16,8 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import tightfit.TightPreferences;
+
 public class MemoryList extends JList {
 
     private Vector data;
@@ -25,8 +27,15 @@ public class MemoryList extends JList {
     }
     
     public void remember(Object c) {
+        String count = TightPreferences.node("memory").get("memcount", "0");
+        
         insertFirst(c);
-        //TODO: remember to preferences
+        
+        for(int i = Integer.parseInt(count); i > 1; i--) {
+            TightPreferences.node("memory").put("mem"+i, TightPreferences.node("memory").get("mem"+(i-1), null));
+        }
+        
+        TightPreferences.node("memory").put("mem0", c.toString());
     }
     
     public void insert(Object c) {
@@ -45,9 +54,5 @@ public class MemoryList extends JList {
             data.add(0, c);
             setListData(data);
         }
-    }
-    
-    public void recall() {
-        //TODO: read remembered things from preferences
     }
 }

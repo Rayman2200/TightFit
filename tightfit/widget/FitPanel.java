@@ -43,7 +43,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	private TightFit editor;
 	private Ship ship;
 	
-	private JButton strip, closeButton, minButton, configButton, infoButton, aboutButton;
+	private JButton strip, closeButton, minButton, configButton, 
+                infoButton, aboutButton, exportButton;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
@@ -141,8 +142,12 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	        infoButton.setActionCommand("showinfo");
 	        infoButton.addActionListener(editor);
 	        infoButton.setLocation(311, 47);
-	        
-	        addButtons();
+	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("icon09_16.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+	        exportButton.setActionCommand("export");
+            exportButton.addActionListener(editor);
+            exportButton.setLocation(450, 465);
+            
+            addButtons();
         } catch(IOException ioe) {
         }
 	}
@@ -156,7 +161,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		addButtons();
 		
 		//HI
-		for(int i=0;i<ship.totalHiSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
 			ModuleSlot slot = new ModuleSlot(editor, this, Module.HI_SLOT, i);
 			slot.mount(ship.getModule(Module.HI_SLOT, i));
             slot.setLocation(mountPoints[Module.HI_SLOT][i]);
@@ -166,7 +171,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		}
         
 		//MED
-		for(int i=0;i<ship.totalMedSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.MID_SLOT);i++) {
 			ModuleSlot slot = new ModuleSlot(editor, this, Module.MID_SLOT, i);
 			slot.mount(ship.getModule(Module.MID_SLOT, i));
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
@@ -176,7 +181,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		}
 		
 		//LOW
-		for(int i=0;i<ship.totalLowSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.LOW_SLOT);i++) {
 			ModuleSlot slot = new ModuleSlot(editor, this, Module.LOW_SLOT, i);
 			slot.mount(ship.getModule(Module.LOW_SLOT, i));
 			slot.setLocation(mountPoints[Module.LOW_SLOT][i]);
@@ -187,7 +192,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		}
 		
 		//RIG
-		for(int i=0, x=65;i<ship.totalRigSlots();i++,x+=34) {
+		for(int i=0, x=65;i<ship.totalSlots(Module.RIG_SLOT);i++,x+=34) {
 			RigSlot slot = new RigSlot(editor, this, Module.RIG_SLOT, i);
 			slot.mount(ship.getModule(Module.RIG_SLOT, i));
 			slot.setLocation(x,450);
@@ -365,13 +370,14 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     	add(closeButton);
     	add(strip);
     	add(infoButton);
+        add(exportButton);
     }
     
     private void drawShipSpecs(Graphics2D g2d) {
         g2d.setFont(bigFont);
         drawShadowedString(g2d, ""+ship.countFreeLauncherHardpoints(), 432, 60, statWhite);
         drawShadowedString(g2d, ""+ship.countFreeTurretHardpoints(), 572, 60, statWhite);
-        drawShadowedString(g2d, ""+ship.totalRigSlots(), 432, 92, statWhite);
+        drawShadowedString(g2d, ""+ship.totalSlots(Module.RIG_SLOT), 432, 92, statWhite);
         drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, statWhite);
         drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
         drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
