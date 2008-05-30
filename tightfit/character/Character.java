@@ -80,6 +80,9 @@ public class Character {
 	}
 	
 	public void parse(String file) throws Exception {
+		if(file == null)
+			return;
+		
 		skills.clear();
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

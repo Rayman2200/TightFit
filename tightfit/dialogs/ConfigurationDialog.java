@@ -10,7 +10,6 @@
 package tightfit.dialogs;
 
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -20,7 +19,6 @@ import javax.swing.*;
 
 import tightfit.TightFit;
 import tightfit.TightPreferences;
-import tightfit.character.Character;
 
 public class ConfigurationDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -60,9 +58,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		JPanel prefPanel = new JPanel();
 		
 		jtp.addTab("Character", charPanel);
-		
-		
-		
 		jtp.addTab("Preferences", prefPanel);
 		jtp.addTab("Import/Export", ioPanel);
 		
@@ -79,7 +74,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				try {
 					editor.getChar().parse(chooser.getSelectedFile().getAbsolutePath());
-					TightPreferences.root();
+					for(int i=5;i>0;i--)
+						TightPreferences.root().node("player").put("player"+i, TightPreferences.root().node("player").get("player"+(i-1), null));
+					TightPreferences.root().node("player").put("player0", chooser.getSelectedFile().getAbsolutePath());
 				} catch (Exception e1) {
 				}
 		    }

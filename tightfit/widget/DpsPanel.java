@@ -113,7 +113,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         ammoType.setVisible(false);
         sp.setVisible(false);
         
-        for(int i=0;i<ship.totalHiSlots();i++) {
+        for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
         	AffineTransform save = g2d.getTransform();
         	Module m = ship.getModule(Module.HI_SLOT, i);
         	if(m != null && m instanceof Weapon) {

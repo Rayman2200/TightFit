@@ -335,13 +335,13 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         if(ship.hasFreeSlot(m)) {
             int t=0;
             if(m.slotRequirement == Module.LOW_SLOT) {
-                t = ship.totalLowSlots();
+                t = ship.totalSlots(Module.LOW_SLOT);
             } else if(m.slotRequirement == Module.MID_SLOT) {
-                t = ship.totalMedSlots();
+                t = ship.totalSlots(Module.MID_SLOT);
             } else if(m.slotRequirement == Module.HI_SLOT) {
-                t = ship.totalHiSlots();
+                t = ship.totalSlots(Module.HI_SLOT);
             } else if(m.slotRequirement == Module.RIG_SLOT) {
-                t = ship.totalRigSlots();
+                t = ship.totalSlots(Module.RIG_SLOT);
             }
             
             for(int s=0;s<t;s++) {

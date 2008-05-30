@@ -688,7 +688,7 @@ public class Ship extends Item {
     
     public float calculateCapacitorRechargeRate() {
     	float recharge = Float.parseFloat(getAttribute("rechargeRate", "0")) * (1-pilot.getSkillLevel("3417")*0.05f);
-        return multiplyAttributeProperty(recharge, "capacitorRechargeRateMultiplier", true) / 1000.0f;
+        return multiplyAttributeBonus((multiplyAttributeProperty(recharge, "capacitorRechargeRateMultiplier", true) / 1000.0f), "capRechargeBonus", true);
     }
     
     public float calculateCapacitorUsage() {

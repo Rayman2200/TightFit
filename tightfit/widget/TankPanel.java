@@ -259,7 +259,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		simPanel.setLayout(new SlickLayout());
 		
 		//HI
-		for(int i=0;i<ship.totalHiSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
 			SimulatorSlot slot = new SimulatorSlot(editor, this, Module.HI_SLOT, i);
 			//slot.mount(ship.getModule(Module.HI_SLOT, i));
             slot.setLocation(i*34 + 3, 17);
@@ -268,7 +268,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		}
         
 		//MED
-		for(int i=0;i<ship.totalMedSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.MID_SLOT);i++) {
 			SimulatorSlot slot = new SimulatorSlot(editor, this, Module.MID_SLOT, i);
 			//slot.mount(ship.getModule(Module.MID_SLOT, i));
             slot.setLocation(i*34 + 11, 49);
@@ -277,7 +277,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		}
 		
 		//LOW
-		for(int i=0;i<ship.totalLowSlots();i++) {
+		for(int i=0;i<ship.totalSlots(Module.LOW_SLOT);i++) {
 			SimulatorSlot slot = new SimulatorSlot(editor, this, Module.LOW_SLOT, i);
 			//slot.mount(ship.getModule(Module.LOW_SLOT, i));
 			slot.setLocation(i*34 + 3, 81);
