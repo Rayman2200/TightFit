@@ -29,7 +29,7 @@ public class ShowInfoDialog extends JDialog {
 	public ShowInfoDialog(Frame parent, Item item) {
 		super();
 		
-		setTitle("Show Info - "+item.name);
+		setTitle(Resources.getString("dialog.showinfo.title")+" - "+item.name);
 		myItem = item;
 		
 		init();
@@ -62,7 +62,7 @@ public class ShowInfoDialog extends JDialog {
         JTabbedPane pane = new JTabbedPane();
         scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setPreferredSize(new Dimension(200, 250));
-        scrollPane.getViewport().setView(new JTextArea(myItem.getAttribute("description", "No description in database")+myItem.graphicId));
+        scrollPane.getViewport().setView(new JTextArea(myItem.getAttribute("description", Resources.getString("dialog.market.nodata"))+myItem.graphicId));
         ((JTextArea)scrollPane.getViewport().getView()).setEditable(false);
         ((JTextArea)scrollPane.getViewport().getView()).setLineWrap(true);
         ((JTextArea)scrollPane.getViewport().getView()).setBackground(Color.DARK_GRAY);

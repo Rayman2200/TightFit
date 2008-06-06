@@ -565,30 +565,30 @@ public class Ship extends Item {
     
     public float [] getShieldResonance() {
     	float [] reson = new float[4];
-    	reson[0] = shieldReson[0] + aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
-    					aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    	reson[0] = shieldReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
+    					(1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
     					(1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true)));
-    	reson[1] = shieldReson[1] + aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
-    					aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    	reson[1] = shieldReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
+    					(1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
     					(1-checkResonance(aggregateAllSlots("shieldKineticDamageResonance", "*", true)));
-    	reson[2] = shieldReson[2] + aggregateAllSlots("thermalDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
-    					aggregateAllSlots("thermalDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    	reson[2] = shieldReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
+    					(1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
     					(1-checkResonance(aggregateAllSlots("shieldThermalDamageResonance", "*", true)));
-    	reson[3] = shieldReson[3] + aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f +
-    					aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f -
+    	reson[3] = shieldReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
+    					(1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
     					(1-checkResonance(aggregateAllSlots("shieldExplosiveDamageResonance", "*", true)));
     	return reson;
     }
     
     public float [] getArmorResonance() {
     	float [] reson = new float[4];
-    	reson[0] = armorReson[0] + aggregateAllSlots("emDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+    	reson[0] = armorReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
 						(1-checkResonance(aggregateAllSlots("armorEmDamageResonance", "*", true)));
-    	reson[1] = armorReson[1] + aggregateAllSlots("kineticDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+    	reson[1] = armorReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
 						(1-checkResonance(aggregateAllSlots("armorKineticDamageResonance", "*", true)));
-    	reson[2] = armorReson[2] + aggregateAllSlots("thermalDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+    	reson[2] = armorReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
 						(1-checkResonance(aggregateAllSlots("armorThermalDamageResonance", "*", true)));
-    	reson[3] = armorReson[3] + aggregateAllSlots("explosiveDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f -
+    	reson[3] = armorReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
 						(1-checkResonance(aggregateAllSlots("armorExplosiveDamageResonance", "*", true)));
     	return reson;
     }

@@ -19,13 +19,14 @@ import javax.swing.*;
 import tightfit.io.EFTShipWriter;
 import tightfit.ship.Ship;
 
-class ExportDialog extends JDialog implements ActionListener {
+public class ExportDialog extends JDialog implements ActionListener {
     
     private Ship ship;
     
     public ExportDialog(Ship ship) {
         this.ship = ship;
         init();
+        pack();
     }
     
     private void init() {
@@ -47,9 +48,13 @@ class ExportDialog extends JDialog implements ActionListener {
             writer.writeShip(ship);
             
             jta.setText(sos.toString());
+            JScrollPane jsp = new JScrollPane();
+            jsp.setPreferredSize(new Dimension(200, 250));
+            jsp.getViewport().setView(jta);
             c.gridwidth = GridBagConstraints.REMAINDER;
-            add(jta, c);
-            
+            add(jsp, c);
+            c.gridy=1;
+            add(close, c);
         } catch(Exception e) {
             e.printStackTrace();
         }

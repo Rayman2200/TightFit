@@ -9,22 +9,10 @@
 * Finish Show Info Dialog
 * Skill calculates into all attributes
 
-0.1.2a - May 30th, 2008
-+ Fixed Launchers not seen as weapons
-+ Data export (EFT, TightFit)
+0.1.3a - TBD
++ Fixed resistances calculations
++ Added Internationalizaton support
 * Saving fits
 * Preferences support
 * Buttons (Strip Fit, Export, Simulate)
-
-0.1.1a - May 15th, 2008
-+ Fix armor calculation bug
-+ Shield/Armor/Structure resistances calc
-+ Character import from EveMon
-+ MarketListEntry needs to show requirement icons and slot type
-== Simulator ==
-+ Damage calculations (DPS)
-+ Estimated cap life
-+ total effective shield HP
-+ total effective armor HP
-+ total effective struct HP
 

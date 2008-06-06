@@ -1,0 +1,17 @@
+
+0.1.2a - May 30th, 2008
++ Fixed Launchers not seen as weapons
++ Added Data export (EFT, TightFit)
+
+0.1.1a - May 15th, 2008
++ Fixed armor calculation bug
++ Added Shield/Armor/Structure resistances calc
++ Added Character import from EveMon
++ MarketListEntry needs to show requirement icons and slot type
+== Simulator ==
++ Damage calculations (DPS)
++ Estimated cap life
++ total effective shield HP
++ total effective armor HP
++ total effective struct HP
+

@@ -59,6 +59,10 @@ public final class Resources {
         return resourceBundle.getString(key);
     }
 
+    public static String getVersionString() {
+        return "TightFit v0.1.3a";
+    }
+    
     /**
      * Loads an image from the resources directory. This directory is part of
      * the distribution jar.

@@ -156,7 +156,7 @@ public class MarketListEntry extends AbstractListEntry {
     
 	private void drawDescription(Graphics2D g2d, int x, int y) {
 		FontMetrics metrics = g2d.getFontMetrics();
-		String desc = myItem.getAttribute("description", "No data in database");
+		String desc = myItem.getAttribute("description", Resources.getString("dialog.market.nodata"));
 		String [] lines = desc.split("\\n");
 		for(int i=0;i<lines.length;i++, y+=metrics.getHeight()) {
 			String line = lines[i];

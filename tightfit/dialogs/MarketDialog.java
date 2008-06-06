@@ -49,9 +49,9 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     private JScrollPane sp;
     
     public MarketDialog(TightFit editor) {
-    	super((Frame)null, "EVE Market", false);
+    	super((Frame)null, Resources.getString("dialog.market.title"), false);
         top =
-            new DefaultMutableTreeNode("Galactic Market (Loading...)");
+            new DefaultMutableTreeNode(Resources.getString("dialog.market.galactic.loading"));
         
         this.editor = editor;
         
@@ -77,7 +77,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     }
 
     public void updateTree(Database db) {
-        top.setUserObject("Galactic Market");
+        top.setUserObject(Resources.getString("dialog.market.galactic"));
         
         myDb = db;
         
@@ -113,19 +113,19 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         mtsp.getViewport().setView(marketTree);
         mtsp.setPreferredSize(new Dimension(200, 350));
         mtsp.setBackground(new Color(.07f, .25f, .43f));
-        jtp.addTab("List", mtsp);
+        jtp.addTab(Resources.getString("dialog.market.tab.list"), mtsp);
         
         JPanel search = new JPanel();
         search.add(new JTextField(10));
-        JButton b = new JButton("Search");
+        JButton b = new JButton(Resources.getString("dialog.market.tab.search"));
         search.add(b);
-        jtp.addTab("Search", search);
+        jtp.addTab(Resources.getString("dialog.market.tab.search"), search);
         
         quickList = new MemoryList();
         quickList.setCellRenderer(new QuickListRenderer());
         JScrollPane qsp = new JScrollPane();
         qsp.getViewport().setView(quickList);
-        jtp.addTab("Quicklist", qsp);
+        jtp.addTab(Resources.getString("dialog.market.tab.quicklist"), qsp);
         
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, true);
@@ -225,14 +225,16 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
 		menu.addSeparator();
     	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-            mitem = new JMenuItem("Fit to Active Ship");
+            mitem = new JMenuItem(Resources.getString("dialog.market.fitactive"));
             mitem.addActionListener(this);
+            mitem.setActionCommand("Fit to Active Ship");
             //if(!editor.getShip().hasFreeSlot(item.slotType))
             //	mitem.setEnabled(false);
             menu.add(mitem);
 		} else {
-			mitem = new JMenuItem("Make Active");
+			mitem = new JMenuItem(Resources.getString("dialog.market.makeactive"));
 			mitem.addActionListener(this);
+            mitem.setActionCommand("Make Active");
 			menu.add(mitem);
 		}
     	

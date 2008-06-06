@@ -50,7 +50,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private static TightFit editor;
     
     public TightFit() {
-        appFrame = new JFrame(Resources.getString("dialog.main.title"));
+        appFrame = new JFrame(Resources.getVersionString());
         appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         appFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
@@ -114,9 +114,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         dpsPanel.setBackground(new Color(.07f, .25f, .43f));
         
         jtp.setOpaque(false);
-        jtp.addTab("Tank", tankPanel);
-        jtp.addTab("DPS",dpsPanel);
-        jtp.addTab("Drones",new JPanel());
+        jtp.addTab(Resources.getString("dialog.main.tab.tank"), tankPanel);
+        jtp.addTab(Resources.getString("dialog.main.tab.dps"),dpsPanel);
+        jtp.addTab(Resources.getString("dialog.main.tab.drones"),new JPanel());
         jtp.setPreferredSize(new Dimension(670,190));
         
         panel.add(thePanel);
@@ -241,10 +241,13 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 		} else if(e.getActionCommand().equalsIgnoreCase("showinfo")) {
 			ShowInfoDialog sid = new ShowInfoDialog(appFrame, myShip);
 		} else if(e.getActionCommand().equalsIgnoreCase("strip")) {
-			if(JOptionPane.showConfirmDialog(appFrame, "Are you sure you wish to strip all modules from this ship?", "Are you sure",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+			if(JOptionPane.showConfirmDialog(appFrame, Resources.getString("dialog.main.strip"), Resources.getString("dialog.main.strip.title"),JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 				myShip.strip();
 			}
-		}
+		} else if(e.getActionCommand().equalsIgnoreCase("export")) {
+            ExportDialog exd = new ExportDialog(myShip);
+            exd.setVisible(true);
+        }
 		
 	}
 

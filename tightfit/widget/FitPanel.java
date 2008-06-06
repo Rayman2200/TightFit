@@ -116,7 +116,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         
         createMountPoints();
         
-        strip = new JButton("STRIP FITTING");
+        strip = new JButton(Resources.getString("panel.fit.strip"));
         strip.setActionCommand("strip");
         strip.addActionListener(editor);
         strip.setLocation(500,468);
@@ -264,11 +264,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         }
         
         
-        //draw the power bar
-        
-        //draw the cpu bar
-        
-        //draw the capacitor
+        //TODO: draw the capacitor
         
         //draw icons
         g2d.drawImage(lnchrImg, 393, 37, null);
@@ -297,9 +293,9 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, "TIGHTFIT v0.1.2a - " + ship.title, 6, 13, Color.white);
-        drawShadowedString(g2d, "UPGRADE HARDPOINTS", 65, 447, Color.white);
-        drawShadowedString(g2d, "Speed", 401, 421, Color.white);
+        drawShadowedString(g2d, Resources.getVersionString() + " - " + ship.title, 6, 13, Color.white);
+        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.upgrade"), 65, 447, Color.white);
+        drawShadowedString(g2d, Resources.getString("panel.fit.speed"), 401, 421, Color.white);
         drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
         drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
         drawShadowedStringCentered(g2d, "Armor", 424, 277, Color.white);
@@ -307,9 +303,9 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 
         //smaller font
         g2d.setFont(smallFont);
-        drawShadowedString(g2d, "LAUNCHER HARDPOINTS", 430, 46, Color.white);
-        drawShadowedString(g2d, "TURRET HARDPOINTS", 570, 46, Color.white);
-        drawShadowedString(g2d, "UPGRADE HARDPOINTS", 430, 78, Color.white);
+        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.launcher"), 430, 46, Color.white);
+        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.turret"), 570, 46, Color.white);
+        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.upgrade"), 430, 78, Color.white);
         drawShadowedString(g2d, "MAX LOCKED TARGETS", 570, 78, Color.white);
         drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
         drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
@@ -378,23 +374,23 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         drawShadowedString(g2d, ""+ship.countFreeLauncherHardpoints(), 432, 60, statWhite);
         drawShadowedString(g2d, ""+ship.countFreeTurretHardpoints(), 572, 60, statWhite);
         drawShadowedString(g2d, ""+ship.totalSlots(Module.RIG_SLOT), 432, 92, statWhite);
-        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" mm", 432, 124, statWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" m", 432, 156, statWhite);
+        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" "+Resources.getString("panel.fit.units.millimeters"), 432, 124, statWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" "+Resources.getString("panel.fit.units.meters"), 432, 156, statWhite);
         drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  hp", 424, 230, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  hp", 424, 322, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxStructure())+"  hp", 424, 395, statWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" m", 572, 124, statWhite);
-        drawShadowedString(g2d, "Rechargerate  "+((int)ship.calculateRechargeRate())+" Sec.", 397, 250, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 230, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 322, statWhite);
+        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxStructure())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 395, statWhite);
+        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" "+Resources.getString("panel.fit.units.meters"), 572, 124, statWhite);
+        drawShadowedString(g2d, Resources.getString("panel.fit.rechargerate")+"  "+((int)ship.calculateRechargeRate())+" "+Resources.getString("panel.fit.units.seconds"), 397, 250, statWhite);
         drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
-        drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " Sec. )", 200, 368, statWhite);
+        drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " "+Resources.getString("panel.fit.units.seconds")+" )", 200, 368, statWhite);
         
         if(ship.getRemainingCpu() < 0)
-        	drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, Color.RED);
-        else drawShadowedStringCentered(g2d, "CPU "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
+        	drawShadowedStringCentered(g2d, Resources.getString("panel.fit.cpu")+" "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, Color.RED);
+        else drawShadowedStringCentered(g2d, Resources.getString("panel.fit.cpu")+" "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
         if(ship.getRemainingPower() < 0)
-        	drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, Color.RED);
-        else drawShadowedStringCentered(g2d, "PowerGrid "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
+        	drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, Color.RED);
+        else drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
         
         //bars
         drawBigBar(g2d, 135, 363, (ship.getMaxCpu() - ship.getRemainingCpu()) / ship.getMaxCpu());

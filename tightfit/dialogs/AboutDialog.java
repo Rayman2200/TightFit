@@ -9,6 +9,8 @@
  */
 package tightfit.dialogs;
 
+import tightfit.Resources;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -17,7 +19,7 @@ public class AboutDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	public AboutDialog(JFrame parent) {
-        super(parent, "TightFit v0.1.2a");
+        super(parent, Resources.getVersionString());
 
         setContentPane(createMainPanel());
         setResizable(false);
@@ -39,7 +41,7 @@ public class AboutDialog extends JDialog {
     	
     	String text = "\n" +
     					"  ----------================--------  \n" +
-    					"            TightFit v0.1.2a          \n" +
+    					"            "+Resources.getVersionString()+"          \n" +
     					"           The EVE® Fit Tool          \n" +
     					"  ----------================--------  \n" +
     					"                                      \n" +
