@@ -25,7 +25,8 @@ public class Character {
 
 	private HashMap skills = new HashMap();
 	public String name;
-	
+	public int sp;
+    
 	public Character() {
 		name="Pilot";
 	}
@@ -79,6 +80,10 @@ public class Character {
 		return true;
 	}
 	
+    public int countSkills() {
+        return skills.size();
+    }
+    
 	public void parse(String file) throws Exception {
 		if(file == null)
 			return;

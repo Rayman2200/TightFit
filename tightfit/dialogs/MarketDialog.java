@@ -50,6 +50,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     
     public MarketDialog(TightFit editor) {
     	super((Frame)null, Resources.getString("dialog.market.title"), false);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         top =
             new DefaultMutableTreeNode(Resources.getString("dialog.market.galactic.loading"));
         

@@ -171,13 +171,12 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 	}
 
 	public void shipChanged(Ship ship) {
-		if(memShip == null || ship != memShip)
-			buildShip();
+		if(memShip == null || ship != memShip) {
+			memShip = ship;
+            buildShip();
+        }
 		else updateShip();
 		repaint();
-		
-		if(memShip == null)
-			memShip = ship;
 	}
 	
 	private int calcEffectiveHP(float time) {
@@ -246,7 +245,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 	}
 	
 	private void buildShip() {
-		Ship ship = editor.getShip();
+		Ship ship = memShip;
 		
 		if(ship == null)
 			return;
