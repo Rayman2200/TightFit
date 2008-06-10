@@ -15,14 +15,16 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
+import tightfit.TightPreferences;
+
 public class CustomListRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = 1L;
 	
 	private Color bgColor, bgLightColor;
 	
 	public CustomListRenderer() {
-		bgColor = new Color(.07f, .25f, .43f);
-		bgLightColor = new Color(.07f+0.3f, .25f+0.3f, .43f+0.3f);
+		bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D"));
+		bgLightColor = new Color(Math.min(255, bgColor.getRed()+76)/255.0f, Math.min(255, bgColor.getGreen()+76)/255.0f, Math.min(255, bgColor.getBlue()+76)/255.0f);
 	}
 	
 	public Component getListCellRendererComponent(JList list, Object value,

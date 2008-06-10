@@ -66,7 +66,7 @@ public class AboutDialog extends JDialog {
     					" Show Info Dialog                 65% \n" +
     					" Market Dialog                    75% \n" +
     					" Import EFT2.5 Data              100% \n" +
-    					" Preferences & Memory              0% \n" +
+    					" Preferences & Memory             10% \n" +
     					" Java L&F Mod                      0% \n" +
     					"  ----------================--------  \n" +
     					"                                      \n" +

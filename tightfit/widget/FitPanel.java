@@ -22,6 +22,7 @@ import javax.swing.border.LineBorder;
 
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.TightPreferences;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.Ammo;
 import tightfit.module.Module;
@@ -105,7 +106,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         
         ship = new Ship();
         
-        bgColor = new Color(.07f, .25f, .43f);
+        bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D"));
         brightWhite = new Color(1f,1f,1f,.95f);
         dullWhite = new Color(.9f,.9f,1f,.55f);
         statWhite = new Color(.9f,.9f,1f,.95f);

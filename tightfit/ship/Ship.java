@@ -565,9 +565,9 @@ public class Ship extends Item {
     
     public float [] getShieldResonance() {
     	float [] reson = new float[4];
-    	reson[0] = shieldReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
-    					(1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
-    					(1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true)));
+    	reson[0] = (shieldReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
+    					 - (1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true))))
+    					 * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
     	reson[1] = shieldReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
     					(1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
     					(1-checkResonance(aggregateAllSlots("shieldKineticDamageResonance", "*", true)));
@@ -677,11 +677,12 @@ public class Ship extends Item {
     }
     
     public float calculateRechargeRate() {
-    	return multiplyAttributeProperty((1-pilot.getSkillLevel("3416")*0.05f) * Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "shieldRechargeRateMultiplier", true)/1000.0f;
+    	return multiplyAttributeProperty(
+    			multiplyAttributeBonus((1-pilot.getSkillLevel("3416")*0.05f) * Float.parseFloat(getAttribute("shieldRechargeRate", "0")), "rechargeratebonus", true), "shieldRechargeRateMultiplier", true)/1000.0f;
     }
     
     public float calculateMaxCapacity() {
-    	cap = capMax * (1+pilot.getSkillLevel("3418")*0.05f);
+    	cap = multiplyAttributeBonus(capMax * (1+pilot.getSkillLevel("3418")*0.05f), "capacitorCapacityBonus", true);
     	
         return multiplyAttributeProperty(cap, "capacitorCapacityMultiplier", true);
     }

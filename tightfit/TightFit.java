@@ -58,7 +58,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
             }
         });
         appFrame.setContentPane(createContentPane());
-        appFrame.setBackground(new Color(.4f, .5f, .6f));  //blue-grey
+        appFrame.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
         appFrame.addKeyListener(this);
         appFrame.setUndecorated(true);
