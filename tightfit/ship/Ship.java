@@ -16,6 +16,7 @@ import tightfit.item.Item;
 import tightfit.module.Module;
 import tightfit.module.Weapon;
 import tightfit.character.Character;
+import tightfit.util.ModuleMap;
 
 /**
  * A ship is the nexus of TightFit. Everything is encompassed by this logical container.
@@ -323,33 +324,62 @@ public class Ship extends Item {
     	return (Module[])v.toArray();
     }
     
-    public Module[] findModuleByAttribute(String name, int slotType) {
+    public Module[] findModuleByAttribute(String name) {
     	Vector v = new Vector();
     	Module rack[];
     	
-    	if(slotType == Module.LOW_SLOT) {
-    		rack = lowSlots;
-    	} else if(slotType == Module.MID_SLOT) {
-    		rack = midSlots;
-    	} else if(slotType == Module.HI_SLOT) {
-     		rack = hiSlots;
-     	} else {
-     		rack = rigSlots;
-     	}
-    	
-    	for(int i=0;i<rack.length;i++) {
-    		if(rack[i] != null) {
-    			try{
-    				if(rack[i].getAttributeKey(name) != null)
-    					v.add(rack[i]);
-    			}catch(Exception e) {}
-    		}
+        for(int slotType=0; slotType<4;slotType++) {
+            if(slotType == Module.LOW_SLOT) {
+                rack = lowSlots;
+            } else if(slotType == Module.MID_SLOT) {
+                rack = midSlots;
+            } else if(slotType == Module.HI_SLOT) {
+                rack = hiSlots;
+            } else {
+                rack = rigSlots;
+            }
+            
+            for(int i=0;i<rack.length;i++) {
+                if(rack[i] != null) {
+                    try{
+                        if(rack[i].getAttributeKey(name) != null)
+                            v.add(rack[i]);
+                    }catch(Exception e) {}
+                }
+            }
     	}
-    	
     	if(v.size() > 0) {
     		return (Module[])v.toArray(new Module[v.size()]);
     	}
     	return null;
+    }
+    
+    public Iterator findModuleByAttributeAndSort(String name, boolean descending) {
+    	ModuleMap map = new ModuleMap(descending);
+    	Module rack[];
+    	
+        for(int slotType=0; slotType<4;slotType++) {
+            if(slotType == Module.LOW_SLOT) {
+                rack = lowSlots;
+            } else if(slotType == Module.MID_SLOT) {
+                rack = midSlots;
+            } else if(slotType == Module.HI_SLOT) {
+                rack = hiSlots;
+            } else {
+                rack = rigSlots;
+            }
+            
+            for(int i=0;i<rack.length;i++) {
+                if(rack[i] != null) {
+                    try{
+                        if(rack[i].getAttributeKey(name) != null)
+                            map.put(new Float(Float.parseFloat(rack[i].getAttribute(name, "0"))), rack[i]);
+                    }catch(Exception e) {}
+                }
+            }
+    	}
+        
+        return map.values().iterator();
     }
     
     public float aggregateRack(String prop, int slotType, boolean requiresOnline) {
@@ -565,31 +595,50 @@ public class Ship extends Item {
     
     public float [] getShieldResonance() {
     	float [] reson = new float[4];
-    	reson[0] = (shieldReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
-    					 - (1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true))))
-    					 * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
-    	reson[1] = shieldReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
-    					(1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
-    					(1-checkResonance(aggregateAllSlots("shieldKineticDamageResonance", "*", true)));
-    	reson[2] = shieldReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
-    					(1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
-    					(1-checkResonance(aggregateAllSlots("shieldThermalDamageResonance", "*", true)));
-    	reson[3] = shieldReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f) *
-    					(1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f) -
-    					(1-checkResonance(aggregateAllSlots("shieldExplosiveDamageResonance", "*", true)));
+        float mod=1;
+        //EM
+    	reson[0] = (1-shieldReson[0])                                   //base resist
+                    * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+        
+        Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
+                reson[0] *= (1-Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
+            else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
+                reson[0] *= (1-Float.parseFloat((String)list.getAttribute("passiveEmDamageResistanceBonus", "0"))/100.0f*mod);
+            }
+            mod*=0.655f;
+        }
+        
+        
+        reson[0] = 1-reson[0];
+                        /*(1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
+    					- (1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true))))
+    					* (1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);*/
+    	//KINETIC
+        reson[1] = (shieldReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
+    					- (1-checkResonance(aggregateAllSlots("shieldKineticDamageResonance", "*", true))))
+                        * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
+    	reson[2] = (shieldReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
+    					- (1-checkResonance(aggregateAllSlots("shieldThermalDamageResonance", "*", true))))
+                        * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
+    	reson[3] = (shieldReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
+    					- (1-checkResonance(aggregateAllSlots("shieldExplosiveDamageResonance", "*", true))))
+                        * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
     	return reson;
     }
     
     public float [] getArmorResonance() {
     	float [] reson = new float[4];
     	reson[0] = armorReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						(1-checkResonance(aggregateAllSlots("armorEmDamageResonance", "*", true)));
+						 (1-checkResonance(aggregateAllSlots("armorEmDamageResonance", "*", true)));
     	reson[1] = armorReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						(1-checkResonance(aggregateAllSlots("armorKineticDamageResonance", "*", true)));
+						 (1-checkResonance(aggregateAllSlots("armorKineticDamageResonance", "*", true)));
     	reson[2] = armorReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						(1-checkResonance(aggregateAllSlots("armorThermalDamageResonance", "*", true)));
+						 (1-checkResonance(aggregateAllSlots("armorThermalDamageResonance", "*", true)));
     	reson[3] = armorReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						(1-checkResonance(aggregateAllSlots("armorExplosiveDamageResonance", "*", true)));
+						 (1-checkResonance(aggregateAllSlots("armorExplosiveDamageResonance", "*", true)));
     	return reson;
     }
     

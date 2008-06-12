@@ -10,20 +10,21 @@
 package tightfit.dialogs;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 
 import tightfit.*;
 import tightfit.TightPreferences;
 import tightfit.character.Character;
 
-public class ConfigurationDialog extends JDialog implements ActionListener {
+public class ConfigurationDialog extends JDialog implements ActionListener, ChangeListener {
 	private static final long serialVersionUID = 1L;
 	
-	JComboBox currentCharBox;
-	Character currentChar;
+	private JComboBox currentCharBox;
+	private Character currentChar;
+    private JSlider redColor, greenColor, blueColor;
     
 	private TightFit editor;
 	
@@ -94,11 +95,14 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
                     BorderFactory.createTitledBorder("Color"),
                     BorderFactory.createEmptyBorder(0, 5, 5, 5)));
         
-        Color color = new Color(.07f, .25f, .43f);
+        Color color = Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D"));
 
-        JSlider redColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getRed()); 
-        JSlider greenColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getGreen());
-        JSlider blueColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getBlue());
+        redColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getRed()); 
+        redColor.addChangeListener(this);
+        greenColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getGreen());
+        greenColor.addChangeListener(this);
+        blueColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getBlue());
+        blueColor.addChangeListener(this);
         colorPanel.add(redColor);
         colorPanel.add(greenColor);
         colorPanel.add(blueColor);
@@ -125,5 +129,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		} 
 	}
 	
-	
+	public void stateChanged(ChangeEvent e) {
+        Color c = new Color(redColor.getValue(), greenColor.getValue(), blueColor.getValue());
+        String color = Integer.toHexString(c.getRGB()).substring(2);
+        //System.out.println(color);
+        TightPreferences.node("prefs").put("bgColor", "#"+color);
+    }
 }

@@ -133,6 +133,10 @@ public class Item {
     	else throw new Exception("no key containing '"+incompleteKey+"' exists");
     }
     
+    public boolean hasAttribute(String key) {
+        return attributes.containsKey(key);
+    }
+    
     public Image getImage() {
     	if(icon == null) {
     		String filename = "";

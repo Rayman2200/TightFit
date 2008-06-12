@@ -208,7 +208,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	}
 	
 	public void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2d = (Graphics2D) g.create();        
         
         //setup
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

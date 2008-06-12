@@ -103,15 +103,15 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         thePanel.addMouseMotionListener(this);
     	thePanel.addKeyListener(this);
     	
-    	panel.setBackground(new Color(.07f, .25f, .43f));
+    	panel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
 
         JTabbedPane jtp = new JTabbedPane();
         
         tankPanel = new TankPanel(this);
-        tankPanel.setBackground(new Color(.07f, .25f, .43f));
+        tankPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
         
         dpsPanel = new DpsPanel(this);
-        dpsPanel.setBackground(new Color(.07f, .25f, .43f));
+        dpsPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
         
         jtp.setOpaque(false);
         jtp.addTab(Resources.getString("dialog.main.tab.tank"), tankPanel);

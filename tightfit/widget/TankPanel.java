@@ -10,11 +10,8 @@
 package tightfit.widget;
 
 import java.awt.*;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.dnd.*;
+import java.awt.event.*;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -214,7 +211,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		Ship ship = editor.getShip();
 		float total=0;
 		
-		Module [] mods = ship.findModuleByAttribute("shieldBonus", Module.MID_SLOT);
+		Module [] mods = ship.findModuleByAttribute("shieldBonus");
 		
 		//FIXME: this doesn't account for skill, or other bonuses (ship, rig, other modules)
 		if(mods != null)
@@ -229,7 +226,7 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		Ship ship = editor.getShip();
 		float total=0;
 		
-		Module [] mods = ship.findModuleByAttribute("armorDamageAmount", Module.LOW_SLOT);
+		Module [] mods = ship.findModuleByAttribute("armorDamageAmount");
 		
 		//FIXME: this doesn't account for skill, or other bonuses (ship, rig, other modules)
 		if(mods != null)
