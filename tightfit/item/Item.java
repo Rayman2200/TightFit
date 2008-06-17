@@ -169,4 +169,8 @@ public class Item {
     	
     	return n;
     }
+    
+    public String toString() {
+        return name;
+    }
 }

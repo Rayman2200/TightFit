@@ -26,8 +26,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import tightfit.Resources;
-import tightfit.TightFit;
+import tightfit.*;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.*;
 import tightfit.module.Module;
@@ -122,8 +121,10 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         search.add(b);
         jtp.addTab(Resources.getString("dialog.market.tab.search"), search);
         
-        quickList = new MemoryList();
+        quickList = new MemoryList("quicklist");
         quickList.setCellRenderer(new QuickListRenderer());
+        quickList.addMouseListener(this);
+        replay("quicklist");
         JScrollPane qsp = new JScrollPane();
         qsp.getViewport().setView(quickList);
         jtp.addTab(Resources.getString("dialog.market.tab.quicklist"), qsp);
@@ -361,4 +362,16 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         }
         quickList.remember(((MarketListEntry)groups.getSelectedValue()).getItem());
 	}
+    
+    private void replay(String name) {
+        int count = Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0"));
+        
+        try {
+            for(int i = 0; i < count; i++) {
+                String in = TightPreferences.node("memory").node(name).get("mem"+i, "");
+                System.out.println(in);
+                quickList.insert(new Item(Database.getInstance().getType(in)));
+            }
+        } catch(Exception e) {}
+    }
 }

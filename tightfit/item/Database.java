@@ -32,9 +32,7 @@ public class Database {
 	public Database(String resource) throws Exception {
 		
 		InputStream in = Resources.getResource(resource);
-		
-        
-        
+		        
 		SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             //factory.setIgnoringComments(true);
@@ -42,7 +40,9 @@ public class Database {
             //factory.setExpandEntityReferences(false);
             factory.setValidating(false);
             SAXParser parser = factory.newSAXParser();
-            parser.parse(in, new DatabaseParserHandler(this));
+            synchronized(this) {
+                parser.parse(in, new DatabaseParserHandler(this));
+            }
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
             in.close();
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
@@ -81,7 +81,9 @@ public class Database {
 	}
 	
     public Item getType(String name) {
-        return (Item)cache.get(name.toLowerCase());
+        synchronized(this) {
+            return (Item)cache.get(name.toLowerCase());
+        }
     }
     
     public String getAttributeDisplayName(String name) {
@@ -89,14 +91,16 @@ public class Database {
     }
     
     public LinkedList getTypeByGroup(int gid) {
-    	LinkedList l = new LinkedList();
-    	Enumeration types = cache.elements();
-    	while(types.hasMoreElements()) {
-    		Item item = (Item)types.nextElement();
-    		if(item.groupId == gid)
-    			l.addLast(item);
-    	}
-    	return l;
+    	synchronized(this) {
+            LinkedList l = new LinkedList();
+            Enumeration types = cache.elements();
+            while(types.hasMoreElements()) {
+                Item item = (Item)types.nextElement();
+                if(item.groupId == gid)
+                    l.addLast(item);
+            }
+            return l;
+        }
     }
     
     public LinkedList getTypeByMarketGroup(int gid) {

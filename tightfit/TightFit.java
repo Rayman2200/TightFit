@@ -81,11 +81,11 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         mdlg = new MarketDialog(this);
         configDialog = new ConfigurationDialog(this);
         
-        new Thread(new Runnable() {
-            public void run() {
+        //new Thread(new Runnable() {
+            //public void run() {
                 initDatabase();
-            }
-        }).start();
+            //}
+        //}).start();
     }
     
     public static TightFit getInstance() {

@@ -597,7 +597,7 @@ public class Ship extends Item {
     	float [] reson = new float[4];
         float mod=1;
         //EM
-    	reson[0] = (1-shieldReson[0])                                   //base resist
+    	reson[0] = (shieldReson[0])                                               //base resist
                     * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
         
         Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
@@ -605,14 +605,14 @@ public class Ship extends Item {
             Module list = (Module)itr.next();
             if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
                 reson[0] *= (1-Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
-            else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
+            else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
                 reson[0] *= (1-Float.parseFloat((String)list.getAttribute("passiveEmDamageResistanceBonus", "0"))/100.0f*mod);
-            }
+
             mod*=0.655f;
         }
         
         
-        reson[0] = 1-reson[0];
+        //reson[0] = 1-reson[0];
                         /*(1+aggregateAllSlots("emDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
     					- (1-checkResonance(aggregateAllSlots("shieldEmDamageResonance", "*", true))))
     					* (1+aggregateAllSlots("emDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);*/

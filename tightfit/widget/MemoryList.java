@@ -21,21 +21,26 @@ import tightfit.TightPreferences;
 public class MemoryList extends JList {
 
     private Vector data;
+    private String name;
     
-    public MemoryList() {
+    public MemoryList(String n) {
         data = new Vector();
+        name = n;
     }
     
     public void remember(Object c) {
-        String count = TightPreferences.node("memory").get("memcount", "0");
-        
-        insertFirst(c);
-        
-        for(int i = Integer.parseInt(count); i > 1; i--) {
-            TightPreferences.node("memory").put("mem"+i, TightPreferences.node("memory").get("mem"+(i-1), null));
+        if(!data.contains(c)) {
+            int count = Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0"));
+            
+            insertFirst(c);
+            
+            for(int i = count; i >= 0; i--) {
+                TightPreferences.node("memory").node(name).put("mem"+i, TightPreferences.node("memory").node(name).get("mem"+i, ""));
+            }
+            
+            TightPreferences.node("memory").node(name).put("mem0", c.toString());
+            TightPreferences.node("memory").node(name).put("memcount", ""+(count+1));
         }
-        
-        TightPreferences.node("memory").put("mem0", c.toString());
     }
     
     public void insert(Object c) {
@@ -55,4 +60,5 @@ public class MemoryList extends JList {
             setListData(data);
         }
     }
+    
 }
