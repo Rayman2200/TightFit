@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import tightfit.Resources;
+import tightfit.TightPreferences;
 import tightfit.item.Item;
 import tightfit.widget.CustomListRenderer;
 import tightfit.widget.InfoListEntry;
@@ -46,7 +47,7 @@ public class ShowInfoDialog extends JDialog {
         c.fill = GridBagConstraints.BOTH;
         
     	panel.setPreferredSize(new Dimension(300, 350));
-    	panel.setBackground(new Color(.07f, .25f, .43f));
+    	panel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
         panel.add(new JLabel(new ImageIcon(myItem.getImage())), c);
         c.gridx=1;
         JLabel l = new JLabel("   "+myItem.name);

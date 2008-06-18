@@ -1,3 +1,9 @@
+0.1.3a - TBD
++ Fixed market window - can no longer be closed
++ Fixed resistances calculations
++ Added Internationalizaton support
++ Added quicklist 
++ Added market search
 
 0.1.2a - May 30th, 2008
 + Fixed Launchers not seen as weapons

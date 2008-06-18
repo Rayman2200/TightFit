@@ -45,7 +45,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	private Ship ship;
 	
 	private JButton strip, closeButton, minButton, configButton, 
-                infoButton, aboutButton, exportButton;
+                infoButton, aboutButton, exportButton, importButton;
 	
 	private Image panelImg, rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
@@ -106,7 +106,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         
         ship = new Ship();
         
-        bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D"));
+        bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A"));
         brightWhite = new Color(1f,1f,1f,.95f);
         dullWhite = new Color(.9f,.9f,1f,.55f);
         statWhite = new Color(.9f,.9f,1f,.95f);
@@ -125,28 +125,39 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         try {
 	        aboutButton = new ImageButton("about.png", true);
 	        aboutButton.setActionCommand("about");
+	        aboutButton.setToolTipText("About...");
 	        aboutButton.addActionListener(editor);
 	        aboutButton.setLocation(612, 0);
 	        configButton = new ImageButton("config.png", true);
 	        configButton.setActionCommand("config");
+	        configButton.setToolTipText("Configuration");
 	        configButton.addActionListener(editor);
 	        configButton.setLocation(628, 0);
 	        minButton = new ImageButton("minimize.png", true);
 	        minButton.setActionCommand("minimize");
+	        minButton.setToolTipText("Minimize");
 	        minButton.addActionListener(editor);
 	        minButton.setLocation(644, 0);
 	        closeButton = new ImageButton("close.png", true);
 	        closeButton.setActionCommand("close");
+	        closeButton.setToolTipText("Close");
 	        closeButton.addActionListener(editor);
 	        closeButton.setLocation(660, 0);
 	        infoButton = new ImageButton("showinfo.png");
 	        infoButton.setActionCommand("showinfo");
+	        infoButton.setToolTipText("Show Info");
 	        infoButton.addActionListener(editor);
 	        infoButton.setLocation(311, 47);
-	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("icon09_16.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("export.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
 	        exportButton.setActionCommand("export");
+	        exportButton.setToolTipText("EFT Export");
             exportButton.addActionListener(editor);
-            exportButton.setLocation(450, 465);
+            exportButton.setLocation(450, 469);
+            importButton = new ImageButton(new ImageIcon(Resources.getImage("import.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+	        importButton.setActionCommand("import");
+	        importButton.setToolTipText("EFT Import");
+            importButton.addActionListener(editor);
+            importButton.setLocation(421, 469);
             
             addButtons();
         } catch(IOException ioe) {
@@ -368,6 +379,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     	add(strip);
     	add(infoButton);
         add(exportButton);
+        add(importButton);
     }
     
     private void drawShipSpecs(Graphics2D g2d) {
@@ -400,10 +412,10 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         g2d.setFont(smallFont);
         //shield
         float [] reson = ship.getShieldResonance();
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 187, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 187, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 214, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 214, statWhite);
+        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[0])*100))+"  %", 490, 187, statWhite);
+        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[1])*100))+"  %", 598, 187, statWhite);
+        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[3])*100))+"  %", 490, 214, statWhite);
+        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[2])*100))+"  %", 598, 214, statWhite);
         drawSmallBar(g2d, 488, 187, 1.0f - reson[0]);
         drawSmallBar(g2d, 595, 187, 1.0f - reson[1]);
         drawSmallBar(g2d, 488, 214, 1.0f - reson[3]);

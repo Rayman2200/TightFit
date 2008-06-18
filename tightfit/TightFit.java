@@ -58,7 +58,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
             }
         });
         appFrame.setContentPane(createContentPane());
-        appFrame.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
+        appFrame.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
         appFrame.addKeyListener(this);
         appFrame.setUndecorated(true);
@@ -103,15 +103,15 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         thePanel.addMouseMotionListener(this);
     	thePanel.addKeyListener(this);
     	
-    	panel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
+    	panel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
 
         JTabbedPane jtp = new JTabbedPane();
         
         tankPanel = new TankPanel(this);
-        tankPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
+        tankPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
         
         dpsPanel = new DpsPanel(this);
-        dpsPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D")));
+        dpsPanel.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
         
         jtp.setOpaque(false);
         jtp.addTab(Resources.getString("dialog.main.tab.tank"), tankPanel);

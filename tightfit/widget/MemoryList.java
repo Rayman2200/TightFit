@@ -30,12 +30,12 @@ public class MemoryList extends JList {
     
     public void remember(Object c) {
         if(!data.contains(c)) {
-            int count = Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0"));
+            int count = Math.min(25, Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0")));
             
             insertFirst(c);
             
-            for(int i = count; i >= 0; i--) {
-                TightPreferences.node("memory").node(name).put("mem"+i, TightPreferences.node("memory").node(name).get("mem"+i, ""));
+            for(int i = count; i > 0; i--) {
+                TightPreferences.node("memory").node(name).put("mem"+i, TightPreferences.node("memory").node(name).get("mem"+(i-1), ""));
             }
             
             TightPreferences.node("memory").node(name).put("mem0", c.toString());

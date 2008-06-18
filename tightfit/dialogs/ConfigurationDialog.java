@@ -25,8 +25,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
 	private JComboBox currentCharBox;
 	private Character currentChar;
     private JSlider redColor, greenColor, blueColor;
+    private JLabel redColorLabel, greenColorLabel, blueColorLabel;
+    private JPanel colorPrev;
     
-	private TightFit editor;
+    private TightFit editor;
 	
 	public ConfigurationDialog(TightFit editor) {
 		super(editor.appFrame, "Configuration", false);
@@ -90,25 +92,40 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
         prefPanel.setLayout(new BoxLayout(prefPanel, BoxLayout.Y_AXIS));
         
         JPanel colorPanel = new JPanel();
-        colorPanel.setLayout(new BoxLayout(colorPanel, BoxLayout.Y_AXIS));
+        colorPanel.setLayout(new GridLayout(3,2,0,0));
         colorPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createTitledBorder("Color"),
                     BorderFactory.createEmptyBorder(0, 5, 5, 5)));
         
-        Color color = Color.decode(TightPreferences.node("prefs").get("bgColor", "#11446D"));
+        Color color = Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A"));
 
         redColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getRed()); 
         redColor.addChangeListener(this);
+        redColorLabel = new JLabel(""+color.getRed());
         greenColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getGreen());
+        greenColorLabel = new JLabel(""+color.getGreen());
         greenColor.addChangeListener(this);
         blueColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getBlue());
+        blueColorLabel = new JLabel(""+color.getBlue());
         blueColor.addChangeListener(this);
+        colorPrev = new JPanel();
+        colorPrev.setPreferredSize(new Dimension(32,32));
+        colorPrev.setBackground(color);
+        
         colorPanel.add(redColor);
+        colorPanel.add(redColorLabel);
+        colorPanel.add(new JLabel());
         colorPanel.add(greenColor);
+        colorPanel.add(greenColorLabel);
+        colorPanel.add(colorPrev);
         colorPanel.add(blueColor);
+        colorPanel.add(blueColorLabel);
+        
+        JPanel optPanel = new JPanel();
+        
         
         prefPanel.add(colorPanel);
-        
+        prefPanel.add(optPanel);
         return prefPanel;
     }
     
@@ -134,5 +151,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
         String color = Integer.toHexString(c.getRGB()).substring(2);
         //System.out.println(color);
         TightPreferences.node("prefs").put("bgColor", "#"+color);
+        redColorLabel.setText(""+c.getRed());
+        greenColorLabel.setText(""+c.getGreen());
+        blueColorLabel.setText(""+c.getBlue());
+        colorPrev.setBackground(c);
     }
 }

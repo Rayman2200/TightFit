@@ -10,8 +10,6 @@
 * Skill calculates into all attributes
 
 0.1.3a - TBD
-+ Fixed resistances calculations
-+ Added Internationalizaton support
 * Saving fits
 * Preferences support
 * Buttons (Strip Fit, Export, Simulate)
