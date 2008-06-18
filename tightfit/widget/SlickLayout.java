@@ -11,7 +11,7 @@ package tightfit.widget;
 
 import java.awt.*;
 
-class SlickLayout implements LayoutManager {
+public class SlickLayout implements LayoutManager {
 
     public SlickLayout() {
     }
