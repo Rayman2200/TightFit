@@ -38,7 +38,7 @@ public class EFTShipWriter {
                 
                 if(m != null) {
                     w.write(m.name);
-                    if(m.acceptsCharges() && m.getCharge()!=null) {
+                    if(m.acceptsCharges() && m.getCharge().name.length() > 1) {
                         w.write(","+m.getCharge().name+"\n");
                     } else {
                         w.write("\n");

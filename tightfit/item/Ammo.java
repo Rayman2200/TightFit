@@ -14,6 +14,7 @@ public class Ammo extends Item {
 
 	public Ammo() {
 		graphicId = "09_13";
+		name="";
 	}
 	
 	public Ammo(Item type) {

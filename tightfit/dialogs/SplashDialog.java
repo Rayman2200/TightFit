@@ -12,6 +12,8 @@ package tightfit.dialogs;
 
 import javax.swing.*;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
 
 import tightfit.Resources;
@@ -23,21 +25,23 @@ public class SplashDialog extends JDialog {
         super(frame);
         setUndecorated(true);
         setResizable(false);
-        setLocationRelativeTo(null);
         
         JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(420,300));
         panel.setLayout(new SlickLayout());
-        panel.add(new JLabel(Resources.getIcon("splash.png")));
         
         JLabel title = new JLabel(Resources.getVersionString());
         try {
-            title.setFont(Resources.getFont("agencyr.ttf").deriveFont(18f));
+            title.setFont(Resources.getFont("agencyr.ttf").deriveFont(38f));
         } catch(Exception e) {}
-        title.setLocation(10,10);
         panel.add(title);
+        panel.add(new JLabel(Resources.getIcon("splash.png")));
+        title.setForeground(Color.white);
+        title.setLocation(250,250);
         
         setContentPane(panel);
         
         pack();
+        setLocationRelativeTo(null);
     }
 }

@@ -66,10 +66,7 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
         //new Thread(new Runnable() {
             //public void run() {
-                SplashDialog sd = new SplashDialog(appFrame);
-                sd.setVisible(true);
                 initDatabase();
-                sd.setVisible(false);
             //}
         //}).start();
         
@@ -89,6 +86,11 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
         mdlg = new MarketDialog(this);
         configDialog = new ConfigurationDialog(this);
+        
+        try {
+			mdlg.updateTree(Database.getInstance());
+		} catch (Exception e) {
+		}
     }
     
     public static TightFit getInstance() {
@@ -131,7 +133,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private void initDatabase() {
         
         try {
-        	mdlg.updateTree(Database.getInstance());
+        	SplashDialog sd = new SplashDialog(appFrame);
+            sd.setVisible(true);
+        	Database.getInstance();
+        	sd.setVisible(false);
         } catch(Exception e) {
             e.printStackTrace();
         }
