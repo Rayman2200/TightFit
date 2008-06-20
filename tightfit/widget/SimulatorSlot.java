@@ -59,9 +59,11 @@ public class SimulatorSlot extends ModuleSlot {
         
         if(mounted != null) {
         	
+            if(mounted.canOverload())
+                g2d.drawImage(powerImg, 0, 0, null);
+            
         	if(mounted.isOnline()) {
         		if(mounted.requiresActivation()) {
-        			g2d.drawImage(powerImg, 0, 0, null);
         			if(mounted.isActive()) {
         				g2d.drawImage(activeImg, 0, 0, null);
         			}

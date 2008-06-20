@@ -16,49 +16,37 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import tightfit.io.EFTShipWriter;
+import tightfit.TightFit;
+import tightfit.io.EFTShipParser;
 import tightfit.ship.Ship;
 
-public class ExportDialog extends JDialog implements ActionListener {
+public class ImportDialog extends JDialog implements ActionListener {
     
-    private Ship ship;
+    private TightFit editor;
+    private JTextArea jta = new JTextArea();
     
-    public ExportDialog(Ship ship) {
-        this.ship = ship;
-        setTitle("Export");
+    public ImportDialog(TightFit editor) {
+        this.editor = editor;
+        setTitle("Import");
         init();
         pack();
     }
     
     private void init() {
         JPanel panel = new JPanel();
-        JTextArea jta = new JTextArea();
-        GridBagConstraints c = new GridBagConstraints();
-        ByteArrayOutputStream sos = new ByteArrayOutputStream();
-        EFTShipWriter writer = new EFTShipWriter(sos);
-        JButton close = new JButton("Close");
-        close.addActionListener(this);
+        JButton imp = new JButton("Import");
+        imp.addActionListener(this);
         
-        panel.setLayout(new GridBagLayout());
-        
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 1;
-        c.gridy = 1;
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         
         try {
-            writer.writeShip(ship);
-            
-            jta.setText(sos.toString());
             JScrollPane jsp = new JScrollPane();
             jsp.setPreferredSize(new Dimension(200, 250));
             jsp.getViewport().setView(jta);
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            panel.add(jsp, c);
-            c.gridy=1;
-            panel.add(close, c);
+            panel.add(jsp);
+            panel.add(imp);
             setContentPane(panel);
         } catch(Exception e) {
             e.printStackTrace();
@@ -66,6 +54,12 @@ public class ExportDialog extends JDialog implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
-    
+        EFTShipParser parser = new EFTShipParser();
+        
+        try {
+            editor.setShip(parser.parse(jta.getText()));
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

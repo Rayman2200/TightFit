@@ -255,6 +255,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 		} else if(e.getActionCommand().equalsIgnoreCase("export")) {
             ExportDialog exd = new ExportDialog(myShip);
             exd.setVisible(true);
+        }  else if(e.getActionCommand().equalsIgnoreCase("import")) {
+            ImportDialog imd = new ImportDialog(this);
+            imd.setVisible(true);
         }
 		
 	}

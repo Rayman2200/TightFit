@@ -680,9 +680,33 @@ public class Ship extends Item {
 		reson[2] = (float) 1-(reson[2]);
     	
         //EXPLOSIVE
-        reson[3] = (shieldReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyActiveShieldResonanceAndNullifyPassiveResonance", true) / 100.0f)
-    					- (1-checkResonance(aggregateAllSlots("shieldExplosiveDamageResonance", "*", true))))
-                        * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyShieldResonancePostPercent", true) / 100.0f);
+        reson[3] = (1-shieldReson[3])                                   //base resist
+    					* (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+
+		mod=1;
+		itr = findModuleByAttributeAndSort("thermalDamageResistanceBonus", true);
+		while(itr.hasNext()) {
+			Module list = (Module)itr.next();
+			if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
+			    reson[3] *= (1-Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
+			else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
+			    reson[3] *= (1-Float.parseFloat((String)list.getAttribute("passiveThermalDamageResistanceBonus", "0"))/100.0f*mod);
+			}
+			mod*=0.655f;
+		}
+		
+		mod=1;
+		itr = findModuleByAttributeAndSort("shieldThermalDamageResonance", true);
+		while(itr.hasNext()) {
+			Module list = (Module)itr.next();
+			if(list.isReady())
+			    reson[3] *= 1+(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldThermalDamageResonance", "0")))*mod);
+			
+			mod*=0.655f;
+		}
+		
+		reson[3] = (float) 1-(reson[3]);
+        
     	return reson;
     }
     
@@ -719,7 +743,7 @@ public class Ship extends Item {
     public float calculateGenericDps() {
     	float dps = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	if(hiSlots[i] != null && hiSlots[i].isReady() && hiSlots[i] instanceof Weapon) {
+        	if(hiSlots[i] != null /*&& hiSlots[i].isReady()*/ && hiSlots[i] instanceof Weapon) {
 	        	dps += ((Weapon)hiSlots[i]).calculateAggregateDps();
         	}
         }
@@ -730,7 +754,7 @@ public class Ship extends Item {
     	float dps = 0.0f;
     	float baseDmg = 0.0f;
         for(int i=0;i<hiSlots.length;i++) {
-        	if(hiSlots[i] != null && hiSlots[i].isReady() && hiSlots[i] instanceof Weapon) {
+        	if(hiSlots[i] != null /*&& hiSlots[i].isReady()*/ && hiSlots[i] instanceof Weapon) {
 	        	float multiplier = ((Weapon)hiSlots[i]).calculateDamageMultiplier();
 	        	if(hiSlots[i].getCharge() != null) {
 	        		baseDmg = hiSlots[i].getCharge().getTotalDamage();

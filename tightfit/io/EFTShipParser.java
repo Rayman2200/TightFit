@@ -20,10 +20,6 @@ public class EFTShipParser {
 	public EFTShipParser() {
 	}
 	
-	public EFTShipParser(String cb) {
-		
-	}
-	
 	public Ship parse(String sb) throws Exception {
 		Ship ship = null;
 		int slotType = Module.LOW_SLOT, slot=0;

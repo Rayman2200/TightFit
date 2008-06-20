@@ -102,6 +102,10 @@ public class Module extends Item {
     	return Math.abs(Float.parseFloat(getAttribute("capacitorNeed", "0")) / dur);
     }
     
+    public boolean canOverload() {
+        return !getAttribute("requiredThermoDynamicsSkill", "-1").equals("-1");
+    }
+    
     public boolean isReady() {
     	return (requiresActivation() && isActive()) || (!requiresActivation() && isOnline());
     }
