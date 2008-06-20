@@ -42,10 +42,11 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	private JTree marketTree;
     private DefaultMutableTreeNode top;
     private Database myDb; 
-    private JList groups;
+    private JList groups, searchList;
     private MemoryList quickList;
     private DragSource ds;
     private JScrollPane sp;
+    private JTextField searchField;
     
     public MarketDialog(TightFit editor) {
     	super((Frame)null, Resources.getString("dialog.market.title"), false);
@@ -116,9 +117,18 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         jtp.addTab(Resources.getString("dialog.market.tab.list"), mtsp);
         
         JPanel search = new JPanel();
-        search.add(new JTextField(10));
+        searchField = new JTextField(10);
+        search.add(searchField);
         JButton b = new JButton(Resources.getString("dialog.market.tab.search"));
+        b.setActionCommand("search");
+        b.addActionListener(this);
         search.add(b);
+        searchList = new JList();
+        searchList.setCellRenderer(new QuickListRenderer());
+        searchList.addMouseListener(this);
+        JScrollPane ssp = new JScrollPane();
+        ssp.getViewport().setView(searchList);
+        search.add(ssp);
         jtp.addTab(Resources.getString("dialog.market.tab.search"), search);
         
         quickList = new MemoryList("quicklist");
@@ -333,22 +343,30 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 
 	public void actionPerformed(ActionEvent ae) {
 		try {
-			JList comp = (JList)ae.getSource();
-			Item item;
-			if(comp.getSelectedValue() != null) {
-				if(comp.getSelectedValue() instanceof MarketListEntry) {
-					item = ((MarketListEntry) comp.getSelectedValue()).getItem();
-				} else {
-					item = (Item) comp.getSelectedValue();
-				}
-				
-				if(ae.getActionCommand().equalsIgnoreCase("make active")) {
-					editor.setShip(new Ship(Database.getInstance().getType(item.name)));
-	                quickList.remember(item);
-	            } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
-	                fitToShip(new Module(Database.getInstance().getType(item.name)));
-				}
-			}
+            if(ae.getActionCommand().equals("search")) {
+                String nom = searchField.getText();
+                if(nom.matches("[\\p{Graph}]+")) {
+                    LinkedList list = Database.getInstance().getTypeByName(nom);
+                    searchList.setListData(list.toArray());
+                }
+            } else {
+                JList comp = (JList)ae.getSource();
+                Item item;
+                if(comp.getSelectedValue() != null) {
+                    if(comp.getSelectedValue() instanceof MarketListEntry) {
+                        item = ((MarketListEntry) comp.getSelectedValue()).getItem();
+                    } else {
+                        item = (Item) comp.getSelectedValue();
+                    }
+                    
+                    if(ae.getActionCommand().equalsIgnoreCase("make active")) {
+                        editor.setShip(new Ship(Database.getInstance().getType(item.name)));
+                        quickList.remember(item);
+                    } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
+                        fitToShip(new Module(Database.getInstance().getType(item.name)));
+                    }
+                }
+            }
 		} catch (Exception e) {
 		}
 	}

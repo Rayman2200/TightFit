@@ -114,6 +114,18 @@ public class Database {
     	return l;
     }
     
+    public LinkedList getTypeByName(String nom) {
+        LinkedList l = new LinkedList();
+    	Enumeration types = cache.elements();
+    	while(types.hasMoreElements()) {
+    		Item item = (Item)types.nextElement();
+    		if(item.name.toLowerCase().indexOf(nom) != -1) {
+                l.addLast(item);
+            }
+        }
+        return l;
+    }
+    
     private class DatabaseParserHandler extends DefaultHandler {
         
         private Database myDb;

@@ -1,9 +1,12 @@
 0.1.3a - TBD
 + Fixed market window - can no longer be closed
 + Fixed resistances calculations
++ Fixed SimulatorSlots drawing indicator for activation rather than overload
 + Added Internationalizaton support
 + Added quicklist 
 + Added market search
++ Added splash screen
++ Added import & export dialogs
 + Changed default color in honor of Empyrean Age
 
 0.1.2a - May 30th, 2008
