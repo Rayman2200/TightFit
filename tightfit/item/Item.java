@@ -110,7 +110,7 @@ public class Item {
      * 
      * @param attrib key to value
      * @param defaultVal if key dne, return this value
-     * @return
+     * @return the value of the attribute, or the defaultVal if the attribute does not exist
      */
     public String getAttribute(String attrib, String defaultVal) {
     	if(attributes.containsKey(attrib)) {
@@ -119,6 +119,11 @@ public class Item {
     	return defaultVal;
     }
     
+    /**
+     * 
+     * 
+     * @param 
+     */
     public String [] getAttributeKey(String incompleteKey) throws Exception {
     	Iterator itr = attributes.keySet().iterator();
     	Vector v = new Vector();

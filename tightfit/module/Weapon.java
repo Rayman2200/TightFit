@@ -10,6 +10,8 @@
 
 package tightfit.module;
 
+import java.util.Iterator;
+
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 
@@ -45,10 +47,20 @@ public class Weapon extends Module {
 	
 	public float calculateRoF() {
 		//TODO: include skill and stabs
-		return myShip.multiplyAllSlots(Float.parseFloat(((String)getAttribute("speed", "1.0"))) * getCharge().getRateBonus(),
-				"speedMultiplier",
-				getTypeString()+"WeaponSpeedMultiply",
-				true)/1000.0f;
+        float rof = Float.parseFloat(((String)getAttribute("speed", "1.0"))) * getCharge().getRateBonus(),
+                mod = 1.0f;
+		String prop = getTypeString()+"WeaponSpeedMultiply";
+        Iterator itr = myShip.findModuleByAttributeAndSort("speedMultiplier", true);
+        
+        while(itr.hasNext()) {
+            Module m = (Module)itr.next();
+            if(m.hasAttribute(prop)) {
+                rof *= Float.parseFloat(m.getAttribute("speedMultiplier", "1.0")) * mod;
+                mod *= .655f;
+            }
+        }
+        
+        return rof;
 	}
 	
 	public String getTypeString() {
@@ -95,9 +107,25 @@ public class Weapon extends Module {
 	}
 	
 	public float calculateDamageMultiplier() {
-		return myShip.multiplyAllSlots(Float.parseFloat(((String)getAttribute("damageMultiplier", "1.0"))) * (1 + myShip.pilot.getSkillLevel("3300")*0.02f),
-				"damageMultiplier",
-				getTypeString()+"WeaponDamageMultiply",
-				true);
+		float mult = Float.parseFloat(getAttribute("damageMultiplier", "1.0")) 
+                    * myShip.pilot.getSkillBonus("3300") 
+                    * myShip.pilot.getSkillBonus("3315");
+        float mod = 1.0f;
+        String prop = getTypeString()+"WeaponDamageMultiply";
+        Iterator itr = myShip.findModuleByAttributeAndSort("damageMultiplier", true);
+        
+        //get the primary skill
+        float bonus = myShip.pilot.getSkillBonus(getAttribute("requiredSkill1", "0"));
+        
+        
+        while(itr.hasNext()) {
+            Module m = (Module)itr.next();
+            if(m.hasAttribute(prop)) {
+                mult *= Float.parseFloat(m.getAttribute("damageMultiplier", "1.0")) * mod;
+                mod *= .655f;
+            }
+        }
+        
+        return mult;
 	}
 }

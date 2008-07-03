@@ -54,7 +54,15 @@ public class Character {
 		return (Skill)skills.get(id);
 	}
 	
-	public boolean hasRequiredSkill(String skillId, int level) {
+	public float getSkillBonus(String id) {
+        Skill s = getSkill(id);
+        
+        if(s != null)
+            return 1+(s.getLevel() * (s.getBonus()/100.0f));
+        return 0f;
+    }
+    
+    public boolean hasRequiredSkill(String skillId, int level) {
 		Skill skill = (Skill) skills.get(skillId);
 		if(skill != null) {
 			if(skill.getLevel() >= level)

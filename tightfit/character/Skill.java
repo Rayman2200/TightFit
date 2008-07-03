@@ -15,10 +15,10 @@ import tightfit.item.Item;
 public class Skill extends Item {
 
 	private int level;
-	
+    
 	public Skill() {
 	}
-	
+    
 	public Skill(String id, int level) throws Exception {
 		super(Database.getInstance().getType(id));
 		
@@ -28,4 +28,13 @@ public class Skill extends Item {
 	public int getLevel() {
 		return level;
 	}
+    
+    public float getBonus() {
+        try {
+            String [] key = getAttributeKey("Bonus");
+            return 1+Float.parseFloat(getAttribute(key[0], "0.0"));
+        } catch (Exception e) {
+        }
+        return 1.0f;
+    }
 }

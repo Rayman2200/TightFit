@@ -597,7 +597,7 @@ public class Ship extends Item {
     	float [] reson = new float[4];
         float mod=1;
         //EM
-    	reson[0] = shieldReson[0]											//base resist
+    	reson[0] = (1-shieldReson[0])											//base resist
                     * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
         
         Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
@@ -649,7 +649,7 @@ public class Ship extends Item {
 			mod*=0.655f;
 		}
         
-        reson[1] = (float) 1-(reson[1]);
+        //reson[1] = (float) 1-(reson[1]);
         
     	//THERMAL
         reson[2] = (1-shieldReson[2])                                   //base resist
