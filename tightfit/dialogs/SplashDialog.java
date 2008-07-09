@@ -37,7 +37,7 @@ public class SplashDialog extends JDialog {
         panel.add(title);
         panel.add(new JLabel(Resources.getIcon("splash.png")));
         title.setForeground(Color.white);
-        title.setLocation(250,250);
+        title.setLocation(245,245);
         
         setContentPane(panel);
         

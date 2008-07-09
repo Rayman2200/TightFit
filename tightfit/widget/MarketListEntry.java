@@ -132,7 +132,7 @@ public class MarketListEntry extends AbstractListEntry {
 	        else g2d.setColor(red);
 	        g2d.fillRect(imgPos.x + 94, imgPos.y, 22, 22);
 	        g2d.drawImage(imgPower, imgPos.x + 94, imgPos.y, null);
-	        FitPanel.drawShadowedStringCentered(g2d, myItem.getAttribute("power", "0"), imgPos.x+105, imgPos.y+30, blank);
+	        WidgetHelper.drawShadowedStringCentered(g2d, myItem.getAttribute("power", "0"), imgPos.x+105, imgPos.y+30, blank);
             
 	        //cpu
 	        if(editor.getShip().getMaxCpu() > (int)Float.parseFloat(myItem.getAttribute("cpu", "0")))
@@ -140,12 +140,12 @@ public class MarketListEntry extends AbstractListEntry {
 	        else g2d.setColor(red);
 	        g2d.fillRect(imgPos.x + 116, imgPos.y, 22, 22);
 	        g2d.drawImage(imgCpu, imgPos.x + 116, imgPos.y, null);
-            FitPanel.drawShadowedStringCentered(g2d, myItem.getAttribute("cpu", "0"), imgPos.x+127, imgPos.y+30, blank);
+	        WidgetHelper.drawShadowedStringCentered(g2d, myItem.getAttribute("cpu", "0"), imgPos.x+127, imgPos.y+30, blank);
         }
         
         g2d.setColor(Color.WHITE);
         g2d.setFont(bigFont);
-        FitPanel.drawShadowedString(g2d, myItem.name, 82, 82, Color.WHITE);
+        WidgetHelper.drawShadowedString(g2d, myItem.name, 82, 82, Color.WHITE);
         g2d.setFont(smallFont);
         drawDescription(g2d, 42, 109);
 	}
@@ -162,11 +162,11 @@ public class MarketListEntry extends AbstractListEntry {
 			String line = lines[i];
 			while(line.length() > 80) {
 				int pos = line.lastIndexOf(" ", 80);
-				FitPanel.drawShadowedString(g2d, line.substring(0, pos), x, y, Color.WHITE);
+				WidgetHelper.drawShadowedString(g2d, line.substring(0, pos), x, y, Color.WHITE);
 				y += metrics.getHeight();
 				line = line.substring(pos, line.length());
 			}
-			FitPanel.drawShadowedString(g2d, line, x, y, Color.WHITE);
+			WidgetHelper.drawShadowedString(g2d, line, x, y, Color.WHITE);
 		}
 	}
 }

@@ -52,6 +52,8 @@ public class Ship extends Item {
     
     private LinkedList listenerList = new LinkedList();
     
+    private boolean bChanged;
+    
     public Ship() {
         super();
         rigSlots = new Module[0];
@@ -82,6 +84,8 @@ public class Ship extends Item {
     	structReson[1] = 1;
     	structReson[2] = 1;
     	structReson[3] = 1;
+    	
+    	bChanged = false;
     }
     
     public Ship(Item type) {
@@ -127,8 +131,13 @@ public class Ship extends Item {
     	structReson[3] = Float.parseFloat(getAttribute("explosiveDamageResonance", "1.0"));
     	
     	title = name;
+    	bChanged = false;
     }
 
+    public boolean isChanged() {
+    	return bChanged;
+    }
+    
     public int countFreeLauncherHardpoints() {
         int count = launcherHardpoints;
         if(count > 0) {
@@ -242,9 +251,9 @@ public class Ship extends Item {
     	
     	if(slot < rack.length && rack[slot] == null) {
     		rack[slot] = m;
+    		m.setShip(this);
     		cpu -= m.getCpuUsage();
     		grid -= m.getPowerUsage();
-    		m.setShip(this);
     		fireShipChange();
     		return true;
     	}
@@ -882,6 +891,7 @@ public class Ship extends Item {
     }
     
     public void fireShipChange() {
+    	bChanged = true;
     	Iterator itr = listenerList.iterator();
     	while(itr.hasNext()) {
     		((ShipChangeListener)itr.next()).shipChanged(this);

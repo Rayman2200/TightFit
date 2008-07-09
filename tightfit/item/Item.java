@@ -178,4 +178,11 @@ public class Item {
     public String toString() {
         return name;
     }
+    
+    public boolean equals(Object b) {
+    	if(b instanceof Item) {
+    		return ((Item)b).name.equals(name);
+    	}
+    	return false;
+    }
 }

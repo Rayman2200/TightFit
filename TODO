@@ -1,7 +1,6 @@
 0.3.0
 * Drone damage simulator
 * Create Eve-like L&F for JavaUI
-* Rack overloading
 
 0.2.0
 * Unified bonus calc from modules
@@ -9,6 +8,7 @@
 * Finish Show Info Dialog
 * Skill calculates into all attributes
 * Full simulation
+* Rack overloading
 
 0.1.3a - TBD
 * Saving fits

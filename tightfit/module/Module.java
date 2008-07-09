@@ -81,25 +81,46 @@ public class Module extends Item {
     
     public float getCpuUsage() {
     	float cpu = Float.parseFloat(getAttribute("cpu", "0"));
-    	if(TightFit.getInstance().getChar().hasRequiredSkill(this)) {
-    		Skill skill = TightFit.getInstance().getChar().getSkill(getAttribute("requiredSkill1", "0"));
-    	}
-    	
-    	//TODO: also calc bonus for skills
+		Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
+		if(skill != null && skill.hasAttribute("cpuNeedBonus"))
+			cpu *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+		
+		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
+		if(skill != null && skill.hasAttribute("cpuNeedBonus"))
+			cpu *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+		
     	return cpu;
     }
     
     public float getPowerUsage() {
-    	//TODO: also calc bonus for skills
-    	return Float.parseFloat(getAttribute("power", "0"));
+    	float power = Float.parseFloat(getAttribute("power", "0"));
+		Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
+		if(skill != null && skill.hasAttribute("powerNeedBonus"))
+			power *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+		
+		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
+		if(skill != null && skill.hasAttribute("powerNeedBonus"))
+			power *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+		
+    	return power;
     }
     
     public float getCapNeed() {
     	float dur = (Float.parseFloat(getAttribute("duration", "1000"))/1000.0f);
+    	float need = Float.parseFloat(getAttribute("capacitorNeed", "0"));
+    	
+    	Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
+		if(skill != null && skill.hasAttribute("capNeedBonus"))
+			need *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+		
+		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
+		if(skill != null && skill.hasAttribute("capNeedBonus"))
+			need *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+    	
     	if(attributes.containsKey("speed")) {
     		dur = (Float.parseFloat(getAttribute("speed", "1000"))/1000.0f);
     	}
-    	return Math.abs(Float.parseFloat(getAttribute("capacitorNeed", "0")) / dur);
+    	return Math.abs(need / dur);
     }
     
     public boolean canOverload() {

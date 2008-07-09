@@ -12,15 +12,14 @@ package tightfit.widget;
 
 import java.util.Vector;
 
-import java.awt.*;
-
 import javax.swing.*;
 
 import tightfit.TightPreferences;
 
 public class MemoryList extends JList {
-
-    private Vector data;
+	private static final long serialVersionUID = 1L;
+	
+	private Vector data;
     private String name;
     
     public MemoryList(String n) {

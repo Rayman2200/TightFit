@@ -59,7 +59,7 @@ public class Character {
         
         if(s != null)
             return 1+(s.getLevel() * (s.getBonus()/100.0f));
-        return 0f;
+        return 1f;
     }
     
     public boolean hasRequiredSkill(String skillId, int level) {
@@ -120,7 +120,7 @@ public class Character {
             
             l = doc.getElementsByTagName("row");
             for (int i = 0; (item = l.item(i)) != null; i++) {
-            	skills.put(getAttributeValue(item, "typeID"), new Skill(getAttributeValue(item, "typeID"), Integer.parseInt(getAttributeValue(item, "level"))));
+            	addSkill(getAttributeValue(item, "typeID"), getAttributeValue(item, "level"));
             }
         } catch (SAXException e) {
             e.printStackTrace();

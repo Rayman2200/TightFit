@@ -20,7 +20,7 @@ public class Skill extends Item {
 	}
     
 	public Skill(String id, int level) throws Exception {
-		super(Database.getInstance().getType(id));
+		super(Database.getInstance().getTypeById(id));
 		
 		this.level = level;
 	}
@@ -32,7 +32,9 @@ public class Skill extends Item {
     public float getBonus() {
         try {
             String [] key = getAttributeKey("Bonus");
-            return 1+Float.parseFloat(getAttribute(key[0], "0.0"));
+            for(int i = 0;i<key.length;i++)
+            	if(key[i].length() < 25)   //at least the other ones are extremely long...
+            		return Float.parseFloat(getAttribute(key[i], "0.0"));
         } catch (Exception e) {
         }
         return 1.0f;

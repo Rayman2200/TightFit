@@ -64,8 +64,8 @@ public class InfoListEntry extends AbstractListEntry {
 		} catch (Exception e) {
 		}
 		dispName = dispName != null ? dispName : attribute;
-		FitPanel.drawShadowedString(g2d, dispName, 23, 9, headerGrey);
-		FitPanel.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
+		WidgetHelper.drawShadowedString(g2d, dispName, 23, 9, headerGrey);
+		WidgetHelper.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
 		
 		//g2d.scale(.25, .25);
 		g2d.drawImage(icon, 0, 0, null);

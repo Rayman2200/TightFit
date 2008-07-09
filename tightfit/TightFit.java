@@ -15,6 +15,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
+import java.io.File;
 
 import javax.swing.*;
 
@@ -22,6 +23,7 @@ import tightfit.ship.Ship;
 import tightfit.widget.*;
 import tightfit.io.EFTShipParser;
 import tightfit.item.*;
+import tightfit.module.Module;
 import tightfit.dialogs.*;
 import tightfit.character.Character;
 
@@ -54,7 +56,9 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         appFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                //FIXME: exitAction.actionPerformed(null);
+            	if(myShip != null && myShip.totalSlots(Module.LOW_SLOT) != 0) {
+                    saveShip(myShip);
+                }
             }
         });
         appFrame.setContentPane(createContentPane());
@@ -143,8 +147,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     }
     
     public void setShip(Ship s) {
-        if(myShip != null) {
-            //TODO: ask to save fit
+        if(myShip != null && myShip.totalSlots(Module.LOW_SLOT) != 0) {
+            saveShip(myShip);
         }
         
     	myShip = s;
@@ -162,6 +166,16 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     
     public Character getChar() {
     	return myChar;
+    }
+    
+    private void saveShip(Ship ship) {
+    	String homedir = System.getProperty("user.home")+File.pathSeparator+"tightfit";
+    	
+    	if(ship.isChanged()) {
+    		if(JOptionPane.showConfirmDialog(appFrame, Resources.getString("dialog.main.save"), Resources.getString("dialog.main.save.title"),JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+    			
+    		}
+    	}
     }
     
     public void mouseDragged(MouseEvent e) {

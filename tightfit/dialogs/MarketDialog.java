@@ -72,7 +72,8 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		
 		ds = new DragSource();
 	    ds.createDefaultDragGestureRecognizer(groups, DnDConstants.ACTION_COPY, this);
-        
+	    ds.createDefaultDragGestureRecognizer(quickList, DnDConstants.ACTION_COPY, this);
+	    
         pack();
         setVisible(true);
     }
@@ -285,14 +286,19 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	public void dragDropEnd(DragSourceDropEvent e) {
         if(e.getDropSuccess()) {
             JList comp = (JList)e.getDragSourceContext().getComponent();
-            Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
-            quickList.remember(item);
+            if(comp != quickList) {
+	            Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
+	            quickList.remember(item);
+            }
         }
 	}
 
 	public void dragGestureRecognized(DragGestureEvent e) {
 		JList comp = (JList)e.getComponent();
-		Item item = ((MarketListEntry)comp.getSelectedValue()).getItem();
+		Item item;
+		if(comp.getSelectedValue() instanceof MarketListEntry)
+			item = ((MarketListEntry)comp.getSelectedValue()).getItem();
+		else item = (Item)comp.getSelectedValue();
 		
 		//comp.getTransferHandler().exportAsDrag(comp, e.getTriggerEvent(), TransferHandler.COPY);
 		Transferable transferable = new ModuleTransferHandler(new Module(item));
@@ -322,6 +328,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 			} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 				if(item.getAttribute("lowSlots", "-1").equals("-1")) {
 					fitToShip(new Module(item));
+					quickList.remember(item);
 				} else {
 					editor.setShip(new Ship(item));
 	                quickList.remember(item);
@@ -365,6 +372,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                         quickList.remember(item);
                     } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
                         fitToShip(new Module(Database.getInstance().getType(item.name)));
+                        quickList.remember(item);
                     }
                 }
             }
@@ -398,7 +406,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                 }
             }
         }
-        quickList.remember(((MarketListEntry)groups.getSelectedValue()).getItem());
 	}
     
     private void replay(String name) {
@@ -407,7 +414,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         try {
             for(int i = 0; i < count; i++) {
                 String in = TightPreferences.node("memory").node(name).get("mem"+i, "");
-                System.out.println(in);
+                //System.out.println(in);
                 quickList.insert(new Item(Database.getInstance().getType(in)));
             }
         } catch(Exception e) {}

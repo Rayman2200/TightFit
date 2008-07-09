@@ -12,6 +12,7 @@ package tightfit.module;
 
 import java.util.Iterator;
 
+import tightfit.character.Skill;
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 
@@ -45,22 +46,40 @@ public class Weapon extends Module {
 		}
 	}
 	
+	public float getCpuUsage() {
+		return super.getCpuUsage() * myShip.pilot.getSkillBonus("3318");
+	}
+	
+	public float getPowerUsage() {
+		return super.getPowerUsage() * myShip.pilot.getSkillBonus("11207");
+	}
+	
+	public float getCapNeed() {
+		return super.getCapNeed() * myShip.pilot.getSkillBonus("3316");
+	}
+	
 	public float calculateRoF() {
-		//TODO: include skill and stabs
-        float rof = Float.parseFloat(((String)getAttribute("speed", "1.0"))) * getCharge().getRateBonus(),
-                mod = 1.0f;
+		float skillBonus, rof, mod=1.0f;
 		String prop = getTypeString()+"WeaponSpeedMultiply";
-        Iterator itr = myShip.findModuleByAttributeAndSort("speedMultiplier", true);
+		Iterator itr = myShip.findModuleByAttributeAndSort("speedMultiplier", true);
+		
+		if(weaponType != WEAPON_LAUNCHER)
+			skillBonus = myShip.pilot.getSkillBonus("3310");
+		else skillBonus = myShip.pilot.getSkillBonus("3319");
+		
+        rof = Float.parseFloat(((String)getAttribute("speed", "1.0"))) 
+        				* (getCharge().getRateBonus() * myShip.pilot.getSkillBonus(getCharge().getAttribute("requiredSkill1", "0")))
+        				* skillBonus;
         
         while(itr.hasNext()) {
             Module m = (Module)itr.next();
             if(m.hasAttribute(prop)) {
-                rof *= Float.parseFloat(m.getAttribute("speedMultiplier", "1.0")) * mod;
+                rof *= Float.parseFloat(m.getAttribute("speedMultiplier", "1.0")) * (1+(1-mod));
                 mod *= .655f;
             }
         }
         
-        return rof;
+        return rof/1000.0f;
 	}
 	
 	public String getTypeString() {
@@ -107,21 +126,33 @@ public class Weapon extends Module {
 	}
 	
 	public float calculateDamageMultiplier() {
-		float mult = Float.parseFloat(getAttribute("damageMultiplier", "1.0")) 
-                    * myShip.pilot.getSkillBonus("3300") 
-                    * myShip.pilot.getSkillBonus("3315");
+		float mult = Float.parseFloat(getAttribute("damageMultiplier", "1.0"));
+		float bonus = 1.0f;
         float mod = 1.0f;
         String prop = getTypeString()+"WeaponDamageMultiply";
         Iterator itr = myShip.findModuleByAttributeAndSort("damageMultiplier", true);
         
         //get the primary skill
-        float bonus = myShip.pilot.getSkillBonus(getAttribute("requiredSkill1", "0"));
+        Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
+        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
         
+        skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
+        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+        
+        mult *= bonus;
+        if(weaponType != WEAPON_LAUNCHER) {
+    		mult *= myShip.pilot.getSkillBonus("3300");
+    		mult *= myShip.pilot.getSkillBonus("3315");
+		} else {
+			mult *= myShip.pilot.getSkillBonus("3319");
+		}
         
         while(itr.hasNext()) {
             Module m = (Module)itr.next();
-            if(m.hasAttribute(prop)) {
-                mult *= Float.parseFloat(m.getAttribute("damageMultiplier", "1.0")) * mod;
+            if(m.hasAttribute(prop) && m.isReady()) {
+                mult *= (Float.parseFloat(m.getAttribute("damageMultiplier", "1.0")) * mod);
                 mod *= .655f;
             }
         }

@@ -60,9 +60,20 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
     private Color bgColor, brightWhite, dullWhite, statWhite;
     
-    private static Color shadow = new Color(.1f,.1f,.1f,.85f);
-    
     private Point mountPoints[][];
+    
+    private static final String VERSION = Resources.getVersionString();
+    private static final String MILLIMETERS = Resources.getString("panel.fit.units.millimeters");
+    private static final String METERS = Resources.getString("panel.fit.units.meters");
+    private static final String SECONDS = Resources.getString("panel.fit.units.seconds");
+    private static final String HITPOINTS = Resources.getString("panel.fit.units.hitpoints");
+    private static final String LAUNCHER_HARDPOINTS = Resources.getString("panel.fit.hardpoints.launcher");
+    private static final String TURRET_HARDPOINTS = Resources.getString("panel.fit.hardpoints.turret");
+    private static final String UPGRADE_HARDPOINTS = Resources.getString("panel.fit.hardpoints.upgrade");
+    private static final String SPEED = Resources.getString("panel.fit.speed");
+    private static final String CAPACITOR = Resources.getString("panel.fit.capacitor");
+    private static final String CPU_STRING = Resources.getString("panel.fit.cpu");
+    private static final String RECHARGE_RATE = Resources.getString("panel.fit.rechargerate");
     
 	public FitPanel(TightFit editor) {
 		super();
@@ -305,51 +316,38 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         //draw all the labels
         //bigger font
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, Resources.getVersionString() + " - " + ship.title, 6, 13, Color.white);
-        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.upgrade"), 65, 447, Color.white);
-        drawShadowedString(g2d, Resources.getString("panel.fit.speed"), 401, 421, Color.white);
-        drawShadowedStringCentered(g2d, "Capacitor", 200, 342, Color.white);
-        drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
-        drawShadowedStringCentered(g2d, "Armor", 424, 277, Color.white);
-        drawShadowedStringCentered(g2d, "Structure", 424, 349, Color.white);
+        WidgetHelper.drawShadowedString(g2d, VERSION + " - " + ship.title, 6, 13, Color.white);
+        WidgetHelper.drawShadowedString(g2d, UPGRADE_HARDPOINTS, 65, 447, Color.white);
+        WidgetHelper.drawShadowedString(g2d, SPEED, 401, 421, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, CAPACITOR, 200, 342, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, "Shield", 424, 186, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, "Armor", 424, 277, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, "Structure", 424, 349, Color.white);
 
         //smaller font
         g2d.setFont(smallFont);
-        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.launcher"), 430, 46, Color.white);
-        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.turret"), 570, 46, Color.white);
-        drawShadowedString(g2d, Resources.getString("panel.fit.hardpoints.upgrade"), 430, 78, Color.white);
-        drawShadowedString(g2d, "MAX LOCKED TARGETS", 570, 78, Color.white);
-        drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
-        drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
-        drawShadowedString(g2d, "SIGNATURE RADIUS", 430, 142, Color.white);
-        drawShadowedString(g2d, "CARGOHOLD", 432, 443, Color.white);
-        drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
+        WidgetHelper.drawShadowedString(g2d, LAUNCHER_HARDPOINTS, 430, 46, Color.white);
+        WidgetHelper.drawShadowedString(g2d, TURRET_HARDPOINTS, 570, 46, Color.white);
+        WidgetHelper.drawShadowedString(g2d, UPGRADE_HARDPOINTS, 430, 78, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "MAX LOCKED TARGETS", 570, 78, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "SIGNATURE RADIUS", 430, 142, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "CARGOHOLD", 432, 443, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
         
         g2d.setFont(shipTitleFont);
-        drawShadowedStringCentered(g2d, editor.getChar().name.toUpperCase()+"'"+
+        WidgetHelper.drawShadowedStringCentered(g2d, editor.getChar().name.toUpperCase()+"'"+
         		(editor.getChar().name.lastIndexOf("s") != editor.getChar().name.length()-1 ? "S" : "")+
         		" "+ship.title.toUpperCase(), 200, 47, Color.white);
         g2d.setFont(shipTypeFont);
-        drawShadowedStringCentered(g2d, ship.name.toUpperCase(), 200, 60, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, ship.name.toUpperCase(), 200, 60, Color.white);
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);
 	}
     
-    public static void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
-        g2d.setColor(shadow);
-        g2d.drawString(s, x+1, y+1);
-        g2d.setColor(c);
-        g2d.drawString(s, x, y);
-    }
     
-    public static void drawShadowedStringCentered(Graphics2D g2d, String s, float x, float y, Color c) {
-    	x -= g2d.getFontMetrics().getStringBounds(s, g2d).getWidth()/2.0f;
-    	g2d.setColor(shadow);
-        g2d.drawString(s, x+1, y+1);
-        g2d.setColor(c);
-        g2d.drawString(s, x, y);
-    }
     
     public void drawBigBar(Graphics2D g2d, int x, int y, float percent) {
     	percent = percent > 1 ? 1 : percent;
@@ -384,26 +382,26 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     
     private void drawShipSpecs(Graphics2D g2d) {
         g2d.setFont(bigFont);
-        drawShadowedString(g2d, ""+ship.countFreeLauncherHardpoints(), 432, 60, statWhite);
-        drawShadowedString(g2d, ""+ship.countFreeTurretHardpoints(), 572, 60, statWhite);
-        drawShadowedString(g2d, ""+ship.totalSlots(Module.RIG_SLOT), 432, 92, statWhite);
-        drawShadowedString(g2d, ""+ship.calculateScanResolution()+" "+Resources.getString("panel.fit.units.millimeters"), 432, 124, statWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" "+Resources.getString("panel.fit.units.meters"), 432, 156, statWhite);
-        drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 230, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 322, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxStructure())+"  "+Resources.getString("panel.fit.units.hitpoints"), 424, 395, statWhite);
-        drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" "+Resources.getString("panel.fit.units.meters"), 572, 124, statWhite);
-        drawShadowedString(g2d, Resources.getString("panel.fit.rechargerate")+"  "+((int)ship.calculateRechargeRate())+" "+Resources.getString("panel.fit.units.seconds"), 397, 250, statWhite);
-        drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
-        drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " "+Resources.getString("panel.fit.units.seconds")+" )", 200, 368, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+ship.countFreeLauncherHardpoints(), 432, 60, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+ship.countFreeTurretHardpoints(), 572, 60, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+ship.totalSlots(Module.RIG_SLOT), 432, 92, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+ship.calculateScanResolution()+" "+MILLIMETERS, 432, 124, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)ship.calculateRadius())+" "+METERS, 432, 156, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+ship.getMaxLockedTargets(), 572, 92, statWhite);
+        WidgetHelper.drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxShields())+"  "+HITPOINTS, 424, 230, statWhite);
+        WidgetHelper.drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxArmor())+"  "+HITPOINTS, 424, 322, statWhite);
+        WidgetHelper.drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxStructure())+"  "+HITPOINTS, 424, 395, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)ship.calculateMaxRange())+" "+METERS, 572, 124, statWhite);
+        WidgetHelper.drawShadowedString(g2d, RECHARGE_RATE+"  "+((int)ship.calculateRechargeRate())+" "+SECONDS, 397, 250, statWhite);
+        WidgetHelper.drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
+        WidgetHelper.drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " "+SECONDS+" )", 200, 368, statWhite);
         
         if(ship.getRemainingCpu() < 0)
-        	drawShadowedStringCentered(g2d, Resources.getString("panel.fit.cpu")+" "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, Color.RED);
-        else drawShadowedStringCentered(g2d, Resources.getString("panel.fit.cpu")+" "+(ship.getMaxCpu() - ship.getRemainingCpu())+" / "+ship.getMaxCpu(), 200, 398, statWhite);
+        	WidgetHelper.drawShadowedStringCentered(g2d, CPU_STRING+" "+WidgetHelper.formatFloat(ship.getMaxCpu() - ship.getRemainingCpu(), 2)+" / "+WidgetHelper.formatFloat(ship.getMaxCpu(),2), 200, 398, Color.RED);
+        else WidgetHelper.drawShadowedStringCentered(g2d, CPU_STRING+" "+WidgetHelper.formatFloat(ship.getMaxCpu() - ship.getRemainingCpu(), 2)+" / "+WidgetHelper.formatFloat(ship.getMaxCpu(),2), 200, 398, statWhite);
         if(ship.getRemainingPower() < 0)
-        	drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, Color.RED);
-        else drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+(ship.getMaxPower() - ship.getRemainingPower())+" / "+ship.getMaxPower(), 200, 429, statWhite);
+        	WidgetHelper.drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+WidgetHelper.formatFloat(ship.getMaxPower() - ship.getRemainingPower(), 2)+" / "+WidgetHelper.formatFloat(ship.getMaxPower(),2), 200, 429, Color.RED);
+        else WidgetHelper.drawShadowedStringCentered(g2d, Resources.getString("panel.fit.powergrid")+" "+WidgetHelper.formatFloat(ship.getMaxPower() - ship.getRemainingPower(), 2)+" / "+WidgetHelper.formatFloat(ship.getMaxPower(),2), 200, 429, statWhite);
         
         //bars
         drawBigBar(g2d, 135, 363, (ship.getMaxCpu() - ship.getRemainingCpu()) / ship.getMaxCpu());
@@ -412,10 +410,10 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         g2d.setFont(smallFont);
         //shield
         float [] reson = ship.getShieldResonance();
-        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[0])*100))+"  %", 490, 187, statWhite);
-        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[1])*100))+"  %", 598, 187, statWhite);
-        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[3])*100))+"  %", 490, 214, statWhite);
-        drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[2])*100))+"  %", 598, 214, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[0])*100))+"  %", 490, 187, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[1])*100))+"  %", 598, 187, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[3])*100))+"  %", 490, 214, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)Math.ceil((1.0f - reson[2])*100))+"  %", 598, 214, statWhite);
         drawSmallBar(g2d, 488, 187, 1.0f - reson[0]);
         drawSmallBar(g2d, 595, 187, 1.0f - reson[1]);
         drawSmallBar(g2d, 488, 214, 1.0f - reson[3]);
@@ -423,10 +421,10 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         
         //armor
         reson = ship.getArmorResonance();
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 279, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 279, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 306, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 306, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 279, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 279, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 306, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 306, statWhite);
         drawSmallBar(g2d, 488, 279, 1.0f - reson[0]);
         drawSmallBar(g2d, 595, 279, 1.0f - reson[1]);
         drawSmallBar(g2d, 488, 306, 1.0f - reson[3]);
@@ -434,18 +432,18 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         
         //structure
         reson = ship.getStructureResonance();
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 353, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 353, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 380, statWhite);
-        drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 380, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[0])*100))+"  %", 490, 353, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[1])*100))+"  %", 598, 353, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[3])*100))+"  %", 490, 380, statWhite);
+        WidgetHelper.drawShadowedString(g2d, ""+((int)((1.0f - reson[2])*100))+"  %", 598, 380, statWhite);
         drawSmallBar(g2d, 488, 353, 1.0f - reson[0]);
         drawSmallBar(g2d, 595, 353, 1.0f - reson[1]);
         drawSmallBar(g2d, 488, 380, 1.0f - reson[3]);
         drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
         
-        drawShadowedString(g2d, "" + (ship.getTotalCargoCapacity()-ship.getFreeCargoCapacity()) + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
+        WidgetHelper.drawShadowedString(g2d, "" + (ship.getTotalCargoCapacity()-ship.getFreeCargoCapacity()) + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
         
-        drawShadowedString(g2d, "0.0 / "+ship.getTotalDroneCapacity(), 575, 453, statWhite);
+        WidgetHelper.drawShadowedString(g2d, "0.0 / "+ship.getTotalDroneCapacity(), 575, 453, statWhite);
     }
     
     private void createMountPoints() {
@@ -536,11 +534,11 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 					e.acceptDrop(DnDConstants.ACTION_COPY);
 					if(m.isWeapon()) {
 						Weapon w = new Weapon(m);
-						s.mount(w);
 						ship.putModule(w, s.getRack(), s.getSlotNumber());
+						s.mount(w);
 					} else {
-						s.mount(m);
 						ship.putModule(m, s.getRack(), s.getSlotNumber());
+						s.mount(m);
 					}
 				} else {
 					e.rejectDrop();

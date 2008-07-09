@@ -25,6 +25,7 @@ public class Database {
 	private static Database instance;
 	
 	private Hashtable cache = new Hashtable();
+	private Hashtable typeIdLookup = new Hashtable();
 	private HashMap attributeDisplayNames = new HashMap();
 	private LinkedList groups = new LinkedList();
 	private LinkedList marketGroups = new LinkedList();
@@ -90,6 +91,10 @@ public class Database {
     	return (String)attributeDisplayNames.get(name);
     }
     
+    public Item getTypeById(String id) {
+    	return (Item)typeIdLookup.get(id);
+    }
+    
     public LinkedList getTypeByGroup(int gid) {
     	synchronized(this) {
             LinkedList l = new LinkedList();
@@ -150,6 +155,7 @@ public class Database {
                 currentElement = type;
                 unmarshalType(type, attrs);
                 myDb.cache.put(type.name.toLowerCase(), type);
+                myDb.typeIdLookup.put(""+type.typeId, type);
             } else if(qName.equalsIgnoreCase("attribute")) {
                 Item m = (Item)currentElement;
                 if(!m.attributes.containsKey(attrs.getValue("name"))) {

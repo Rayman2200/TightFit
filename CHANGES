@@ -2,6 +2,7 @@
 + Fixed market window - can no longer be closed
 + Fixed resistances calculations
 + Fixed SimulatorSlots drawing indicator for activation rather than overload
++ Fixed calculations for module cap, cpu, and power usage to include skill
 + Added Internationalizaton support
 + Added quicklist 
 + Added market search

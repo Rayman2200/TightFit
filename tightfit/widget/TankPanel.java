@@ -108,28 +108,28 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         
         g2d.setColor(Color.WHITE);
         
-        FitPanel.drawShadowedString(g2d, "Rate", 115, 19, Color.white);
-        FitPanel.drawShadowedString(g2d, "Rep Time (Sec.)", 160, 19, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Rate", 115, 19, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Rep Time (Sec.)", 160, 19, Color.white);
         
         float passiveHp = (ship.calculateMaxShields() / ship.calculateRechargeRate()) * 2.5f;
         float activeHp = calcActiveHp();
         float activeArmorHp = calcActiveArmorHp();
         
         //shield
-        FitPanel.drawShadowedString(g2d, "Passive: "+String.format("%1$14.2f", new Object[]{new Float(passiveHp)})+" hp/s", 45, 33, Color.white);
-        FitPanel.drawShadowedString(g2d, "Active: "+String.format("%1$15.2f", new Object[]{new Float(activeHp)})+" hp/s", 45, 44, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Passive: "+String.format("%1$14.2f", new Object[]{new Float(passiveHp)})+" hp/s", 45, 33, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Active: "+String.format("%1$15.2f", new Object[]{new Float(activeHp)})+" hp/s", 45, 44, Color.white);
         
-        FitPanel.drawShadowedStringCentered(g2d, String.format("%1$.2f", new Object[]{new Float(ship.calculateMaxShields()/(passiveHp+activeHp))}), 185, 38, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, String.format("%1$.2f", new Object[]{new Float(ship.calculateMaxShields()/(passiveHp+activeHp))}), 185, 38, Color.white);
         
         //armor
-        FitPanel.drawShadowedString(g2d, "Active: "+String.format("%1$15.2f", new Object[]{new Float(activeArmorHp)})+" hp/s", 45, 63, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Active: "+String.format("%1$15.2f", new Object[]{new Float(activeArmorHp)})+" hp/s", 45, 63, Color.white);
         
-        FitPanel.drawShadowedStringCentered(g2d, String.format("%1$.2f", new Object[]{new Float(ship.calculateMaxArmor()/activeArmorHp)}), 185, 63, Color.white);
+        WidgetHelper.drawShadowedStringCentered(g2d, String.format("%1$.2f", new Object[]{new Float(ship.calculateMaxArmor()/activeArmorHp)}), 185, 63, Color.white);
         
         g2d.drawLine(112,21,134,21);
         g2d.drawLine(158,21,220,21);
         g2d.drawLine(40,80,150,80);
-        FitPanel.drawShadowedString(g2d, "Total Effective HP: "+calcEffectiveHP(frame.intValue()), 45, 93, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Total Effective HP: "+calcEffectiveHP(frame.intValue()), 45, 93, Color.white);
         
         //cap
         g2d.setColor(bgLightColor);
@@ -142,18 +142,18 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         	capColor = new Color(1.0f, .1f, .1f);
         	int seconds = (int) (ship.calculateMaxCapacity() / (usage - capChargeRate));
         	if(seconds/60 > 60)
-        		FitPanel.drawShadowedStringCentered(g2d, ""+(seconds / 3600)+"h "+((seconds/60)%60)+"m "+(seconds % 60)+"s", 185, 135, capColor);
-        	else FitPanel.drawShadowedStringCentered(g2d, ""+(seconds / 60)+"m "+(seconds % 60)+"s", 185, 135, capColor);
+        		WidgetHelper.drawShadowedStringCentered(g2d, ""+(seconds / 3600)+"h "+((seconds/60)%60)+"m "+(seconds % 60)+"s", 185, 135, capColor);
+        	else WidgetHelper.drawShadowedStringCentered(g2d, ""+(seconds / 60)+"m "+(seconds % 60)+"s", 185, 135, capColor);
         }
-        FitPanel.drawShadowedString(g2d, "Cap. Balance: +"+String.format("%1$.2f", new Object[]{new Float(capChargeRate)}) + " / -"+ String.format("%1$.2f", new Object[]{new Float(usage)}), 45, 135, capColor);
+        WidgetHelper.drawShadowedString(g2d, "Cap. Balance: +"+String.format("%1$.2f", new Object[]{new Float(capChargeRate)}) + " / -"+ String.format("%1$.2f", new Object[]{new Float(usage)}), 45, 135, capColor);
         
         // -- ENEMY DPS -- //
         g2d.setColor(bgLightColor);
         g2d.fillRoundRect(250, 8, 130, 150, 40, 40);
         g2d.setColor(Color.WHITE);
-        FitPanel.drawShadowedString(g2d, "Enemy DPS", 266, 19, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Enemy DPS", 266, 19, Color.white);
         g2d.drawImage(emDmgImg, 252, 30, null);
-        FitPanel.drawShadowedString(g2d, "/sec", 350, 49, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "/sec", 350, 49, Color.white);
         g2d.drawImage(expDmgImg, 252, 60, null);
         g2d.drawImage(totalHpImg, 252, 90, null);
         g2d.drawImage(thDmgImg, 252, 120, null);
@@ -161,9 +161,9 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
         // -- SIM -- //
         g2d.setColor(bgLightColor);
         g2d.fillRoundRect(392, 8, 275, 150, 40, 40);
-        FitPanel.drawShadowedString(g2d, "Simulation", 410, 19, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Simulation", 410, 19, Color.white);
         
-        FitPanel.drawShadowedString(g2d, "Timeframe", 400, 140, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Timeframe", 400, 140, Color.white);
         
 	}
 

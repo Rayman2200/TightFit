@@ -102,10 +102,10 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         
         //render
         g2d.drawImage(dpsDmgImg, 8, 8, null);
-        FitPanel.drawShadowedString(g2d, "Total DPS:  "+String.format("%1$.2f", new Object[]{new Float(ship.calculateGenericDps())}), 45, 17, Color.white);
-        FitPanel.drawShadowedString(g2d, "Volley:     "+String.format("%1$.2f", new Object[]{new Float(ship.calculateGenericVolley())}), 45, 29, Color.white);
-        FitPanel.drawShadowedString(g2d, "Min. Effective Range:  "+String.format("%1$.2f", new Object[]{new Float(calculateMinRange(ship))}), 125, 17, Color.white);
-        FitPanel.drawShadowedString(g2d, "Max. Effective Range:  "+String.format("%1$.2f", new Object[]{new Float(calculateMaxRange(ship))}), 125, 29, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Total DPS:  "+WidgetHelper.formatFloat(ship.calculateGenericDps(), 2), 45, 17, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Volley:     "+WidgetHelper.formatFloat(ship.calculateGenericVolley(), 2), 45, 29, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Min. Effective Range:  "+WidgetHelper.formatFloat(calculateMinRange(ship), 2), 125, 17, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Max. Effective Range:  "+WidgetHelper.formatFloat(calculateMaxRange(ship), 2), 125, 29, Color.white);
         
         //Dimension d = getSize();
         //int spacing = (d.width-(32*ship.totalHiSlots())-60)/(ship.totalHiSlots()*2);
@@ -257,10 +257,10 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		g2d.fillRoundRect(400, 10, 230, 135, 40, 40);
 		g2d.drawImage(weapon.getImage(), 410,20,null);
 		
-		FitPanel.drawShadowedString(g2d, "Type:  "+weapon.name, 485, 29, Color.white);
-		FitPanel.drawShadowedString(g2d, "RoF:   "+(weapon.calculateRoF())+"s", 485, 45, Color.white);
-		FitPanel.drawShadowedString(g2d, "DPS:   "+weapon.calculateAggregateDps(), 485, 61, Color.white);
-		FitPanel.drawShadowedString(g2d, "MTBR:  "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 77, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "Type:  "+weapon.name, 485, 29, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "RoF:   "+WidgetHelper.formatFloat(weapon.calculateRoF(),2)+"s", 485, 45, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "DPS:   "+weapon.calculateAggregateDps(), 485, 61, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "MTBR:  "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 77, Color.white);
 	}
 	
 	private float calculateMinRange(Ship s) {
