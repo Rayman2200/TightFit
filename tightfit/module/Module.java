@@ -10,7 +10,6 @@
 
 package tightfit.module;
 
-import tightfit.TightFit;
 import tightfit.character.Skill;
 import tightfit.item.*;
 import tightfit.ship.Ship;

@@ -171,6 +171,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		
 		if(y >= 50 && y <=82) {
 			selected = (x-30)/42;
+			buildAmmo(editor.getShip().getModule(Module.HI_SLOT, selected));
 			repaint();
 		}
 	}
@@ -226,7 +227,6 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	private void paintAmmo(Graphics2D g2d, Module weapon) {
 		g2d.setColor(bgLightColor);
 		g2d.fillRoundRect(10, 97, 330, 55, 40, 40);
-		buildAmmo(weapon);
 		sp.setVisible(true);
 		
 		//TODO: initially center them, if that doesn't work then just shift them over...

@@ -37,10 +37,12 @@ public class EFTShipParser {
 				slot=0;
 			} else {
 				String [] parts = lines[i].split(",");
-				Module m = new Module(Database.getInstance().getType(parts[0]));
-				ship.putModule(m, slotType, slot++);
-				if(parts.length > 1) {
-					m.insertCharge(new Ammo(Database.getInstance().getType(parts[1])));
+					if(!parts[0].equals("Empty")) {
+					Module m = new Module(Database.getInstance().getType(parts[0]));
+					ship.putModule(m, slotType, slot++);
+					if(parts.length > 1) {
+						m.insertCharge(new Ammo(Database.getInstance().getType(parts[1])));
+					}
 				}
 			}
 		}

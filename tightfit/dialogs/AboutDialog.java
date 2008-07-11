@@ -57,8 +57,8 @@ public class AboutDialog extends JDialog {
     					"  ----------================--------  \n" +
     					"(This is a feature-incomplete version)\n" +
     					"                                      \n" +
-    					" Skill-based Calculations:        25% \n" +
-    					" Module-based Calculations:       15% \n" +
+    					" Skill-based Calculations:        45% \n" +
+    					" Module-based Calculations:       35% \n" +
     					" Fit Panel:                       95% \n" +
     					" Tank Tab:                        85% \n" +
     					" DPS Tab:                         60% \n" +
