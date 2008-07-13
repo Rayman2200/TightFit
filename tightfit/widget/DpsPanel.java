@@ -53,7 +53,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		}
 		
 		setLayout(new SlickLayout());
-		ammoType = new JComboBox(new String[]{"Standard", "Advanced"});
+		ammoType = new JComboBox(new String[]{"Standard", "Advanced", "Faction"});
 		add(ammoType);
 		ammoType.setLocation(432,117);
 		ammoType.setVisible(false);
@@ -102,10 +102,10 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         
         //render
         g2d.drawImage(dpsDmgImg, 8, 8, null);
-        WidgetHelper.drawShadowedString(g2d, "Total DPS:  "+WidgetHelper.formatFloat(ship.calculateGenericDps(), 2), 45, 17, Color.white);
-        WidgetHelper.drawShadowedString(g2d, "Volley:     "+WidgetHelper.formatFloat(ship.calculateGenericVolley(), 2), 45, 29, Color.white);
-        WidgetHelper.drawShadowedString(g2d, "Min. Effective Range:  "+WidgetHelper.formatFloat(calculateMinRange(ship), 2), 125, 17, Color.white);
-        WidgetHelper.drawShadowedString(g2d, "Max. Effective Range:  "+WidgetHelper.formatFloat(calculateMaxRange(ship), 2), 125, 29, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Total DPS:  " + WidgetHelper.formatFloat(ship.calculateGenericDps(), 2), 45, 17, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Volley:     " + WidgetHelper.formatFloat(ship.calculateGenericVolley(), 2), 45, 29, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Min. Effective Range:  " + WidgetHelper.formatFloat(calculateMinRange(ship), 2), 125, 17, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Max. Effective Range:  " + WidgetHelper.formatFloat(calculateMaxRange(ship), 2), 125, 29, Color.white);
         
         //Dimension d = getSize();
         //int spacing = (d.width-(32*ship.totalHiSlots())-60)/(ship.totalHiSlots()*2);
@@ -119,7 +119,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         	if(m != null && m instanceof Weapon) {
         		if(i==selected) {
         			g2d.setColor(bgLightColor);
-        			g2d.fillRoundRect((i*spacing+30)-5,45,42,52,10,10);
+        			g2d.fillRoundRect((i*spacing+30)-5, 45, 42, 52, 10, 10);
         			
         			paintDetails(g2d, (Weapon)m);
         			paintAmmo(g2d, m);

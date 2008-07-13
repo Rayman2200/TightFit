@@ -118,7 +118,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         jtp.addTab(Resources.getString("dialog.market.tab.list"), mtsp);
         
         JPanel search = new JPanel();
-        search.setLayout(new GridLayout(2,2));
+        //search.setLayout(new GridLayout(2,2));
         searchField = new JTextField(10);
         search.add(searchField);
         JButton b = new JButton(Resources.getString("dialog.market.tab.search"));

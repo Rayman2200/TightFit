@@ -147,8 +147,12 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     }
     
     public void setShip(Ship s) {
-        if(myShip != null && myShip.totalSlots(Module.LOW_SLOT) != 0) {
-            saveShip(myShip);
+        if(myShip != null) {
+            myShip.removeChangeListener(tankPanel);
+            myShip.removeChangeListener(dpsPanel);
+            
+            if(myShip.totalSlots(Module.LOW_SLOT) != 0)
+                saveShip(myShip);
         }
         
     	myShip = s;

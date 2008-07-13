@@ -7,6 +7,7 @@
  *  (at your option) any later version.
  *
  */
+
 package tightfit.character;
 
 import tightfit.item.Database;

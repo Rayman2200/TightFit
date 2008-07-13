@@ -381,8 +381,10 @@ public class Ship extends Item {
             for(int i=0;i<rack.length;i++) {
                 if(rack[i] != null) {
                     try{
-                        if(rack[i].getAttributeKey(name) != null)
+                        if(rack[i].hasAttribute(name)) {
+                            System.out.println("found "+rack[i].name);
                             map.put(new Float(Float.parseFloat(rack[i].getAttribute(name, "0"))), rack[i]);
+                        }
                     }catch(Exception e) {}
                 }
             }
@@ -606,17 +608,19 @@ public class Ship extends Item {
     	float [] reson = new float[4];
         float mod=1;
         //EM
-    	reson[0] = (1-shieldReson[0])											//base resist
+       
+    	reson[0] = (shieldReson[0])											//base resist
                     * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
         
         Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
         while(itr.hasNext()) {
             Module list = (Module)itr.next();
-            if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
-                reson[0] *= (1-Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
+            System.out.println("now: "+mod);
+            if(list.isReady() && (list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyShieldResonancePostPercent")))
+                reson[0] *= (1+Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
             else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
-                reson[0] *= (1-Float.parseFloat((String)list.getAttribute("passiveEmDamageResistanceBonus", "0"))/100.0f*mod);
-
+                reson[0] *= (1+Float.parseFloat((String)list.getAttribute("passiveEmDamageResistanceBonus", "0"))/100.0f*mod);
+            
             mod*=0.655f;
         }
         
@@ -625,25 +629,25 @@ public class Ship extends Item {
         while(itr.hasNext()) {
             Module list = (Module)itr.next();
             if(list.isReady())
-                reson[0] *= 1+(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldEmDamageResonance", "0")))*mod);
+                reson[0] -= reson[0]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldEmDamageResonance", "0")))*mod);
             
             mod*=0.655f;
         }
         
-        reson[0] = (float) 1-(reson[0]-1);
+        //reson[0] = (float) 1-(reson[0]-1);
         
     	//KINETIC
-        reson[1] = (1-shieldReson[1])                                   //base resist
+        reson[1] = (shieldReson[1])                                   //base resist
 		        	* (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
 		
         mod=1;
 		itr = findModuleByAttributeAndSort("kineticDamageResistanceBonus", true);
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
-			if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
-			    reson[1] *= (1-Float.parseFloat((String)list.getAttribute("kineticDamageResistanceBonus", "0"))/100.0f*mod);
+			if(list.isReady() && (list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance") || list.hasAttribute("modifyShieldResonancePostPercent")))
+			    reson[1] *= (1+Float.parseFloat((String)list.getAttribute("kineticDamageResistanceBonus", "0"))/100.0f*mod);
 			else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
-			    reson[1] *= (1-Float.parseFloat((String)list.getAttribute("passiveKineticDamageResistanceBonus", "0"))/100.0f*mod);
+			    reson[1] *= (1+Float.parseFloat((String)list.getAttribute("passiveKineticDamageResistanceBonus", "0"))/100.0f*mod);
 			}
 			mod*=0.655f;
 		}
@@ -653,7 +657,7 @@ public class Ship extends Item {
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
 			if(list.isReady())
-			    reson[1] *= 1+(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldKineticDamageResonance", "0")))*mod);
+			    reson[1] -= reson[1]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldKineticDamageResonance", "0")))*mod);
 			
 			mod*=0.655f;
 		}
@@ -661,17 +665,17 @@ public class Ship extends Item {
         //reson[1] = (float) 1-(reson[1]);
         
     	//THERMAL
-        reson[2] = (1-shieldReson[2])                                   //base resist
+        reson[2] = (shieldReson[2])                                   //base resist
     					* (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
 
 		mod=1;
 		itr = findModuleByAttributeAndSort("thermalDamageResistanceBonus", true);
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
-			if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
-			    reson[2] *= (1-Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
+			if(list.isReady() && (list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance") || list.hasAttribute("modifyShieldResonancePostPercent")))
+			    reson[2] *= (1+Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
 			else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
-			    reson[2] *= (1-Float.parseFloat((String)list.getAttribute("passiveThermalDamageResistanceBonus", "0"))/100.0f*mod);
+			    reson[2] *= (1+Float.parseFloat((String)list.getAttribute("passiveThermalDamageResistanceBonus", "0"))/100.0f*mod);
 			}
 			mod*=0.655f;
 		}
@@ -681,25 +685,25 @@ public class Ship extends Item {
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
 			if(list.isReady())
-			    reson[2] *= 1+(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldThermalDamageResonance", "0")))*mod);
+			    reson[2] -= reson[2]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldThermalDamageResonance", "0")))*mod);
 			
 			mod*=0.655f;
 		}
 		
-		reson[2] = (float) 1-(reson[2]);
+		//reson[2] = (float) 1-(reson[2]);
     	
         //EXPLOSIVE
-        reson[3] = (1-shieldReson[3])                                   //base resist
+        reson[3] = (shieldReson[3])                                   //base resist
     					* (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
 
 		mod=1;
 		itr = findModuleByAttributeAndSort("thermalDamageResistanceBonus", true);
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
-			if(list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
-			    reson[3] *= (1-Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
+			if(list.isReady() && (list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance") || list.hasAttribute("modifyShieldResonancePostPercent")))
+			    reson[3] *= (1+Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
 			else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance")) {
-			    reson[3] *= (1-Float.parseFloat((String)list.getAttribute("passiveThermalDamageResistanceBonus", "0"))/100.0f*mod);
+			    reson[3] *= (1+Float.parseFloat((String)list.getAttribute("passiveThermalDamageResistanceBonus", "0"))/100.0f*mod);
 			}
 			mod*=0.655f;
 		}
@@ -709,12 +713,12 @@ public class Ship extends Item {
 		while(itr.hasNext()) {
 			Module list = (Module)itr.next();
 			if(list.isReady())
-			    reson[3] *= 1+(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldThermalDamageResonance", "0")))*mod);
+			    reson[3] -= reson[3]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("shieldThermalDamageResonance", "0")))*mod);
 			
 			mod*=0.655f;
 		}
 		
-		reson[3] = (float) 1-(reson[3]);
+		//reson[3] = (float) 1-(reson[3]);
         
     	return reson;
     }
@@ -900,5 +904,9 @@ public class Ship extends Item {
     
     public void addChangeListener(ShipChangeListener scl) {
     	listenerList.add(scl);
+    }
+    
+    public void removeChangeListener(ShipChangeListener scl) {
+        listenerList.remove(scl);
     }
 }

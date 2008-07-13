@@ -20,7 +20,7 @@
     <mkdir dir="releases"/>
     <zip destfile="releases/tightfit-${version}-bin.zip">
       <zipfileset prefix="tightfit-${version}" dir="."
-        includes="README COPYING INSTALL CHANGES TODO"/>
+        includes="README CHANGES TODO"/>
       <zipfileset fullpath="tightfit-${version}/tightfit.jar" dir="dist"
         includes="tightfit.jar"/>
     </zip>
@@ -48,14 +48,8 @@
     </copy>
   </target>
 
-  <target name="compile_dep" depends="init" description="Compile the source">
-    <javac source="1.4" target="1.4" srcdir="${src}" destdir="${build}" 
-	deprecation="on"/>
-    <copy todir="${build}/tightfit/resources">
-      <fileset dir="./tightfit/resources">
-	<include name="*.*" />
-      </fileset>
-    </copy>
+  <target name="test" depends="init" description="Compile the test cases">
+    <javac source="1.5" target="1.5" srcdir="test" destdir="testbuild" classpath="junit.jar"/>
   </target>
 
   <target name="dist" depends="compile" description="Generate the distribution">
@@ -67,11 +61,11 @@
       />
   </target>
 
-  <target name="dist_dep" depends="compile_dep"
-    description="Generate the distribution and warn about deprecation">
+  <target name="dist_test" depends="compile,test"
+    description="Generate the distribution and test cases">
     <mkdir dir="${dist}"/>
     <jar
-      jarfile="${dist}/tightfit.jar"
+      jarfile="${dist}/tightfit-test.jar"
       manifest="MANIFEST.MF"
       basedir="${build}"
       />
