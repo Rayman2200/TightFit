@@ -6,7 +6,6 @@
 * Unified bonus calc from modules
 * Drone damage simulator
 * Skill Plan export for EveMon
-* Finish Show Info Dialog
 * Skill calculates into all attributes
 * Rack overloading
 
@@ -15,3 +14,5 @@
 * Scan resolution and signature radius aren't calculated properly
 * Save should allow for cancelling loading another ship
 * Scripts can not be loaded into modules that can use them
+* Skill tree in Show Info
+* Finish Show Info Dialog (skill, variations)
