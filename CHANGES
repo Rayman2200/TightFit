@@ -3,8 +3,9 @@
 + Fixed resistances calculations
 + Fixed SimulatorSlots drawing indicator for activation rather than overload
 + Fixed calculations for module cap, cpu, and power usage to include skill
++ Fixed DpsPanel causing slowness
 + Added Internationalizaton support
-+ Added quicklist 
++ Added quicklist
 + Added market search
 + Added splash screen
 + Added import & export dialogs

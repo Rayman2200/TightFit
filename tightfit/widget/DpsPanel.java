@@ -20,7 +20,6 @@ import java.util.Vector;
 import javax.swing.*;
 
 import tightfit.Resources;
-import tightfit.TightFit;
 import tightfit.module.Module;
 import tightfit.module.Weapon;
 import tightfit.item.*;
@@ -30,18 +29,16 @@ import tightfit.ship.ShipChangeListener;
 public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipChangeListener, MouseListener, ActionListener {
 	private static final long serialVersionUID = 1L;
 
-	private TightFit editor;
 	private int selected=-1;
 	private Font bigFont;
 	private JComboBox ammoType;
 	private JList ammoListPanel;
 	private JScrollPane sp;
 	private Image dpsDmgImg, bgImg;
-	
+	private Ship memShip;
 	private Color bgLightColor = new Color(1,1,1,0.25f);
 	
-	public DpsPanel(TightFit editor) {
-		this.editor = editor;
+	public DpsPanel() {
 		this.addMouseListener(this);
 		
 		try {
@@ -80,7 +77,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		Graphics2D g2d = (Graphics2D) g.create();
 		Dimension size = getSize();
 		Color bgColor = getBackground();
-		Ship ship = editor.getShip();
+		Ship ship = memShip;
 		
         //setup
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -110,8 +107,6 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         //Dimension d = getSize();
         //int spacing = (d.width-(32*ship.totalHiSlots())-60)/(ship.totalHiSlots()*2);
         int spacing = 42;
-        ammoType.setVisible(false);
-        sp.setVisible(false);
         
         for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
         	AffineTransform save = g2d.getTransform();
@@ -123,7 +118,6 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         			
         			paintDetails(g2d, (Weapon)m);
         			paintAmmo(g2d, m);
-        			ammoType.setVisible(true);
         		}
         		g2d.scale(0.5, 0.5);
 	        	g2d.drawImage(m.getImage(), (i*spacing+30)*2, 100, null);
@@ -163,15 +157,22 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	}
 
 	public void shipChanged(Ship ship) {
+		if(memShip == null || ship != memShip) {
+			memShip = ship;
+			selected = -1;
+        }
 		repaint();
 	}
 
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX(), y = e.getY();
 		
+		ammoType.setVisible(false);
+        sp.setVisible(false);
 		if(y >= 50 && y <=82) {
 			selected = (x-30)/42;
-			buildAmmo(editor.getShip().getModule(Module.HI_SLOT, selected));
+			buildAmmo(memShip.getModule(Module.HI_SLOT, selected));
+			ammoType.setVisible(true);
 			repaint();
 		}
 	}
@@ -197,6 +198,9 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	}
 
 	private void buildAmmo(Module weapon) {
+		if(weapon == null)
+			return;
+		
 		int size = Integer.parseInt(weapon.getAttribute("chargeSize", "1"));
 		int gid = Integer.parseInt(weapon.getAttribute("chargeGroup"+(ammoType.getSelectedIndex()+1), "0"));
 		Vector data = new Vector();
@@ -219,6 +223,8 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 			}
 			
 			ammoListPanel.setListData(data);
+			if(!sp.isVisible())
+				sp.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -227,7 +233,6 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	private void paintAmmo(Graphics2D g2d, Module weapon) {
 		g2d.setColor(bgLightColor);
 		g2d.fillRoundRect(10, 97, 330, 55, 40, 40);
-		sp.setVisible(true);
 		
 		//TODO: initially center them, if that doesn't work then just shift them over...
 		/*int x=20;
@@ -272,6 +277,6 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
-		repaint();
+		//repaint();
 	}
 }

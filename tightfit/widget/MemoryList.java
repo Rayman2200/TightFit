@@ -10,6 +10,7 @@
  
 package tightfit.widget;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -39,6 +40,17 @@ public class MemoryList extends JList {
             
             TightPreferences.node("memory").node(name).put("mem0", c.toString());
             TightPreferences.node("memory").node(name).put("memcount", ""+(count+1));
+        } else {
+        	Iterator itr = data.iterator();
+        	while(itr.hasNext()) {
+        		Object o = itr.next();
+        		if(o.equals(c)) {
+        			//bubble it to the top
+        			itr.remove();
+        			insertFirst(o);
+        			break;
+        		}
+        	}
         }
     }
     

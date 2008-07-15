@@ -382,7 +382,7 @@ public class Ship extends Item {
                 if(rack[i] != null) {
                     try{
                         if(rack[i].hasAttribute(name)) {
-                            System.out.println("found "+rack[i].name);
+                            //System.out.println("found "+rack[i].name);
                             map.put(new Float(Float.parseFloat(rack[i].getAttribute(name, "0"))), rack[i]);
                         }
                     }catch(Exception e) {}
@@ -615,7 +615,7 @@ public class Ship extends Item {
         Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
         while(itr.hasNext()) {
             Module list = (Module)itr.next();
-            System.out.println("now: "+mod);
+            //System.out.println("now: "+mod);
             if(list.isReady() && (list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyShieldResonancePostPercent")))
                 reson[0] *= (1+Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
             else if(!list.isReady() && list.hasAttribute("modifyActiveShieldResonanceAndNullifyPassiveResonance"))
@@ -725,14 +725,115 @@ public class Ship extends Item {
     
     public float [] getArmorResonance() {
     	float [] reson = new float[4];
-    	reson[0] = armorReson[0] * (1+aggregateAllSlots("emDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						 (1-checkResonance(aggregateAllSlots("armorEmDamageResonance", "*", true)));
-    	reson[1] = armorReson[1] * (1+aggregateAllSlots("kineticDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						 (1-checkResonance(aggregateAllSlots("armorKineticDamageResonance", "*", true)));
-    	reson[2] = armorReson[2] * (1+aggregateAllSlots("thermalDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						 (1-checkResonance(aggregateAllSlots("armorThermalDamageResonance", "*", true)));
-    	reson[3] = armorReson[3] * (1+aggregateAllSlots("explosiveDamageResistanceBonus", "modifyArmorResonancePostPercent", true) / 100.0f) -
-						 (1-checkResonance(aggregateAllSlots("armorExplosiveDamageResonance", "*", true)));
+    	float mod;
+    	
+    	// EM DAMAGE
+    	reson[0] = armorReson[0] 
+    	                      * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+    	
+    	mod=1;
+    	Iterator itr = findModuleByAttributeAndSort("emDamageResistanceBonus", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            //System.out.println("now: "+mod);
+            if(list.isReady() && (list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyArmorResonancePostPercent")))
+                reson[0] *= (1+Float.parseFloat((String)list.getAttribute("emDamageResistanceBonus", "0"))/100.0f*mod);
+            else if(!list.isReady() && list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance"))
+                reson[0] *= (1+Float.parseFloat((String)list.getAttribute("passiveEmDamageResistanceBonus", "0"))/100.0f*mod);
+            
+            mod*=0.655f;
+        }
+        
+        mod=1;
+        itr = findModuleByAttributeAndSort("armorEmDamageResonance", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            if(list.isReady())
+                reson[0] -= reson[0]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("armorEmDamageResonance", "0")))*mod);
+            
+            mod*=0.655f;
+        }
+    	
+        //KINETIC DAMAGE
+        reson[1] = armorReson[1] 
+    	                      * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+    	
+    	mod=1;
+    	itr = findModuleByAttributeAndSort("kineticDamageResistanceBonus", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            //System.out.println("now: "+mod);
+            if(list.isReady() && (list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyArmorResonancePostPercent")))
+                reson[1] *= (1+Float.parseFloat((String)list.getAttribute("kineticDamageResistanceBonus", "0"))/100.0f*mod);
+            else if(!list.isReady() && list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance"))
+                reson[1] *= (1+Float.parseFloat((String)list.getAttribute("passiveKineticDamageResistanceBonus", "0"))/100.0f*mod);
+            
+            mod*=0.655f;
+        }
+        
+        mod=1;
+        itr = findModuleByAttributeAndSort("armorKineticDamageResonance", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            if(list.isReady())
+                reson[1] -= reson[1]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("armorKineticDamageResonance", "0")))*mod);
+            
+            mod*=0.655f;
+        }
+        
+        //THERMAL DAMAGE
+        reson[2] = armorReson[2] 
+    	                      * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+    	
+    	mod=1;
+    	itr = findModuleByAttributeAndSort("thermalDamageResistanceBonus", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            //System.out.println("now: "+mod);
+            if(list.isReady() && (list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyArmorResonancePostPercent")))
+                reson[2] *= (1+Float.parseFloat((String)list.getAttribute("thermalDamageResistanceBonus", "0"))/100.0f*mod);
+            else if(!list.isReady() && list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance"))
+                reson[2] *= (1+Float.parseFloat((String)list.getAttribute("passivethermalDamageResistanceBonus", "0"))/100.0f*mod);
+            
+            mod*=0.655f;
+        }
+        
+        mod=1;
+        itr = findModuleByAttributeAndSort("armorThermalDamageResonance", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            if(list.isReady())
+                reson[2] -= reson[2]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("armorThermalDamageResonance", "0")))*mod);
+            
+            mod*=0.655f;
+        }
+
+        //EXPLOSIVE DAMAGE
+        reson[3] = armorReson[3] 
+    	                      * (1 - Float.parseFloat(getAttribute("cantfindit", "0")));    //ship bonus
+    	
+    	mod=1;
+    	itr = findModuleByAttributeAndSort("explosiveDamageResistanceBonus", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            //System.out.println("now: "+mod);
+            if(list.isReady() && (list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance") ||list.hasAttribute("modifyArmorResonancePostPercent")))
+                reson[3] *= (1+Float.parseFloat((String)list.getAttribute("explosiveDamageResistanceBonus", "0"))/100.0f*mod);
+            else if(!list.isReady() && list.hasAttribute("modifyActiveArmorResonanceAndNullifyPassiveResonance"))
+                reson[3] *= (1+Float.parseFloat((String)list.getAttribute("passiveExplosiveDamageResistanceBonus", "0"))/100.0f*mod);
+            
+            mod*=0.655f;
+        }
+        
+        mod=1;
+        itr = findModuleByAttributeAndSort("armorExplosiveDamageResonance", true);
+        while(itr.hasNext()) {
+            Module list = (Module)itr.next();
+            if(list.isReady())
+                reson[3] -= reson[3]*(1-checkResonance(Float.parseFloat((String)list.getAttribute("armorExplosiveDamageResonance", "0")))*mod);
+            
+            mod*=0.655f;
+        }
     	return reson;
     }
     

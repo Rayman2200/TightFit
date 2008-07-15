@@ -1,7 +1,11 @@
 
           +++++===== TightFit - Eve Fit Tool =====+++++
 
-TightFit is a "fit tool" for Eve Online(r), and can help you test and check ships and modules without spending all the ISK.
+TightFit is a "fit tool" for Eve Online(r), and can help you test and check ships and modules without 
+spending all the ISK. The main design goals are: speed, and shallow learning curve.
+
+NOTE: To import character data currently does not use EVEAPI. Instead, save character data from EveMON, 
+and load that data in TightFit from the config dialog.
 
           +++++====================================+++++
 
@@ -18,6 +22,6 @@ http://evetightfit.org
  Thanks To: 
 ------------
 
-Modulus Zero
-Gnomercie
+Modulus Zero & Gnomercie
 The good people of the DEFI4NT alliance
+CDSI

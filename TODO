@@ -1,15 +1,17 @@
-0.3.0
-* Drone damage simulator
+1.0.0b
 * Create Eve-like L&F for JavaUI
+* Full simulation
 
-0.2.0
+0.2.0a
 * Unified bonus calc from modules
-* Plan export for EveMon
+* Drone damage simulator
+* Skill Plan export for EveMon
 * Finish Show Info Dialog
 * Skill calculates into all attributes
-* Full simulation
 * Rack overloading
 
-0.1.3a - TBD
+0.1.4a - TBD
 * Saving fits
-
+* Scan resolution and signature radius aren't calculated properly
+* Save should allow for cancelling loading another ship
+* Scripts can not be loaded into modules that can use them

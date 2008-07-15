@@ -88,7 +88,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     }
     
     private void init() {
-    	JPanel panel = new JPanel(new GridLayout());
+    	JPanel panel = new JPanel(new GridBagLayout());
     	GridBagConstraints c = new GridBagConstraints();
     	
         c.gridx = 0;
@@ -111,28 +111,40 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         
         JTabbedPane jtp = new JTabbedPane();
         
+        //GROUPS
         JScrollPane mtsp = new JScrollPane();
         mtsp.getViewport().setView(marketTree);
         mtsp.setPreferredSize(new Dimension(200, 350));
         mtsp.setBackground(new Color(.07f, .25f, .43f));
         jtp.addTab(Resources.getString("dialog.market.tab.list"), mtsp);
         
+        //SEARCH
         JPanel search = new JPanel();
-        //search.setLayout(new GridLayout(2,2));
+        search.setLayout(new GridBagLayout());
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1; c.weighty = 0;
+        c.gridx = 0; c.gridy = 0;
+        c.insets = new Insets(5, 0, 0, 0);
         searchField = new JTextField(10);
-        search.add(searchField);
+        search.add(searchField, c);
+        c.gridx=1;
         JButton b = new JButton(Resources.getString("dialog.market.tab.search"));
         b.setActionCommand("search");
         b.addActionListener(this);
-        search.add(b);
+        search.add(b, c);
+        c.gridx = 0; c.gridy = 1;
+        c.gridwidth=2;
+        c.gridheight=2;
+        c.weightx = 1; c.weighty = 5;
         searchList = new JList();
         searchList.setCellRenderer(new QuickListRenderer());
         searchList.addMouseListener(this);
         JScrollPane ssp = new JScrollPane();
         ssp.getViewport().setView(searchList);
-        search.add(ssp);
+        search.add(ssp, c);
         jtp.addTab(Resources.getString("dialog.market.tab.search"), search);
         
+        //QUICKLIST
         quickList = new MemoryList("quicklist");
         quickList.setCellRenderer(new QuickListRenderer());
         quickList.addMouseListener(this);
@@ -148,7 +160,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         splitPane.setLeftComponent(jtp);
         splitPane.setRightComponent(sp);
         
-        c.fill = GridBagConstraints.BOTH;
         c.weightx = 1; c.weighty = 1;
         panel.add(splitPane, c);
         c.weightx = 0; c.weighty = 0; c.gridy = 1;
