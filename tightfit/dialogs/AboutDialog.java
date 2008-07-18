@@ -84,8 +84,12 @@ public class AboutDialog extends JDialog {
     					" EVE Online is a registered trademark \n" +
     					"             of CCP Games             \n" +
     					"                                      \n" +
+                        "   Many of the graphics used herein   \n" +
+                        "  are the sole property of CCP games  \n" +
+                        "                                      \n" +
     					"   TightFit comes with no warranty    \n" +
     					"         expressed or implied         \n" +
+                        "                                      \n" +
     					"  ----------================--------  \n";
     	
     	jta.setText(text);

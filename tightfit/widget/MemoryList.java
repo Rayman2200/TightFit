@@ -29,19 +29,35 @@ public class MemoryList extends JList {
     }
     
     public void remember(Object c) {
-        if(!data.contains(c)) {
-            int count = Math.min(25, Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0")));
+        int count = Math.min(25, Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0")));
+        
+        if(!data.contains(c)) {            
             
             insertFirst(c);
             
             for(int i = count; i > 0; i--) {
                 TightPreferences.node("memory").node(name).put("mem"+i, TightPreferences.node("memory").node(name).get("mem"+(i-1), ""));
             }
-            
-            TightPreferences.node("memory").node(name).put("mem0", c.toString());
+                        
             TightPreferences.node("memory").node(name).put("memcount", ""+(count+1));
         } else {
-        	Iterator itr = data.iterator();
+            String cstr = c.toString();
+            for(int i = 0; i < count; i++) {
+                String itm = TightPreferences.node("memory").node(name).get("mem"+i, "");
+                if(itm.equals(cstr)) {
+                    for(int j=i;j<count;j++) {
+                        TightPreferences.node("memory").node(name).put("mem"+j, TightPreferences.node("memory").node(name).get("mem"+(j+1), ""));
+                    }
+                    
+                    for(int j = count; j > 0; j--) {
+                        TightPreferences.node("memory").node(name).put("mem"+j, TightPreferences.node("memory").node(name).get("mem"+(j-1), ""));
+                    }
+                    
+                    break;
+                }
+            }
+            
+        	/*Iterator itr = data.iterator();
         	while(itr.hasNext()) {
         		Object o = itr.next();
         		if(o.equals(c)) {
@@ -50,8 +66,10 @@ public class MemoryList extends JList {
         			insertFirst(o);
         			break;
         		}
-        	}
+        	}*/
         }
+        
+        TightPreferences.node("memory").node(name).put("mem0", c.toString());
     }
     
     public void insert(Object c) {

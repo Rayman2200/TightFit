@@ -8,11 +8,13 @@
 * Skill Plan export for EveMon
 * Skill calculates into all attributes
 * Rack overloading
+* EVEAPI character loading
 
 0.1.4a - TBD
 * Saving fits
+* Fix stacking in calculations
 * Scan resolution and signature radius aren't calculated properly
 * Save should allow for cancelling loading another ship
-* Scripts can not be loaded into modules that can use them
+* Scripts can be loaded into modules that can use them
 * Skill tree in Show Info
 * Finish Show Info Dialog (skill, variations)
