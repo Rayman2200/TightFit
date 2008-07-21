@@ -148,7 +148,6 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 	        }
         } else {
             //g2d.rotate(r, 32, 32);
-        	//TODO: draw image for slot type
         	//g2d.scale(0.75f, 0.75f);
         	g2d.drawImage(typeImg, 0, 0, null);
             g2d.setTransform(t);

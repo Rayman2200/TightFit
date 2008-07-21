@@ -42,10 +42,11 @@ public abstract class Slot extends JPanel implements ActionListener {
     
     public void setSelected(boolean s) {
     	if(selected != s) {
+    		Dimension d = getPreferredSize();
 	    	selected = s;
 	    	Point pt = getLocation();
-	    	//FIXME: parent.repaint(0, pt.x, pt.y, 64, 64);
-	    	parent.repaint();
+	    	parent.repaint(0, pt.x, pt.y, d.width, d.height);
+	    	//parent.repaint();
     	}
     }
     

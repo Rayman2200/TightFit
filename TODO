@@ -1,14 +1,18 @@
-1.0.0b
+1.0.0a
 * Create Eve-like L&F for JavaUI
-* Full simulation
+* Realtime combat simulation
+* Modularity (Boz Well)
+* Market price of modules, ships, entire fits, etc.
 
-0.2.0a
+0.2.0a - Depends on data export from CCP
 * Unified bonus calc from modules
-* Drone damage simulator
+* Drone damage calculator
 * Skill Plan export for EveMon
 * Skill calculates into all attributes
 * Rack overloading
-* EVEAPI character loading
+* Ship comparisons
+* Ship bonuses
+* Must be noticibly faster, more responsive
 
 0.1.4a - TBD
 * Saving fits
@@ -18,4 +22,8 @@
 * Scripts can be loaded into modules that can use them
 * Skill tree in Show Info
 * Finish Show Info Dialog (skill, variations)
-* Ship bonuses
+* Graph for damage falloff (AstroPhobic)
+* Cargohold
+* EVEAPI character loading
+* Fix UI (font hard to read, contrast too low) (Kalliopia)
+* Various module sorting capabilities (Lubomir Penev)

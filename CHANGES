@@ -1,4 +1,8 @@
-0.1.3a - TBD
+0.1.4a - TBD
++ Fixed heat dissipation amp II giving boost to explosive resist 
+  (affected all shield thermal resistance amps) (found by Constance Harme)
+
+0.1.3a - July 19th, 2008
 + Fixed market window - can no longer be closed
 + Fixed resistances calculations
 + Fixed SimulatorSlots drawing indicator for activation rather than overload
