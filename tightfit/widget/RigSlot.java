@@ -14,6 +14,7 @@ import java.awt.*;
 
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.TightPreferences;
 
 public class RigSlot extends ModuleSlot {
 	private static final long serialVersionUID = 1L;
@@ -34,10 +35,16 @@ public class RigSlot extends ModuleSlot {
 
 	public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
-        
+        Color bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A"));
+        Point pt = getLocation();
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
 				RenderingHints.VALUE_RENDER_QUALITY);
         
+        g2d.setComposite(AlphaComposite.SrcAtop);
+        
+        g2d.setColor(bgColor);
+        g2d.fillRect(0, 0, 32, 32);
+        g2d.drawImage(((FitPanel)parent).panelImg, -pt.x, -pt.y, null);
         
         g2d.setColor(Color.WHITE);
         g2d.drawRect(0, 0, 32, 32);

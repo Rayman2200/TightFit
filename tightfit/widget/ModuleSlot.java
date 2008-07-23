@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import tightfit.Resources;
 import tightfit.TightFit;
+import tightfit.TightPreferences;
 import tightfit.item.Ammo;
 import tightfit.module.Module;
 import tightfit.ship.Ship;
@@ -86,6 +87,9 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
         Graphics2D g2d = (Graphics2D) g.create();
         int x, y;
         double r = Math.toRadians(rotate());
+        Color bgColor = Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A"));
+        
+        Thread.yield();
         
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -93,12 +97,11 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
 				RenderingHints.VALUE_RENDER_QUALITY);
         
-        //g2d.translate(pt.x, pt.y);
+        g2d.setComposite(AlphaComposite.SrcAtop);
 
-        //g2d.clearRect(0,0,64,64);
-        //g2d.fillRect(0,0,64,64);
-        
+        g2d.setColor(bgColor);
         g2d.setClip(-10, -10, 84, 84);
+        //g2d.fillRect(0, 0, 64, 64);
         
         AffineTransform t = g2d.getTransform();
         g2d.rotate(r, 32, 32);
@@ -206,10 +209,12 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 			editor.getShip().removeModule(myType, mySpot);
 		} else if(e.getActionCommand().contains("Offline")) {
 			mounted.offline();
+			editor.getShip().fireShipChange();
 		} else if(e.getActionCommand().contains("Online")) {
 			mounted.online();
+			editor.getShip().fireShipChange();
 		}
-		parent.repaint();
+
 	}
 
 	public void shipChanged(Ship ship) {

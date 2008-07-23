@@ -7,6 +7,7 @@
  *  (at your option) any later version.
  *
  */
+
 package tightfit.widget;
 
 import java.awt.*;
@@ -25,10 +26,8 @@ import tightfit.TightFit;
 import tightfit.TightPreferences;
 import tightfit.actions.ShowInfoAction;
 import tightfit.item.Ammo;
-import tightfit.module.Module;
-import tightfit.module.Weapon;
-import tightfit.ship.Ship;
-import tightfit.ship.ShipChangeListener;
+import tightfit.module.*;
+import tightfit.ship.*;
 
 /**
  * FitPanel is the pretty face of TightFit. Renders similar to the actual eve fit window, 
@@ -47,7 +46,9 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	private JButton strip, closeButton, minButton, configButton, 
                 infoButton, aboutButton, exportButton, importButton;
 	
-	private Image panelImg, rigImg, lnchrImg, turImg,
+	public Image panelImg;
+	
+	private Image rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
                 cargoImg, shieldImg, armorImg, structImg,
                 droneImg;
@@ -231,6 +232,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
 	public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();        
+        Rectangle clip = g2d.getClipBounds();
         
         //setup
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -246,7 +248,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
                             
         //let the drawing begin!
         g2d.setColor(bgColor);
-        g2d.fillRect(0,0,680,500);
+        g2d.fillRect(clip.x, clip.y, clip.width, clip.height);
         g2d.drawImage(panelImg, 0, 0, null);
         
         //draw lines

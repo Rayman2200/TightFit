@@ -38,6 +38,7 @@ public abstract class Slot extends JPanel implements ActionListener {
         DropTarget dt = new DropTarget(this, DnDConstants.ACTION_COPY, (TightFitDropTargetPanel)parent, true, null);
         setDropTarget(dt);
         
+        setDoubleBuffered(true);
     }
     
     public void setSelected(boolean s) {
@@ -45,7 +46,8 @@ public abstract class Slot extends JPanel implements ActionListener {
     		Dimension d = getPreferredSize();
 	    	selected = s;
 	    	Point pt = getLocation();
-	    	parent.repaint(0, pt.x, pt.y, d.width, d.height);
+	    	//repaint();
+	    	parent.repaint(pt.x-10, pt.y-10, d.width+20, d.height+20);
 	    	//parent.repaint();
     	}
     }
