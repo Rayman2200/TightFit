@@ -2,8 +2,10 @@
 + Fixed heat dissipation amp II giving boost to explosive resist 
   (affected all shield thermal resistance amps) (found by Constance Harme)
 + Fixed rendering issues, main window now noticibly faster
-+ Added DPS/Range graph to DPS tab
-+ Added Cargo bay
++ Fixed some things about SimulatorSlots that were bugging me
++ Added loading ammo to all weapons simultaneously (suggested by DeathsEmbrace)
++ Added DPS/Range graph to DPS tab (suggested by AstroPhobic)
++ Added Cargo bay (suggested by AstroPhobic)
 
 0.1.3a - July 19th, 2008
 + Fixed market window - can no longer be closed

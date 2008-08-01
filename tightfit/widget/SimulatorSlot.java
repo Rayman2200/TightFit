@@ -38,7 +38,7 @@ public class SimulatorSlot extends ModuleSlot {
             } else if(myType == Module.MID_SLOT) {
             	typeImg = Resources.getImage("icon08_10.png").getScaledInstance(24,24,Image.SCALE_SMOOTH);
             }
-            activeImg = Resources.getImage("simslot-active.png").getScaledInstance(32,32,Image.SCALE_SMOOTH);
+            activeImg = Resources.getImage("simslot-active.png").getScaledInstance(52,52,Image.SCALE_SMOOTH);
             powerImg = Resources.getImage("simslot-power.png").getScaledInstance(32,32,Image.SCALE_SMOOTH);
         }catch(Exception e) {
         	e.printStackTrace();
@@ -65,14 +65,18 @@ public class SimulatorSlot extends ModuleSlot {
         	if(mounted.isOnline()) {
         		if(mounted.requiresActivation()) {
         			if(mounted.isActive()) {
-        				g2d.drawImage(activeImg, 0, 0, null);
+        				g2d.drawImage(activeImg, -10, -10, null);
         			}
         		}
         		AffineTransform save = g2d.getTransform();
                 g2d.scale(0.5, 0.5);
-                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 /*&& mounted.getAttribute()*/)
+                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 /*&& mounted.getAttribute()*/) {
                 	g2d.drawImage(mounted.getCharge().getImage(),0,0,null);
-                else g2d.drawImage(mounted.getImage(),0,0,null); 
+                    g2d.setColor(Color.black);
+                    g2d.fillRect(25,40,30,10);
+                } else {
+                    g2d.drawImage(mounted.getImage(),0,0,null);
+                }
                 g2d.setTransform(save);
         	} else {
         		Composite saveComp = g2d.getComposite();

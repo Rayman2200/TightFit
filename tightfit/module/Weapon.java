@@ -159,4 +159,18 @@ public class Weapon extends Module {
         
         return mult;
 	}
+    
+    /**
+     *  This is a Gaussian Normal Distribution which approximates the damage dealt at 
+     *  a given range of a ship's weapon, given also optimal and falloff values for the
+     *  weapon, and finally scaled by the maximum damage of the weapon.
+     *  It does not account for traversal or target radius.
+     *
+     *  x       is distance to target
+     */
+    public float getDamageAtRange(float x) {
+        float mu = optimal;
+        float sigma = falloff;
+        return getDamageMax() / (sigma * Math.sqrt(2*Math.PI) * Math.pow(Math.E, -((x-mu)*(x-mu))/ (2*sigma*sigma)));
+    }
 }

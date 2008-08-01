@@ -25,6 +25,7 @@ import tightfit.module.Weapon;
 import tightfit.item.*;
 import tightfit.ship.Ship;
 import tightfit.ship.ShipChangeListener;
+import tightfit.widget.graph.*;
 
 public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipChangeListener, MouseListener, ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -37,10 +38,13 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 	private Image dpsDmgImg, bgImg;
 	private Ship memShip;
 	private Color bgLightColor = new Color(1,1,1,0.25f);
-	
+	private DamageRangeGraph dpsGraph;
+    
 	public DpsPanel() {
 		this.addMouseListener(this);
 		
+        memShip = new Ship();
+        
 		try {
 			dpsDmgImg = Resources.getImage("icon13_01.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 			bgImg = Resources.getImage("panelgrad.png");
@@ -58,19 +62,24 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		
 		sp = new JScrollPane();
 		ammoListPanel = new JList();
-		sp.setLocation(20, 107);
+		sp.setLocation(432, 20);
 		sp.setVisible(false);
 		sp.setOpaque(false);
-		ammoListPanel.setPreferredSize(new Dimension(300, 32));
+		ammoListPanel.setPreferredSize(new Dimension(75, 75));
 		ammoListPanel.setOpaque(false);
-		ammoListPanel.setCellRenderer(new IconListRenderer());
-		ammoListPanel.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		//ammoListPanel.setCellRenderer(new IconListRenderer());
+		//ammoListPanel.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		ammoListPanel.setVisibleRowCount(-1);
 		sp.getViewport().setView(ammoListPanel);
 		add(sp);
-		//sp.setAutoscrolls(true);
-		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		sp.setAutoscrolls(true);
+		//sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        dpsGraph = new DamageRangeGraph();
+        dpsGraph.setPreferredSize(new Dimension(300, 35));
+        dpsGraph.setLocation(25, 107);
+        dpsGraph.setVisible(false);
+        add(dpsGraph);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -160,6 +169,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		if(memShip == null || ship != memShip) {
 			memShip = ship;
 			selected = -1;
+            dpsGraph.setShip(ship);
         }
 		repaint();
 	}
@@ -169,11 +179,13 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		
 		ammoType.setVisible(false);
         sp.setVisible(false);
+        dpsGraph.setVisible(false);
 		if(y >= 50 && y <=82) {
 			selected = (x-30)/42;
 			buildAmmo(memShip.getModule(Module.HI_SLOT, selected));
 			ammoType.setVisible(true);
-			repaint();
+			dpsGraph.setVisible(true);
+            repaint();
 		}
 	}
 

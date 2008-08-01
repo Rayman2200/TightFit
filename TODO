@@ -27,4 +27,3 @@
 * EVEAPI character loading
 * Fix UI (font hard to read, contrast too low) (Kalliopia)
 * Various module sorting capabilities (Lubomir Penev)
-* Loading ammo in all weapons of a type at once (DeathsEmbrace)

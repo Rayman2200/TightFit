@@ -361,6 +361,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	}
 
 	public void actionPerformed(ActionEvent ae) {
+        Item item;
 		try {
             if(ae.getActionCommand().equals("search")) {
                 String nom = searchField.getText();
@@ -369,55 +370,71 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                     searchList.setListData(list.toArray());
                 }
             } else {
-                JList comp = (JList)ae.getSource();
-                Item item;
-                if(comp.getSelectedValue() != null) {
-                    if(comp.getSelectedValue() instanceof MarketListEntry) {
-                        item = ((MarketListEntry) comp.getSelectedValue()).getItem();
-                    } else {
-                        item = (Item) comp.getSelectedValue();
+                
+                if(ae.getSource() instanceof JList) {
+                    JList comp = (JList)ae.getSource();
+                    if(comp.getSelectedValue() != null) {
+                        if(comp.getSelectedValue() instanceof MarketListEntry) {
+                            item = ((MarketListEntry) comp.getSelectedValue()).getItem();
+                        } else {
+                            item = (Item) comp.getSelectedValue();
+                        }
+                        
+                        if(ae.getActionCommand().equalsIgnoreCase("make active")) {
+                            editor.setShip(new Ship(Database.getInstance().getType(item.name)));
+                            quickList.remember(item);
+                        } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
+                            fitToShip(new Module(Database.getInstance().getType(item.name)));
+                            quickList.remember(item);
+                        }
                     }
-                    
-                    if(ae.getActionCommand().equalsIgnoreCase("make active")) {
-                        editor.setShip(new Ship(Database.getInstance().getType(item.name)));
-                        quickList.remember(item);
-                    } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
-                        fitToShip(new Module(Database.getInstance().getType(item.name)));
-                        quickList.remember(item);
+                } else {
+                    if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
+                        
                     }
                 }
             }
 		} catch (Exception e) {
+            e.printStackTrace();
 		}
 	}
 	
 	private void fitToShip(Module m) {
-		Ship ship = editor.getShip();
-        if(ship.hasFreeSlot(m)) {
-            int t=0;
-            if(m.slotRequirement == Module.LOW_SLOT) {
-                t = ship.totalSlots(Module.LOW_SLOT);
-            } else if(m.slotRequirement == Module.MID_SLOT) {
-                t = ship.totalSlots(Module.MID_SLOT);
-            } else if(m.slotRequirement == Module.HI_SLOT) {
-                t = ship.totalSlots(Module.HI_SLOT);
-            } else if(m.slotRequirement == Module.RIG_SLOT) {
-                t = ship.totalSlots(Module.RIG_SLOT);
-            }
-            
-            for(int s=0;s<t;s++) {
-                if(ship.testPutModule(m, m.slotRequirement, s)) {
-                	if(m.isWeapon()) {
-						Weapon w = new Weapon(m);
-						ship.putModule(w, m.slotRequirement, s);
-					} else {
-						ship.putModule(m, m.slotRequirement, s);
-					}
-                    break;
+        
+        if(m.isAmmo()) {
+            fillWeapons(new Ammo(m));
+        } else {
+            Ship ship = editor.getShip();
+            if(ship.hasFreeSlot(m)) {
+                int t=0;
+                if(m.slotRequirement == Module.LOW_SLOT) {
+                    t = ship.totalSlots(Module.LOW_SLOT);
+                } else if(m.slotRequirement == Module.MID_SLOT) {
+                    t = ship.totalSlots(Module.MID_SLOT);
+                } else if(m.slotRequirement == Module.HI_SLOT) {
+                    t = ship.totalSlots(Module.HI_SLOT);
+                } else if(m.slotRequirement == Module.RIG_SLOT) {
+                    t = ship.totalSlots(Module.RIG_SLOT);
+                }
+                
+                for(int s=0;s<t;s++) {
+                    if(ship.testPutModule(m, m.slotRequirement, s)) {
+                        if(m.isWeapon()) {
+                            Weapon w = new Weapon(m);
+                            ship.putModule(w, m.slotRequirement, s);
+                        } else {
+                            ship.putModule(m, m.slotRequirement, s);
+                        }
+                        break;
+                    }
                 }
             }
         }
 	}
+    
+    private void fillWeapons(Ammo a) {
+        
+    }
     
     private void replay(String name) {
         int count = Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0"));
