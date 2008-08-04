@@ -22,6 +22,7 @@ public class Module extends Item {
 	public static int RIG_SLOT = 3;
 	
     public int slotRequirement;
+    public int dups = 0;
     
     protected Ship myShip;
     

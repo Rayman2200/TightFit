@@ -60,7 +60,7 @@ public final class Resources {
     }
 
     public static String getVersionString() {
-        return "TightFit v0.1.3a";
+        return "TightFit v0.1.4a";
     }
     
     /**

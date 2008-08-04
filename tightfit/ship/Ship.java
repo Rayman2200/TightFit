@@ -51,6 +51,7 @@ public class Ship extends Item {
     private float [] structReson;
     
     private LinkedList listenerList = new LinkedList();
+    private LinkedList cargo = new LinkedList();
     
     private boolean bChanged;
     
@@ -218,6 +219,10 @@ public class Ship extends Item {
     	for(int i=0;i<4;i++)
     		for(int j=0;j<8;j++)
     			removeModule(i, j);
+    }
+    
+    public void addToCargo(Module m) {
+    	cargo.add(m);
     }
     
     public boolean testPutModule(Module m, int slotType, int slot) {
@@ -984,7 +989,16 @@ public class Ship extends Item {
     }
     
     public float getFreeCargoCapacity() {
-        return getTotalCargoCapacity() - 0; //TODO
+    	Iterator itr = cargo.iterator();
+		float total = 0;
+		
+		while(itr.hasNext()) {
+			Module m = (Module)itr.next();
+			
+			total += Float.parseFloat(m.getAttribute("volume", "0"));
+		}
+    	
+        return getTotalCargoCapacity() - total;
     }
     
     public float getTotalDroneCapacity() {

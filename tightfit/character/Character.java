@@ -54,6 +54,13 @@ public class Character {
 		return (Skill)skills.get(id);
 	}
 	
+	/**
+	 * Returns the calculated bonus which the skill gives at the level
+	 * of the character. 
+	 * 
+	 * @param id
+	 * @return 1 + the character skill level * the bonus percentage per level
+	 */
 	public float getSkillBonus(String id) {
         Skill s = getSkill(id);
         

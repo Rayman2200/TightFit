@@ -41,17 +41,19 @@ public class Ammo extends Item {
 		return Float.parseFloat(getAttribute("explosiveDamage", "0"));
 	}
 	
-	public float getRateBonus() {
-		return Float.parseFloat(getAttribute("speedMultiplier", "1.0"));
-	}
-	
 	public int getSize() {
 		return Integer.parseInt(getAttribute("chargeSize", "1"));
 	}
 	
-	public float getRangeBonus() {
-		if(attributes.contains("weaponRangeMultiplier"))
-			return (1.0f - Float.parseFloat((String)attributes.get("weaponRangeMultiplier"))) * 100;
-		return 1.0f;
+	public float getRangeMultiplier() {
+		return Float.parseFloat(getAttribute("weaponRangeMultiplier", "1"));
+	}
+	
+	public float getFalloffMultiplier() {
+		return Float.parseFloat(getAttribute("falloffMultiplier", "1"));
+	}
+	
+	public float getSpeedMultiplier() {
+		return Float.parseFloat(getAttribute("speedMultiplier", "1"));
 	}
 }

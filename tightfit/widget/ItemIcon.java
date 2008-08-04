@@ -17,6 +17,7 @@ import java.awt.*;
 import tightfit.item.Item;
 
 public class ItemIcon extends JLabel {
+	private static final long serialVersionUID = 1L;
 	
 	private Item myItem;
 	

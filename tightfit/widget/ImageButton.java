@@ -36,8 +36,10 @@ class ImageButton extends JButton implements MouseListener {
 	private int offset;
 	private boolean bAnimated = false;
 	
-	public ImageButton(ImageIcon i) {
+	public ImageButton(ImageIcon i, boolean an) {
         super(i);
+        
+        bAnimated = an;
         
         setPreferredSize(new Dimension(i.getImage().getWidth(null), i.getImage().getHeight(null)));
         
@@ -45,14 +47,13 @@ class ImageButton extends JButton implements MouseListener {
         setBorderPainted(false);
         addMouseListener(this);
     }
-    
+	
     public ImageButton(String img) throws IOException {
-        this(new ImageIcon(Resources.getImage(img)));
+        this(new ImageIcon(Resources.getImage(img)), false);
     }
     
     public ImageButton(String img, boolean an) throws IOException {
-    	this(new ImageIcon(Resources.getImage(img)));
-    	bAnimated = an;
+    	this(new ImageIcon(Resources.getImage(img)), an);
     }
     
     public void paintComponent(Graphics g) {

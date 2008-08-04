@@ -42,6 +42,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
 	private TightFit editor;
 	private Ship ship;
+	private CargoSlot cargoSlot;
 	
 	private JButton strip, closeButton, minButton, configButton, 
                 infoButton, aboutButton, exportButton, importButton;
@@ -50,7 +51,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
 	private Image rigImg, lnchrImg, turImg,
                 sigRadImg, scanImg, maxTarImg, maxRanImg,
-                cargoImg, shieldImg, armorImg, structImg,
+                shieldImg, armorImg, structImg,
                 droneImg;
     
     private Image rstEmImg, rstExImg, rstThImg, rstKnImg;
@@ -89,7 +90,6 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	        scanImg = Resources.getImage("icon03_09.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        maxTarImg = Resources.getImage("icon04_12.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        maxRanImg = Resources.getImage("icon22_15.png");
-	        cargoImg = Resources.getImage("icon03_13.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        droneImg = Resources.getImage("icon11_16.png").getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 	        shieldImg = Resources.getImage("icon01_13.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
 	        armorImg = Resources.getImage("icon01_09.png").getScaledInstance(48, 48, Image.SCALE_SMOOTH);
@@ -160,12 +160,12 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	        infoButton.setToolTipText("Show Info");
 	        infoButton.addActionListener(editor);
 	        infoButton.setLocation(311, 47);
-	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("export.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("export.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)), true);
 	        exportButton.setActionCommand("export");
 	        exportButton.setToolTipText("EFT Export");
             exportButton.addActionListener(editor);
             exportButton.setLocation(450, 469);
-            importButton = new ImageButton(new ImageIcon(Resources.getImage("import.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+            importButton = new ImageButton(new ImageIcon(Resources.getImage("import.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)), true);
 	        importButton.setActionCommand("import");
 	        importButton.setToolTipText("EFT Import");
             importButton.addActionListener(editor);
@@ -225,6 +225,15 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     		s.addChangeListener(slot);
 		}
 		
+		
+		cargoSlot = new CargoSlot(this, editor);
+		cargoSlot.setLocation(393, 433);
+		cargoSlot.setPreferredSize(new Dimension(139, 31));
+		cargoSlot.setFont(smallFont);
+		add(cargoSlot);
+		cargoSlot.addMouseListener(this);
+		s.addChangeListener(cargoSlot);
+		
 		s.addChangeListener(this);
 		
 		repaint();
@@ -235,8 +244,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         Rectangle clip = g2d.getClipBounds();
         
         //setup
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
+        //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            //RenderingHints.VALUE_ANTIALIAS_ON);
         
         //g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
         //                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -309,7 +318,6 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         g2d.drawImage(rstEmImg, 458, 340, null); g2d.drawImage(rstKnImg, 566, 340, null);
         g2d.drawImage(rstExImg, 458, 367, null); g2d.drawImage(rstThImg, 566, 367, null);
         
-        g2d.drawImage(cargoImg, 393, 432, null);
         g2d.drawImage(droneImg, 532, 432, null);
         g2d.drawImage(shieldImg, 399, 180, null);
         g2d.drawImage(armorImg, 399, 273, null);
@@ -335,15 +343,19 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         WidgetHelper.drawShadowedString(g2d, "SCAN RESOLUTION", 430, 110, Color.white);
         WidgetHelper.drawShadowedString(g2d, "MAX TARGETING RANGE", 570, 110, Color.white);
         WidgetHelper.drawShadowedString(g2d, "SIGNATURE RADIUS", 430, 142, Color.white);
-        WidgetHelper.drawShadowedString(g2d, "CARGOHOLD", 432, 443, Color.white);
         WidgetHelper.drawShadowedString(g2d, "DRONE BAY", 572, 443, Color.white);
         
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        		RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setFont(shipTitleFont);
         WidgetHelper.drawShadowedStringCentered(g2d, editor.getChar().name.toUpperCase()+"'"+
         		(editor.getChar().name.lastIndexOf("s") != editor.getChar().name.length()-1 ? "S" : "")+
         		" "+ship.title.toUpperCase(), 200, 47, Color.white);
         g2d.setFont(shipTypeFont);
         WidgetHelper.drawShadowedStringCentered(g2d, ship.name.toUpperCase(), 200, 60, Color.white);
+        
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        		RenderingHints.VALUE_ANTIALIAS_OFF);
         
         //finally, put in the ship's specs
         drawShipSpecs(g2d);
@@ -443,8 +455,6 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         drawSmallBar(g2d, 488, 380, 1.0f - reson[3]);
         drawSmallBar(g2d, 595, 380, 1.0f - reson[2]);
         
-        WidgetHelper.drawShadowedString(g2d, "" + (ship.getTotalCargoCapacity()-ship.getFreeCargoCapacity()) + " / "+ship.getTotalCargoCapacity(), 435, 453, statWhite);
-        
         WidgetHelper.drawShadowedString(g2d, "0.0 / "+ship.getTotalDroneCapacity(), 575, 453, statWhite);
     }
     
@@ -483,7 +493,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     }
 
 	public void dragEnter(DropTargetDragEvent e) {
-		ModuleSlot s = (ModuleSlot)((DropTarget)e.getSource()).getComponent();
+		Slot s = (Slot)((DropTarget)e.getSource()).getComponent();
 		
 		s.setSelected(true);
 		
@@ -491,9 +501,11 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 			try {
 				if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
 					Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
-					if(ship.testPutModule(m, s.getRack(), s.getSlotNumber()) || m.isAmmo()) {
+					if(s instanceof ModuleSlot && ship.testPutModule(m, ((ModuleSlot)s).getRack(), ((ModuleSlot)s).getSlotNumber()) || m.isAmmo()) {
 						e.acceptDrag(DnDConstants.ACTION_COPY);
 						//TODO: set attributes in yellow as per this module
+					} else if(s instanceof CargoSlot) {
+						
 					} else {
 						e.rejectDrag();
 					}
@@ -520,17 +532,21 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	}
 
 	public void drop(DropTargetDropEvent e) {
-		ModuleSlot s = (ModuleSlot)((DropTarget)e.getSource()).getComponent();
+		Slot slot = (Slot)((DropTarget)e.getSource()).getComponent();
 		try {
-			if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
+			if(slot instanceof CargoSlot) {
+				ship.addToCargo((Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module")));
+				ship.fireShipChange();
+			} else if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
 				Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+				ModuleSlot s = (ModuleSlot)slot;
 				if(m.isAmmo()) {
 					Ammo a = new Ammo(m);
 					if(s.getModule() != null && s.getModule().accepts(a)) {
 						ship.getModule(s.getRack(), s.getSlotNumber()).insertCharge(a);
 						s.getModule().insertCharge(a);
 						e.acceptDrop(DnDConstants.ACTION_COPY);
-						repaint();
+						ship.fireShipChange();
 					}
 				} else if(ship.testPutModule(m, s.getRack(), s.getSlotNumber())) {
 					e.acceptDrop(DnDConstants.ACTION_COPY);
@@ -542,6 +558,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 						ship.putModule(m, s.getRack(), s.getSlotNumber());
 						s.mount(m);
 					}
+					ship.fireShipChange();
 				} else {
 					e.rejectDrop();
 				}
@@ -557,31 +574,36 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		ModuleSlot s = (ModuleSlot)e.getSource();
-		if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
-			if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
-				JPopupMenu menu = new JPopupMenu();
-				JMenuItem mi;
-				Point pt = getMousePosition();
-				
-				menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, s.getModule())));
-				menu.addSeparator();
-				mi = new JMenuItem("UnFit");
-				mi.addActionListener(s);
-				menu.add(mi);
-				menu.addSeparator();
-				if(s.getModule().isOnline()) {
-					mi = new JMenuItem("Put Offline");
+		
+		if(e.getSource() instanceof ModuleSlot) {
+			ModuleSlot s = (ModuleSlot)e.getSource();
+			if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+				if(ship.hasModule(s.getRack(), s.getSlotNumber())) {
+					JPopupMenu menu = new JPopupMenu();
+					JMenuItem mi;
+					Point pt = getMousePosition();
+					
+					menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, s.getModule())));
+					menu.addSeparator();
+					mi = new JMenuItem("UnFit");
 					mi.addActionListener(s);
 					menu.add(mi);
-				} else {
-					mi = new JMenuItem("Put Online");
-					mi.addActionListener(s);
-					menu.add(mi);
+					menu.addSeparator();
+					if(s.getModule().isOnline()) {
+						mi = new JMenuItem("Put Offline");
+						mi.addActionListener(s);
+						menu.add(mi);
+					} else {
+						mi = new JMenuItem("Put Online");
+						mi.addActionListener(s);
+						menu.add(mi);
+					}
+	
+					menu.show(this, pt.x, pt.y);
 				}
-
-				menu.show(this, pt.x, pt.y);
 			}
+		} else if(e.getSource() instanceof CargoSlot) {
+			//TODO: open cargo window
 		}
 	}
 

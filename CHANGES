@@ -3,6 +3,7 @@
   (affected all shield thermal resistance amps) (found by Constance Harme)
 + Fixed rendering issues, main window now noticibly faster
 + Fixed some things about SimulatorSlots that were bugging me
++ Fixed Gunnery skill applying to damage instead of RoF
 + Added loading ammo to all weapons simultaneously (suggested by DeathsEmbrace)
 + Added DPS/Range graph to DPS tab (suggested by AstroPhobic)
 + Added Cargo bay (suggested by AstroPhobic)

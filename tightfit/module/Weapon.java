@@ -55,7 +55,7 @@ public class Weapon extends Module {
 	}
 	
 	public float getCapNeed() {
-		return super.getCapNeed() * myShip.pilot.getSkillBonus("3316");
+		return super.getCapNeed() * myShip.pilot.getSkillBonus("3316"); //launchers don't use cap anyway
 	}
 	
 	public float calculateRoF() {
@@ -68,8 +68,8 @@ public class Weapon extends Module {
 		else skillBonus = myShip.pilot.getSkillBonus("3319");
 		
         rof = Float.parseFloat(((String)getAttribute("speed", "1.0"))) 
-        				* (getCharge().getRateBonus() * myShip.pilot.getSkillBonus(getCharge().getAttribute("requiredSkill1", "0")))
-        				* skillBonus;
+        				* (getCharge().getSpeedMultiplier() * myShip.pilot.getSkillBonus(getCharge().getAttribute("requiredSkill1", "0")))
+        				* skillBonus * myShip.pilot.getSkillBonus("3300");
         
         while(itr.hasNext()) {
             Module m = (Module)itr.next();
@@ -143,7 +143,6 @@ public class Weapon extends Module {
         
         mult *= bonus;
         if(weaponType != WEAPON_LAUNCHER) {
-    		mult *= myShip.pilot.getSkillBonus("3300");
     		mult *= myShip.pilot.getSkillBonus("3315");
 		} else {
 			mult *= myShip.pilot.getSkillBonus("3319");
@@ -161,16 +160,26 @@ public class Weapon extends Module {
 	}
     
     /**
-     *  This is a Gaussian Normal Distribution which approximates the damage dealt at 
-     *  a given range of a ship's weapon, given also optimal and falloff values for the
-     *  weapon, and finally scaled by the maximum damage of the weapon.
-     *  It does not account for traversal or target radius.
-     *
-     *  x       is distance to target
+     *  This is a Gaussian Normal Distribution which approximates the percent of damage 
+     *  dealt at a given range of a ship's weapon, given also optimal and falloff values 
+     *  for the weapon, and finally scaled by the maximum damage of the weapon.
+     *  
+     *  NOTE: It does not account for traversal or target radius.
+     *  NOTE: In the case of launchers, this depends on the ammo loaded
+     *  
+     *  @param x   the distance to target
      */
-    public float getDamageAtRange(float x) {
-        float mu = optimal;
-        float sigma = falloff;
-        return getDamageMax() / (sigma * Math.sqrt(2*Math.PI) * Math.pow(Math.E, -((x-mu)*(x-mu))/ (2*sigma*sigma)));
+    public double calculateAtRange(float x) {
+    	float mu = 0, sigma = 1;
+    	
+    	if(weaponType != WEAPON_LAUNCHER) {
+    		//TODO: ship bonuses
+	        mu = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier();
+	        sigma = Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier();
+    	} else {
+    		
+    	}
+    	
+    	return 1.0f / (sigma * Math.sqrt(2*Math.PI) * Math.pow(Math.E, -((x-mu)*(x-mu))/ (2*sigma*sigma)));
     }
 }
