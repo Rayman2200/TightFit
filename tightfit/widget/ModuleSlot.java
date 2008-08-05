@@ -139,7 +139,7 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 	        	g2d.setColor(Color.white);
 	        	g2d.setStroke(new BasicStroke(2));
 	        	Composite saveComp = g2d.getComposite();
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.55f));
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.75f));
                 g2d.drawOval(pt.x, pt.y, 40, 40);
                 g2d.setComposite(saveComp);
                 

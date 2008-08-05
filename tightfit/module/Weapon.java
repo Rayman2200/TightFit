@@ -91,7 +91,7 @@ public class Weapon extends Module {
 		} else if(t == WEAPON_LAUNCHER) {
 			return "launcher";
 		} else if(t == WEAPON_LASER) {
-			return "energy";
+			return "energy";               //Charge mah lazahs!!!
 		}
 		
 		return "none";
@@ -159,27 +159,53 @@ public class Weapon extends Module {
         return mult;
 	}
     
+    public float calculateOptimalRange() {
+        float range=0;
+        if(weaponType != WEAPON_LAUNCHER) {
+    		//TODO: ship bonuses
+	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier();
+    	} else {
+    		
+    	}
+        
+        return range;
+    }
+    
     /**
      *  This is a Gaussian Normal Distribution which approximates the percent of damage 
      *  dealt at a given range of a ship's weapon, given also optimal and falloff values 
      *  for the weapon, and finally scaled by the maximum damage of the weapon.
      *  
      *  NOTE: It does not account for traversal or target radius.
-     *  NOTE: In the case of launchers, this depends on the ammo loaded
+     *  NOTE: In the case of launchers, this depends on the ammo loaded and speed/flight time
      *  
      *  @param x   the distance to target
      */
     public double calculateAtRange(float x) {
-    	float mu = 0, sigma = 1;
+    	float mu = calculateOptimalRange()/1000f, sigma = 1;
     	
+        x /= 1000f;
+        
     	if(weaponType != WEAPON_LAUNCHER) {
     		//TODO: ship bonuses
-	        mu = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier();
-	        sigma = Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier();
+	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier())/1000f;
     	} else {
     		
     	}
-    	
+        
     	return 1.0f / (sigma * Math.sqrt(2*Math.PI) * Math.pow(Math.E, -((x-mu)*(x-mu))/ (2*sigma*sigma)));
+    }
+    
+    public double calculateRangeExtent() {
+        float mu = calculateOptimalRange(), sigma = 1;
+    	
+    	if(weaponType != WEAPON_LAUNCHER) {
+    		//TODO: ship bonuses
+	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier());
+    	} else {
+    		
+    	}
+        
+        return sigma*Math.sqrt(2 * Math.log(.001 * sigma * Math.sqrt(2*Math.PI)));
     }
 }

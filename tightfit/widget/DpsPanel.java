@@ -62,14 +62,15 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		
 		sp = new JScrollPane();
 		ammoListPanel = new JList();
-		sp.setLocation(432, 20);
+		sp.setLocation(567, 25);
 		sp.setVisible(false);
 		sp.setOpaque(false);
-		ammoListPanel.setPreferredSize(new Dimension(75, 75));
+		ammoListPanel.setPreferredSize(new Dimension(75, 125));
 		ammoListPanel.setOpaque(false);
 		//ammoListPanel.setCellRenderer(new IconListRenderer());
 		//ammoListPanel.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		ammoListPanel.setVisibleRowCount(-1);
+		ammoListPanel.setVisibleRowCount(6);
+        ammoListPanel.setFont(bigFont);
 		sp.getViewport().setView(ammoListPanel);
 		add(sp);
 		sp.setAutoscrolls(true);
@@ -169,7 +170,18 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		if(memShip == null || ship != memShip) {
 			memShip = ship;
 			selected = -1;
+            
+            dpsGraph.setExtents(new Rectangle((int)calculateMinRange(ship),
+                                                0,
+                                                (int)(calculateMaxRange(ship)*1.2f),
+                                                (int)ship.calculateGenericDps()));
             dpsGraph.setShip(ship);
+        } else {
+            dpsGraph.setExtents(new Rectangle((int)calculateMinRange(ship),
+                                                0,
+                                                (int)(calculateMaxRange(ship)*1.2f),
+                                                (int)ship.calculateGenericDps()));
+            dpsGraph.renderGraph();
         }
 		repaint();
 	}
@@ -274,18 +286,35 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		g2d.fillRoundRect(400, 10, 230, 135, 40, 40);
 		g2d.drawImage(weapon.getImage(), 410,20,null);
 		
-		WidgetHelper.drawShadowedString(g2d, "Type:  "+weapon.name, 485, 29, Color.white);
-		WidgetHelper.drawShadowedString(g2d, "RoF:   "+WidgetHelper.formatFloat(weapon.calculateRoF(),2)+"s", 485, 45, Color.white);
-		WidgetHelper.drawShadowedString(g2d, "DPS:   "+weapon.calculateAggregateDps(), 485, 61, Color.white);
-		WidgetHelper.drawShadowedString(g2d, "MTBR:  "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 77, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "Type:      "+weapon.getTypeString(), 485, 29, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "RoF:       "+WidgetHelper.formatFloat(weapon.calculateRoF(),2)+"s", 485, 45, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "DPS:       "+weapon.calculateAggregateDps(), 485, 61, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "Optimal:   "+WidgetHelper.formatFloat(weapon.calculateOptimalRange(),2)+"m", 485, 77, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "MTBR:      "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 93, Color.white);
 	}
 	
-	private float calculateMinRange(Ship s) {
-		return 0.0f;
+	private float calculateMinRange(Ship ship) {
+        float min = 1000000;
+		for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
+        	Module m = ship.getModule(Module.HI_SLOT, i);
+        	if(m != null && m instanceof Weapon) {
+                min = (float)Math.min(min, ((Weapon)m).calculateOptimalRange()-((Weapon)m).calculateRangeExtent());
+            }
+        }
+        
+        return (min > 0 ? min : 0);
 	}
 	
-	private float calculateMaxRange(Ship s) {
-		return 0.0f;
+	private float calculateMaxRange(Ship ship) {
+		float min = -1000000;
+		for(int i=0;i<ship.totalSlots(Module.HI_SLOT);i++) {
+        	Module m = ship.getModule(Module.HI_SLOT, i);
+        	if(m != null && m instanceof Weapon) {
+                min = (float)Math.max(min, ((Weapon)m).calculateOptimalRange()+((Weapon)m).calculateRangeExtent());
+            }
+        }
+        
+        return min;
 	}
 
 	public void actionPerformed(ActionEvent arg0) {

@@ -42,6 +42,13 @@ public abstract class Graph extends JPanel {
         }
     }
     
+    public void setExtents(Rectangle r) {
+        rmin = r.y;
+        rmax = r.height+r.y;
+        dmin = r.x;
+        dmax = r.width+r.x;
+    }
+    
     public void paintComponent(Graphics g) {
         if(cachedImage != null)
             g.drawImage(cachedImage, 0, 0, null);

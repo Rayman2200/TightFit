@@ -73,7 +73,9 @@ public class SimulatorSlot extends ModuleSlot {
                 if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 /*&& mounted.getAttribute()*/) {
                 	g2d.drawImage(mounted.getCharge().getImage(),0,0,null);
                     g2d.setColor(Color.black);
-                    g2d.fillRect(25,40,30,10);
+                    g2d.fillRect(30,45,30,10);
+                    g2d.setColor(Color.white);
+                    g2d.drawRect(30,45,30,10);
                 } else {
                     g2d.drawImage(mounted.getImage(),0,0,null);
                 }
