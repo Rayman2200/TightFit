@@ -26,10 +26,10 @@ public class Item {
     public int marketGroupId;
     public String graphicId;
     
-    public HashMap attributes;
+    public HashMap<String,String> attributes;
  
     public Item() {
-    	attributes = new HashMap();
+    	attributes = new HashMap<String,String>();
     	attributes.put("description", "");
     }
     
@@ -43,7 +43,7 @@ public class Item {
 	    	
 	    	attributes = (HashMap)type.attributes.clone();
     	} else {
-    		attributes = new HashMap();
+    		attributes = new HashMap<String,String>();
     		attributes.put("description", "");
     	}
     }
@@ -134,7 +134,7 @@ public class Item {
      */
     public String [] getAttributeKey(String incompleteKey) throws Exception {
     	Iterator itr = attributes.keySet().iterator();
-    	Vector v = new Vector();
+    	Vector<String> v = new Vector<String>();
     	while(itr.hasNext()) {
     		String key = (String) itr.next();
     		if(key.contains(incompleteKey)) {

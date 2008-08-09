@@ -251,7 +251,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
 		menu.addSeparator();
     	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-            menu.add(new JMenuItem(new FitToShipAction(editor.getShip(), item)));
+            menu.add(new JMenuItem(new FitToShipAction(editor.getShip(), quickList, item)));
 		} else {
 			mitem = new JMenuItem(Resources.getString("dialog.market.makeactive"));
 			mitem.addActionListener(this);
@@ -333,7 +333,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 				buildPopup(item).show(this, pt.x, pt.y);
 			} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 				if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-                    (new FitToShipAction(editor.getShip(), item)).actionPerformed(null); //yikes- reusability trumps elegance...
+                    (new FitToShipAction(editor.getShip(), quickList, item)).actionPerformed(null); //yikes- reusability trumps elegance...
 				} else {
 					editor.setShip(new Ship(item));
 	                quickList.remember(item);

@@ -17,17 +17,20 @@ import tightfit.item.Item;
 import tightfit.ship.Ship;
 import tightfit.module.*;
 import tightfit.Resources;
+import tightfit.widget.MemoryList;
 
 public class FitToShipAction extends AbstractItemAction {
     private Ship myShip;
+    private MemoryList quickList;
     
-    public FitToShipAction(Ship ship, Item item) {
+    public FitToShipAction(Ship ship, MemoryList l, Item item) {
         super(item.isAmmo() ? Resources.getString("dialog.market.load") : Resources.getString("dialog.market.fitactive"), item);
         myShip = ship;
+        quickList = l;
     }
     
     protected void doAction(ActionEvent ae) {
-        //TODO: quickList.remember(myItem);
+        quickList.remember(myItem);
         if(myItem.isAmmo()) {
             Ammo ammo = new Ammo(myItem);
             for(int r=0;r<3;r++) {
