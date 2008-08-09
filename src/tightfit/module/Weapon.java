@@ -165,7 +165,8 @@ public class Weapon extends Module {
     		//TODO: ship bonuses
 	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier();
     	} else {
-    		
+            Ammo charge = getCharge(); 
+    		//range = 
     	}
         
         return range;

@@ -75,11 +75,11 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         Dimension d = getPreferredSize();
         float dx = (dmax-dmin)/d.width;
-        float dy = (rmax-rmin)/d.height;
         
-        setToolTipText("Range: "+(dx*e.getX()-dx*10)+"m / DPS: "+((d.height-e.getY())*dy));
+        setToolTipText("Range: "+(dx*e.getX()-dx*10)+"m / DPS: "+myShip.calculateGenericDpsAtRange(dx*e.getX()-dx*10));
     }
     
     public void mouseDragged(MouseEvent e) {
+        //TODO: support for zooming
     }
 }

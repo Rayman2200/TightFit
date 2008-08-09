@@ -27,7 +27,7 @@ import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import tightfit.*;
-import tightfit.actions.ShowInfoAction;
+import tightfit.actions.*;
 import tightfit.item.*;
 import tightfit.module.Module;
 import tightfit.module.Weapon;
@@ -251,12 +251,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
 		menu.addSeparator();
     	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-            mitem = new JMenuItem(Resources.getString("dialog.market.fitactive"));
-            mitem.addActionListener(this);
-            mitem.setActionCommand("Fit to Active Ship");
-            //if(!editor.getShip().hasFreeSlot(item.slotType))
-            //	mitem.setEnabled(false);
-            menu.add(mitem);
+            menu.add(new JMenuItem(new FitToShipAction(editor.getShip(), item)));
 		} else {
 			mitem = new JMenuItem(Resources.getString("dialog.market.makeactive"));
 			mitem.addActionListener(this);
@@ -338,8 +333,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 				buildPopup(item).show(this, pt.x, pt.y);
 			} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 				if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-					fitToShip(new Module(item));
-					quickList.remember(item);
+                    (new FitToShipAction(editor.getShip(), item)).actionPerformed(null); //yikes- reusability trumps elegance...
 				} else {
 					editor.setShip(new Ship(item));
 	                quickList.remember(item);
@@ -383,14 +377,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                         if(ae.getActionCommand().equalsIgnoreCase("make active")) {
                             editor.setShip(new Ship(Database.getInstance().getType(item.name)));
                             quickList.remember(item);
-                        } else if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
-                            fitToShip(new Module(Database.getInstance().getType(item.name)));
-                            quickList.remember(item);
                         }
-                    }
-                } else {
-                    if(ae.getActionCommand().equalsIgnoreCase("fit to active ship")) {
-                        
                     }
                 }
             }
@@ -398,43 +385,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
             e.printStackTrace();
 		}
 	}
-	
-	private void fitToShip(Module m) {
-        
-        if(m.isAmmo()) {
-            fillWeapons(new Ammo(m));
-        } else {
-            Ship ship = editor.getShip();
-            if(ship.hasFreeSlot(m)) {
-                int t=0;
-                if(m.slotRequirement == Module.LOW_SLOT) {
-                    t = ship.totalSlots(Module.LOW_SLOT);
-                } else if(m.slotRequirement == Module.MID_SLOT) {
-                    t = ship.totalSlots(Module.MID_SLOT);
-                } else if(m.slotRequirement == Module.HI_SLOT) {
-                    t = ship.totalSlots(Module.HI_SLOT);
-                } else if(m.slotRequirement == Module.RIG_SLOT) {
-                    t = ship.totalSlots(Module.RIG_SLOT);
-                }
-                
-                for(int s=0;s<t;s++) {
-                    if(ship.testPutModule(m, m.slotRequirement, s)) {
-                        if(m.isWeapon()) {
-                            Weapon w = new Weapon(m);
-                            ship.putModule(w, m.slotRequirement, s);
-                        } else {
-                            ship.putModule(m, m.slotRequirement, s);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-	}
-    
-    private void fillWeapons(Ammo a) {
-        
-    }
     
     private void replay(String name) {
         int count = Integer.parseInt(TightPreferences.node("memory").node(name).get("memcount", "0"));

@@ -11,10 +11,7 @@
 package tightfit.item;
 
 import java.awt.Image;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 import tightfit.Resources;
 
@@ -29,10 +26,10 @@ public class Item {
     public int marketGroupId;
     public String graphicId;
     
-    public Hashtable attributes;
+    public HashMap attributes;
  
     public Item() {
-    	attributes = new Hashtable();
+    	attributes = new HashMap();
     	attributes.put("description", "");
     }
     
@@ -44,9 +41,9 @@ public class Item {
 	    	marketGroupId = type.marketGroupId;
 	    	graphicId = type.graphicId;
 	    	
-	    	attributes = (Hashtable)type.attributes.clone();
+	    	attributes = (HashMap)type.attributes.clone();
     	} else {
-    		attributes = new Hashtable();
+    		attributes = new HashMap();
     		attributes.put("description", "");
     	}
     }
@@ -73,13 +70,15 @@ public class Item {
     	return false;
     }
     
+    
     public boolean accepts(Item a) {
     	
     	for(int i=1;i<4;i++) {
     		if(attributes.containsKey("chargeGroup"+i)) {
     			if(a.groupId == Integer.parseInt((String)attributes.get("chargeGroup"+i))) {
-    				if(a.attributes.containsKey("missileLaunching")) {
-    					if(a.attributes.get("launcherGroup").equals(""+groupId)) {
+    				if(a.attributes.containsKey("launcherGroup")) {
+    					if(a.attributes.get("launcherGroup").equals(""+groupId) || 
+                                a.attributes.get("launcherGroup2").equals(""+groupId)) {
     						return true;
     					}
     				} else {
@@ -94,7 +93,16 @@ public class Item {
     }
     
     public boolean isAmmo() {
-    	return attributes.containsKey("ammoInfluenceCapNeed") || attributes.containsKey("missileLaunching");
+        Iterator keys = attributes.keySet().iterator();
+        while(keys.hasNext()) {
+            if(((String)keys.next()).startsWith("script"))
+                return true;
+        }
+        
+    	return attributes.containsKey("ammoInfluenceCapNeed") 
+                || attributes.containsKey("missileLaunching")
+                || attributes.containsKey("bombLaunching")
+                || attributes.containsKey("torpedoLaunching");
     }
     
     public boolean isShip() {

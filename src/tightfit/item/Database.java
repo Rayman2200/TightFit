@@ -183,7 +183,7 @@ public class Database {
         
         public void characters(char buf[], int offset, int len) throws SAXException {
         	if(inDesc) {
-        		String sbuf = (new String(buf)).substring(offset, offset+len);
+        		String sbuf = new String(buf, offset, len);
         		//sbuf = sbuf.replaceAll("\n", "");
         		//System.out.println(sbuf);
         		if(currentElement instanceof Item) {
@@ -191,7 +191,7 @@ public class Database {
         			((Item)currentElement).attributes.put("description", desc + sbuf);
         		}
         		else if(currentElement instanceof MarketGroup)
-        			((MarketGroup)currentElement).description += sbuf;
+        			((MarketGroup)currentElement).description.concat(sbuf);
         	}
         }
         

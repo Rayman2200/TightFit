@@ -70,12 +70,13 @@ public class SimulatorSlot extends ModuleSlot {
         		}
         		AffineTransform save = g2d.getTransform();
                 g2d.scale(0.5, 0.5);
-                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 /*&& mounted.getAttribute()*/) {
+                if(mounted.acceptsCharges() && mounted.getCharge().typeId != 0 && mounted.getChargeCount() > 1) {
                 	g2d.drawImage(mounted.getCharge().getImage(),0,0,null);
                     g2d.setColor(Color.black);
-                    g2d.fillRect(30,45,30,10);
+                    g2d.fillRect(30,45,30,13);
                     g2d.setColor(Color.white);
-                    g2d.drawRect(30,45,30,10);
+                    g2d.drawRect(30,45,30,13);
+                    g2d.drawString(""+mounted.getChargeCount(), 31, 53);
                 } else {
                     g2d.drawImage(mounted.getImage(),0,0,null);
                 }

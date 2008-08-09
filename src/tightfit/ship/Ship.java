@@ -855,7 +855,7 @@ public class Ship extends Item {
     
     /**
      * Calculates the generic DPS of the ship, does not account for ranges or damage types.
-     * This number will almost always be higher than actual DPS.
+     * This number will always be higher than actual DPS.
      * 
      * @return the generic DPS
      */
@@ -864,6 +864,16 @@ public class Ship extends Item {
         for(int i=0;i<hiSlots.length;i++) {
         	if(hiSlots[i] != null /*&& hiSlots[i].isReady()*/ && hiSlots[i] instanceof Weapon) {
 	        	dps += ((Weapon)hiSlots[i]).calculateAggregateDps();
+        	}
+        }
+        return dps;
+    }
+    
+    public float calculateGenericDpsAtRange(float range) {
+        float dps = 0.0f;
+        for(int i=0;i<hiSlots.length;i++) {
+        	if(hiSlots[i] != null /*&& hiSlots[i].isReady()*/ && hiSlots[i] instanceof Weapon) {
+	        	dps += ((Weapon)hiSlots[i]).calculateAtRange(range);
         	}
         }
         return dps;

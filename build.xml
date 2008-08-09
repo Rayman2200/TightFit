@@ -3,7 +3,7 @@
     A Fit Tool for Eve Online
   </description>
   <!-- set global properties for this build -->
-  <property name="src" location="."/>
+  <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
   <property name="nightly" location="nightly"/>
@@ -36,9 +36,9 @@
   </target>
 
   <target name="compile" depends="init" description="Compile the source">
-    <javac source="1.4" target="1.4" srcdir="${src}" destdir="${build}"/>
+    <javac source="1.5" target="1.5" srcdir="${src}" destdir="${build}"/>
     <copy todir="${build}/tightfit/resources">
-      <fileset dir="./tightfit/resources">
+      <fileset dir="${src}/tightfit/resources">
 	<include name="*.png" />
         <include name="*.xml" />
 	<include name="*.ttf" />

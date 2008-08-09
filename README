@@ -17,12 +17,20 @@ http://evetightfit.org
 + Calculates stats of modules and ships using module, ship, and skill bonuses
 + GUI Interface similar to Eve Online in-game fit window
 + Exporting fits for EFT and battleclinic.com 
++ Character importing with EVE API
 
+------------
+ It's Slow!
+------------
+
+Yes, I'm aware that can happen. TightFit is a graphics-heavy app, but since it is now compiled for Java 5 there are some options you can use to speed it up a bit. If you have a newer Linux box with GLX, or a Windows box with WGL_ARB_pbuffer extension, then try this command line:
+
+ java -Dsun.java2d.opengl=true -Dsun.java2d.translaccel=true -jar tightfit.jar
 
 ------------
  Thanks To: 
 ------------
 
-Modulus Zero & Gnomercie
+Modulus Zero & Gnomercie & all the players in LFCMD
 The good people of the DEFI4NT alliance
-CDSI
+The Eve Online forum surfers
