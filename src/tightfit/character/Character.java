@@ -10,8 +10,9 @@
 
 package tightfit.character;
 
+import java.io.InputStream;
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +26,7 @@ public class Character {
 
 	private HashMap skills = new HashMap();
 	public String name;
+    public String charId;
 	public int sp;
     
 	public Character() {
@@ -36,6 +38,11 @@ public class Character {
 		this.name = name;
 	}
 	
+    public Character(String name, String charId) {
+		this(name);
+		this.charId = charId;
+	}
+    
 	public void addSkill(String id, String level) {
 		try {
 			skills.put(id, new Skill(id, Integer.parseInt(level)));
@@ -99,11 +106,8 @@ public class Character {
         return skills.size();
     }
     
-	public void parse(String file) throws Exception {
-		if(file == null)
-			return;
-		
-		skills.clear();
+	public void parse(InputStream s) throws Exception {
+        skills.clear();
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document doc;
@@ -112,7 +116,7 @@ public class Character {
             factory.setIgnoringElementContentWhitespace(true);
             factory.setExpandEntityReferences(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(new FileInputStream(file), ".");
+            doc = builder.parse(s, ".");
             
             Node check = doc.getDocumentElement(), item;
             if (!"eveapi".equals(check.getNodeName())) {
@@ -134,8 +138,45 @@ public class Character {
             throw new Exception("Error while parsing file: " +
                     e.toString());
         }
+    }
+    
+    public void parse(String file) throws Exception {
+		if(file == null)
+			return;
+		
+		parse(new FileInputStream(file));
 	}
 	
+    public static Character[] parseCharacterList(InputStream s) throws Exception {
+        Vector chars = new Vector();
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try {
+            factory.setIgnoringComments(true);
+            factory.setIgnoringElementContentWhitespace(true);
+            factory.setExpandEntityReferences(false);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            doc = builder.parse(s, ".");
+            
+            Node check = doc.getDocumentElement(), item;
+            if (!"eveapi".equals(check.getNodeName())) {
+            	throw new Exception("Not a valid eveapi character list.");
+            }
+            
+            NodeList l = doc.getElementsByTagName("row");
+            for (int i = 0; (item = l.item(i)) != null; i++) {
+            	chars.add(new Character(getAttributeValue(item, "name"), getAttributeValue(item, "characterID")));
+            }
+        } catch (SAXException e) {
+            e.printStackTrace();
+            throw new Exception("Error while parsing file: " +
+                    e.toString());
+        }
+        
+        return (Character[])chars.toArray(new Character[0]);
+    }
+    
 	private static String getAttributeValue(Node node, String attribname) {
         NamedNodeMap attributes = node.getAttributes();
         String att = null;

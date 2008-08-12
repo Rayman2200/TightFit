@@ -14,6 +14,8 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 
+import java.util.LinkedList;
+
 import javax.swing.*;
 
 import tightfit.item.*;
@@ -29,6 +31,7 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
     }
     
     public void renderGraph() {
+        LinkedList rendered = new LinkedList();
         Dimension d = getPreferredSize();
         int x;
         float dx = (dmax-dmin)/d.width;
@@ -46,8 +49,9 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
         
         for(int i=0;i<myShip.totalSlots(Module.HI_SLOT);i++) {
         	Module m = myShip.getModule(Module.HI_SLOT, i);
-        	if(m != null && m instanceof Weapon) {
+        	if(m != null && m instanceof Weapon && !rendered.contains(m)) {
                 Weapon w = (Weapon)m;
+                rendered.add(m);
                 g.setColor(green);
                 for(x = 0, gx = -10*dx; x <d.width;x++, gx+=dx) {
                     g.drawLine(x, (int)(w.calculateAtRange(gx)*myShip.calculateGenericDps()*dy), x, d.height);
@@ -75,8 +79,9 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         Dimension d = getPreferredSize();
         float dx = (dmax-dmin)/d.width;
+        float range = (dx*e.getX()-dx*10);
         
-        setToolTipText("Range: "+(dx*e.getX()-dx*10)+"m / DPS: "+myShip.calculateGenericDpsAtRange(dx*e.getX()-dx*10));
+        setToolTipText("Range: "+range+"m / DPS: "+myShip.calculateGenericDpsAtRange(range));
     }
     
     public void mouseDragged(MouseEvent e) {

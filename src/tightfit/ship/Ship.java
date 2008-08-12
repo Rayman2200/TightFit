@@ -871,9 +871,10 @@ public class Ship extends Item {
     
     public float calculateGenericDpsAtRange(float range) {
         float dps = 0.0f;
+        float maxDps = calculateGenericDps();
         for(int i=0;i<hiSlots.length;i++) {
         	if(hiSlots[i] != null /*&& hiSlots[i].isReady()*/ && hiSlots[i] instanceof Weapon) {
-	        	dps += ((Weapon)hiSlots[i]).calculateAtRange(range);
+	        	dps += ((Weapon)hiSlots[i]).calculateAtRange(range) * maxDps;
         	}
         }
         return dps;
