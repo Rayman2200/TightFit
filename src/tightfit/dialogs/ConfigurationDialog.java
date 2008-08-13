@@ -15,6 +15,7 @@ import java.awt.event.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -22,6 +23,7 @@ import javax.swing.event.*;
 import tightfit.*;
 import tightfit.TightPreferences;
 import tightfit.character.Character;
+import tightfit.widget.CharacterInfoPanel;
 
 public class ConfigurationDialog extends JDialog implements ActionListener, ChangeListener {
 	private static final long serialVersionUID = 1L;
@@ -33,6 +35,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
     private JPanel colorPrev;
     private JTextField userIdText = new JTextField(5);
     private JTextField apiKeyText = new JTextField(5);
+    private JTabbedPane tabs;
     
     private TightFit editor;
 	
@@ -104,7 +107,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
     }
     
     private JTabbedPane initCharacters() {
-        JTabbedPane tabs = new JTabbedPane();        
+        tabs = new JTabbedPane();        
         JPanel charPanel = new JPanel();
 		GridBagConstraints c;
 		JButton addbutton = new JButton("Add");
@@ -178,7 +181,15 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
                 CharacterLoadDialog charLoad = new CharacterLoadDialog(this, Character.parseCharacterList(charListAPI.openStream()));
                 charLoad.show();
                 
-                loadNewCharacter("");
+                Iterator itr = charLoad.getChecked();
+                
+                while(itr.hasNext()) {
+                    String cn = (String)itr.next();
+                    String ci = cn.substring(cn.indexOf("(")+1, cn.length()-1);
+                    System.out.println(cn+">>"+ci);
+                    loadNewCharacter(ci);
+                }
+                
                 //TODO: tabs.addTab(currentChar.name,
                 TightPreferences.node("prefs").put("userid", userIdText.getText());
                 TightPreferences.node("prefs").put("apikey", apiKeyText.getText());
@@ -200,7 +211,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
     
     private void loadNewCharacter(String charId) {
         try {
-            
+            System.out.println(charId);
             URL charAPI = new URL("http://api.eve-online.com/char/CharacterSheet.xml.aspx?"+
                         "userID="+userIdText.getText()+"&apiKey="+apiKeyText.getText()+
                         "&characterID="+charId);
@@ -208,13 +219,16 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
             currentChar = new Character();
             currentChar.parse(stream);
             
-            //do we have this char already?
+            //TODO: do we have this char already?
             
+            CharacterInfoPanel charStats = new CharacterInfoPanel(currentChar);
+            
+            tabs.addTab(currentChar.name, charStats);
             
             //for(int i=5;i>0;i--)
             //    TightPreferences.root().node("player").put("player"+i, TightPreferences.root().node("player").get("player"+(i-1), null));
             //TightPreferences.root().node("player").put("player0", chooser.getSelectedFile().getAbsolutePath());
-        
+            
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }

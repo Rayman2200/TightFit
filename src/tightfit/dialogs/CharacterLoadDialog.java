@@ -13,6 +13,8 @@ package tightfit.dialogs;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.util.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -21,8 +23,11 @@ import tightfit.character.Character;
 
 public class CharacterLoadDialog extends JDialog implements ActionListener {
     
+    private JCheckBox [] list;
+    
     public CharacterLoadDialog(Dialog parent, Character [] chars) {
         super(parent);
+        setModal(true);
         JPanel base = new JPanel();
         base.setLayout(new BoxLayout(base, BoxLayout.Y_AXIS));
         
@@ -33,11 +38,13 @@ public class CharacterLoadDialog extends JDialog implements ActionListener {
                     BorderFactory.createTitledBorder("Choices"),
                     BorderFactory.createEmptyBorder(0, 5, 5, 5)));
         
+        list = new JCheckBox[chars.length+1];
+                    
         for(int c=0;c<chars.length;c++) {
             JPanel p = new JPanel();
-            JCheckBox cb = new JCheckBox(chars[c].name);
-            cb.addActionListener(this);
-            p.add(cb);
+            list[c] = new JCheckBox(chars[c].name + " ("+chars[c].charId+")");
+            //list[c].addActionListener(this);
+            p.add(list[c]);
             choices.add(p);
             choices.add(Box.createGlue());
         }
@@ -54,7 +61,19 @@ public class CharacterLoadDialog extends JDialog implements ActionListener {
         pack();
     }
  
-    public void actionPerformed(ActionEvent e) {
+    public Iterator getChecked() {
+        LinkedList charList = new LinkedList();
+        for(int i=0;i<list.length;i++) {
+            if(list[i].isSelected()) {
+                System.out.println(list[i].getText()+" is checked");
+                charList.add(list[i].getText());
+            }
+        }
         
+        return charList.iterator();
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+        setVisible(false);
     }
 }
