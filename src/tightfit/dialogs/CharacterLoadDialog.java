@@ -63,9 +63,8 @@ public class CharacterLoadDialog extends JDialog implements ActionListener {
  
     public Iterator getChecked() {
         LinkedList charList = new LinkedList();
-        for(int i=0;i<list.length;i++) {
+        for(int i=0;i<list.length-1;i++) {
             if(list[i].isSelected()) {
-                System.out.println(list[i].getText()+" is checked");
                 charList.add(list[i].getText());
             }
         }

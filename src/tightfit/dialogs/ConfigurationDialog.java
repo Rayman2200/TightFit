@@ -186,7 +186,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
                 while(itr.hasNext()) {
                     String cn = (String)itr.next();
                     String ci = cn.substring(cn.indexOf("(")+1, cn.length()-1);
-                    System.out.println(cn+">>"+ci);
                     loadNewCharacter(ci);
                 }
                 
@@ -211,7 +210,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
     
     private void loadNewCharacter(String charId) {
         try {
-            System.out.println(charId);
             URL charAPI = new URL("http://api.eve-online.com/char/CharacterSheet.xml.aspx?"+
                         "userID="+userIdText.getText()+"&apiKey="+apiKeyText.getText()+
                         "&characterID="+charId);
