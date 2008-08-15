@@ -43,7 +43,7 @@ public class CharacterInfoPanel extends JPanel {
         charStats.add(new JLabel("Name:         "+myChar.name));
         charStats.add(new JLabel("Skillpoints:  "+myChar.sp));
         charStats.add(new JLabel("Skills known: "+myChar.countSkills()));
-        charStats.add(new JLabel("Skills at L5: "));
+        charStats.add(new JLabel("Skills at L5: "+myChar.countSkills(5)));
         c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         c.fill = GridBagConstraints.HORIZONTAL;

@@ -106,6 +106,18 @@ public class Character {
         return skills.size();
     }
     
+    public int countSkills(int level) {
+        int count=0;
+        Iterator itr = skills.keySet().iterator();
+        while(itr.hasNext()) {
+            Skill s = (Skill)skills.get(itr.next());
+            if(s.getLevel() == level) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
 	public void parse(InputStream s) throws Exception {
         skills.clear();
 		
