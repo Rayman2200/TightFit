@@ -11,7 +11,6 @@
 package tightfit.widget;
 
 import java.awt.*;
-import java.awt.image.*;
 
 import javax.swing.*;
 import javax.imageio.ImageIO;
@@ -53,6 +52,7 @@ public class CharacterInfoPanel extends JPanel {
             charInfo.add(new JLabel(getImage()), c);
         } catch(Exception ex) {
             charInfo.add(new JLabel(Resources.getIcon("icon74_14.png")), c);
+            ex.printStackTrace();
         }
         c.gridx=2;
         charInfo.add(charStats, c);
@@ -61,9 +61,9 @@ public class CharacterInfoPanel extends JPanel {
     }
     
     private ImageIcon getImage() throws Exception {
-        URL url = new URL("http://img.eve.is/serv.asp?s=64"+
+        URL url = new URL("http://img.eve.is/serv.asp?s=256"+
                         "&c="+myChar.charId);
         
-        return new ImageIcon(ImageIO.read(url.openStream()));
+        return new ImageIcon(ImageIO.read(url.openStream()).getScaledInstance(128, 128, Image.SCALE_SMOOTH));
     }
 }

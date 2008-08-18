@@ -535,6 +535,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		Slot slot = (Slot)((DropTarget)e.getSource()).getComponent();
 		try {
 			if(slot instanceof CargoSlot) {
+				
 				ship.addToCargo((Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module")));
 				ship.fireShipChange();
 			} else if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {

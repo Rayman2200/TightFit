@@ -16,9 +16,7 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.event.*;
 
-import tightfit.TightPreferences;
 import tightfit.character.Character;
 
 public class CharacterLoadDialog extends JDialog implements ActionListener {

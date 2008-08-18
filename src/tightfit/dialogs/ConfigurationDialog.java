@@ -179,7 +179,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
                             "userID="+userIdText.getText()+"&apiKey="+apiKeyText.getText());
                 
                 CharacterLoadDialog charLoad = new CharacterLoadDialog(this, Character.parseCharacterList(charListAPI.openStream()));
-                charLoad.show();
+                charLoad.setVisible(true);
                 
                 Iterator itr = charLoad.getChecked();
                 
@@ -215,6 +215,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
                         "&characterID="+charId);
             InputStream stream = charAPI.openStream();
             currentChar = new Character();
+            currentChar.charId = charId;
             currentChar.parse(stream);
             
             //TODO: do we have this char already?
