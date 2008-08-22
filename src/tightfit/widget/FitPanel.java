@@ -254,8 +254,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         					RenderingHints.VALUE_RENDER_QUALITY);
         
         g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, 
-							RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        
+        					RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+                            
         g2d.setComposite(AlphaComposite.SrcAtop);
                             
         //let the drawing begin!

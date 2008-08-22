@@ -16,6 +16,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.io.File;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -26,6 +27,7 @@ import tightfit.item.*;
 import tightfit.module.Module;
 import tightfit.dialogs.*;
 import tightfit.character.Character;
+import tightfit.character.CharacterChangeListener;
 
 /**
  * Main Class
@@ -48,6 +50,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     
     private static final int APP_WIDTH = 680;
     private static final int APP_HEIGHT = 500;
+    
+    private LinkedList listenerList = new LinkedList();
     
     private static TightFit editor;
     
@@ -151,11 +155,17 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         
     	myShip = s;
     	myShip.pilot = myChar;
+        addCharacterListener(myShip);
         thePanel.setShip(myShip);
         myShip.addChangeListener(tankPanel);
         myShip.addChangeListener(dpsPanel);
         
         myShip.fireShipChange();
+    }
+    
+    public void setCharacter(Character c) {
+        myChar = c;
+        fireCharacterChanged();
     }
     
     public Ship getShip() {
@@ -174,6 +184,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     			
     		}
     	}
+    }
+    
+    public void addCharacterListener(CharacterChangeListener c) {
+        listenerList.add(c);
     }
     
     public void mouseDragged(MouseEvent e) {
@@ -274,4 +288,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
 		
 	}
 
+    private void fireCharacterChanged() {
+        Iterator itr = listenerList.iterator();
+    	while(itr.hasNext()) {
+    		((CharacterChangeListener)itr.next()).characterChanged(myChar);
+    	}
+    }
 }

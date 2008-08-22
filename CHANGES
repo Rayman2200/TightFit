@@ -9,7 +9,8 @@
 + Added loading ammo to all weapons simultaneously (suggested by DeathsEmbrace)
 + Added DPS/Range graph to DPS tab (suggested by AstroPhobic)
 + Added Cargo bay (suggested by AstroPhobic)
-- Added EVE API Character loading
++ Added EVE API Character loading
+- Added Various module sorting capabilities to MarketDialog (suggested by Lubomir Penev)
 
 0.1.3a - July 19th, 2008
 + Fixed market window - can no longer be closed

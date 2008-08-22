@@ -11,6 +11,7 @@
 package tightfit.widget;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 import javax.imageio.ImageIO;
@@ -18,13 +19,20 @@ import javax.imageio.ImageIO;
 import java.net.*;
 
 import tightfit.character.Character;
+import tightfit.character.CharacterChangeListener;
 import tightfit.Resources;
+import tightfit.TightFit;
 
-public class CharacterInfoPanel extends JPanel {
+public class CharacterInfoPanel extends JPanel implements CharacterChangeListener, ActionListener {
+    
+    private JCheckBox activeChar;
+    
+    private TightFit editor;
     private Character myChar;
     
-    public CharacterInfoPanel(Character c) {
+    public CharacterInfoPanel(TightFit e, Character c) {
         myChar = c;
+        editor = e;
         init();
     }
 
@@ -57,6 +65,9 @@ public class CharacterInfoPanel extends JPanel {
         c.gridx=2;
         charInfo.add(charStats, c);
         add(charInfo);
+        activeChar = new JCheckBox("Set as Active Character");
+        activeChar.addActionListener(this);
+        add(activeChar);
         add(new JPanel());
     }
     
@@ -65,5 +76,18 @@ public class CharacterInfoPanel extends JPanel {
                         "&c="+myChar.charId);
         
         return new ImageIcon(ImageIO.read(url.openStream()).getScaledInstance(128, 128, Image.SCALE_SMOOTH));
+    }
+    
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == activeChar) {
+            editor.setCharacter(myChar);
+        }
+    }
+    
+    public void characterChanged(Character c) {
+        activeChar.setSelected(c == myChar);
+        activeChar.setEnabled(true);
+        if(c == myChar)
+            activeChar.setEnabled(false);
     }
 }

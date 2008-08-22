@@ -131,6 +131,20 @@ public class Database {
         return l;
     }
     
+    public LinkedList getMarketGroupByParent(int gid) {
+        Iterator itr = marketGroups.iterator();
+        LinkedList l = new LinkedList();
+        
+        while(itr.hasNext()) {
+            MarketGroup g = (MarketGroup)itr.next();
+            if(g.parentGroupId == gid) {
+                l.addLast(g);
+            }
+        }
+        
+        return l;
+    }
+    
     private class DatabaseParserHandler extends DefaultHandler {
         
         private Database myDb;

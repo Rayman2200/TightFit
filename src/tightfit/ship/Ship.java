@@ -16,6 +16,7 @@ import tightfit.item.Item;
 import tightfit.module.Module;
 import tightfit.module.Weapon;
 import tightfit.character.Character;
+import tightfit.character.CharacterChangeListener;
 import tightfit.util.ModuleMap;
 
 /**
@@ -23,7 +24,7 @@ import tightfit.util.ModuleMap;
  * 
  * @version $Id$
  */
-public class Ship extends Item {
+public class Ship extends Item implements CharacterChangeListener {
 
 	public String title;
 	public Character pilot = new Character();
@@ -61,13 +62,13 @@ public class Ship extends Item {
         hiSlots = new Module[0];
         midSlots = new Module[0];
         lowSlots = new Module[0];
-        name = "Caldari Shuttle";
-        cpu = cpuMax = 150;
-        grid = gridMax = 25;
+        name = "GooPod";
+        cpu = cpuMax = 1;
+        grid = gridMax = 1;
         sigRadius = 25;
-        attributes.put("maxLockedTargets", "2.0");
-        attributes.put("capacity", "40.0");
-        title = "Corporate Jet";
+        attributes.put("maxLockedTargets", "0.0");
+        attributes.put("capacity", "0.0");
+        title = "Pod";
         shieldReson = new float[4];
     	shieldReson[0] = 1;
     	shieldReson[1] = 1;
@@ -545,7 +546,7 @@ public class Ship extends Item {
     }
     
     public float getMaxCpu() {
-    	float c = cpuMax*pilot.getSkillBonus("3426");;
+    	float c = cpuMax*pilot.getSkillBonus("3426");
     	
     	return multiplyAttributeProperty(c, "cpuMultiplier", true);
     }
@@ -1034,5 +1035,10 @@ public class Ship extends Item {
     
     public void removeChangeListener(ShipChangeListener scl) {
         listenerList.remove(scl);
+    }
+    
+    public void characterChanged(Character c) {
+        pilot = c;
+        fireShipChange();
     }
 }

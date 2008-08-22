@@ -4,7 +4,8 @@
 * Modularity (Boz Well)
 * Market price of modules, ships, entire fits, etc.
 
-0.2.0a - Depends on data export from CCP
+0.2.0a - TBD
+* Must be noticibly faster, more responsive
 * Unified bonus calc from modules
 * Drone damage calculator
 * Skill Plan export for EveMon
@@ -12,13 +13,12 @@
 * Rack overloading
 * Ship comparisons
 * Ship bonuses
+* Character and fit "quick picker"
+* Finish Show Info Dialog (skill, variations)
 
 0.1.4a - TBD
-* Must be noticibly faster, more responsive
 * Saving fits
 * Fix stacking in calculations
 * Scan resolution and signature radius aren't calculated properly
 * Save should allow for cancelling loading another ship
 * Skill tree in Show Info
-* Finish Show Info Dialog (skill, variations)
-* Various module sorting capabilities (Lubomir Penev)

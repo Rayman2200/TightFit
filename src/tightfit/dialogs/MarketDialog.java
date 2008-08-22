@@ -33,6 +33,7 @@ import tightfit.module.Module;
 import tightfit.module.Weapon;
 import tightfit.ship.Ship;
 import tightfit.widget.*;
+import tightfit.widget.ui.*;
 
 public class MarketDialog extends JDialog implements TreeSelectionListener, 
 								DragSourceListener, DragGestureListener, MouseListener, ActionListener {
@@ -43,6 +44,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     private DefaultMutableTreeNode top;
     private Database myDb; 
     private JList groups, searchList;
+    private JTable itemTable;
     private MemoryList quickList;
     private DragSource ds;
     private JScrollPane sp;
@@ -200,7 +202,6 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 		if(e.getPath().getLastPathComponent() instanceof MarketTreeNode) {
 			MarketTreeNode mtn = (MarketTreeNode)e.getPath().getLastPathComponent();
 			
-			//System.out.println(mtn.name + mtn.getCategoryId()+"_"+mtn.getGroupId());
 			buildList(mtn.getGroupId());
 			repaint();
 		}
@@ -210,38 +211,50 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	Vector list = new Vector();
     	
     	Iterator itr = myDb.getTypeByMarketGroup(groupId).iterator();
-    	if(itr.hasNext())
+    	if(itr.hasNext()) {
     		groups.removeAll();
-    	while(itr.hasNext()) {
-    		boolean inserted = false;
-    		Item i = (Item)itr.next();
-    		MarketListEntry mle = new MarketListEntry(i, editor);
-    		if(!list.isEmpty()) {
-	    		for(int in=0;in<list.size();in++) {
-	    			MarketListEntry e = (MarketListEntry) list.get(in);
-	    			if(e != null) {
-	    				if(e.getItem().name.compareTo(i.name) >= 0) {
-	    					list.insertElementAt(mle, in);
-	    					inserted = true;
-	    					break;
-	    				}
-	    			} else {
-	    				list.add(in, mle);
-	    				inserted = true;
-	    				break;
-	    			}
-	    		}
-	    		
-	    		if(!inserted) {
-	    			list.add(mle);
-	    		}
-    		} else {
-    			list.add(mle);
-    		}
-    	}
-    	
-        groups.setListData(list);
-        groups.setSelectedIndex(0);
+            while(itr.hasNext()) {
+                boolean inserted = false;
+                Item i = (Item)itr.next();
+                MarketListEntry mle = new MarketListEntry(i, editor);
+                if(!list.isEmpty()) {
+                    for(int in=0;in<list.size();in++) {
+                        MarketListEntry e = (MarketListEntry) list.get(in);
+                        if(e != null) {
+                            if(e.getItem().name.compareTo(i.name) >= 0) {
+                                list.insertElementAt(mle, in);
+                                inserted = true;
+                                break;
+                            }
+                        } else {
+                            list.add(in, mle);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    
+                    if(!inserted) {
+                        list.add(mle);
+                    }
+                } else {
+                    list.add(mle);
+                }
+            }
+            groups.setListData(list);
+            groups.setSelectedIndex(0);
+            sp.getViewport().setView(groups);
+        } else {
+            ArrayList<String> cols = new ArrayList<String>();
+            cols.add("name"); cols.add("volume"); cols.add("metaLevel");
+            
+            //TODO: is it ammo, vegetable, or mineral
+            
+            
+            itemTable = new JTable(new ItemTableModel(groupId, (String[])cols.toArray(new String[1])));
+            
+            
+            sp.getViewport().setView(itemTable);
+        }
     }
     
     private JPopupMenu buildPopup(Item item) {
@@ -250,7 +263,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	
 		menu.add(new JMenuItem(new ShowInfoAction(editor.appFrame, item)));
 		menu.addSeparator();
-    	if(item.getAttribute("lowSlots", "-1").equals("-1")) {
+    	if(!item.isShip()) {
             menu.add(new JMenuItem(new FitToShipAction(editor.getShip(), quickList, item)));
 		} else {
 			mitem = new JMenuItem(Resources.getString("dialog.market.makeactive"));

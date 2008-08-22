@@ -220,7 +220,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
             
             //TODO: do we have this char already?
             
-            CharacterInfoPanel charStats = new CharacterInfoPanel(currentChar);
+            CharacterInfoPanel charStats = new CharacterInfoPanel(editor, currentChar);
+            editor.addCharacterListener(charStats);
             
             tabs.addTab(currentChar.name, charStats);
             
