@@ -79,6 +79,10 @@ public class Module extends Item {
     	return 0;
     }
     
+    public float getVolume() {
+    	return Float.parseFloat(getAttribute("volume", "0")) * (dups > 0 ? dups : 1);
+    }
+    
     public float getCpuUsage() {
     	float cpu = Float.parseFloat(getAttribute("cpu", "0"));
 		Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));

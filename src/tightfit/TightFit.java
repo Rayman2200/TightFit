@@ -77,12 +77,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
         myShip = new Ship();
         myChar = new Character("Pilot");
         
-        try {
-			myChar.parse(TightPreferences.node("player").get("player0", null));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
         appFrame.setLocationRelativeTo(null);
         appFrame.pack();
         

@@ -537,7 +537,7 @@ public class Ship extends Item {
     }
     
     public float getMaxPower() {
-    	float output = gridMax*(1+pilot.getSkillLevel("3413")*0.05f);
+    	float output = gridMax*pilot.getSkillBonus("3413");
     	
     	output = multiplyAttributeBonus(output, "powerEngineeringOutputBonus", true);
     	
@@ -545,7 +545,7 @@ public class Ship extends Item {
     }
     
     public float getMaxCpu() {
-    	float c = cpuMax*(1+pilot.getSkillLevel("3426")*0.05f);
+    	float c = cpuMax*pilot.getSkillBonus("3426");;
     	
     	return multiplyAttributeProperty(c, "cpuMultiplier", true);
     }
@@ -1006,7 +1006,7 @@ public class Ship extends Item {
 		while(itr.hasNext()) {
 			Module m = (Module)itr.next();
 			
-			total += Float.parseFloat(m.getAttribute("volume", "0"));
+			total += m.getVolume();
 		}
     	
         return getTotalCargoCapacity() - total;

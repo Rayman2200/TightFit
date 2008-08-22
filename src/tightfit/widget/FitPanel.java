@@ -247,11 +247,14 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             //RenderingHints.VALUE_ANTIALIAS_ON);
         
-        //g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-        //                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
         					RenderingHints.VALUE_RENDER_QUALITY);
+        
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, 
+							RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         
         g2d.setComposite(AlphaComposite.SrcAtop);
                             
@@ -535,8 +538,12 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		Slot slot = (Slot)((DropTarget)e.getSource()).getComponent();
 		try {
 			if(slot instanceof CargoSlot) {
-				
-				ship.addToCargo((Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module")));
+				Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
+				float cvol = Float.parseFloat(m.getAttribute("volume", "1"));
+	    		float cap = ship.getFreeCargoCapacity();
+	    		String amount = JOptionPane.showInputDialog(null, "Enter amount...", ""+((int)(cap / cvol)));
+				m.dups = Integer.parseInt(amount != null ? amount : "0");
+				ship.addToCargo(m);
 				ship.fireShipChange();
 			} else if(e.getTransferable().getTransferData(new DataFlavor(Module.class, "Module")) instanceof Module) {
 				Module m = (Module)(e.getTransferable()).getTransferData(new DataFlavor(Module.class, "Module"));
