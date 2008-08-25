@@ -286,10 +286,12 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		g2d.fillRoundRect(400, 10, 230, 135, 40, 40);
 		g2d.drawImage(weapon.getImage(), 410,20,null);
 		
+        String optimal = weapon.calculateOptimalRange()>=10000 ? WidgetHelper.formatFloat(weapon.calculateOptimalRange()/1000f,2)+"km":WidgetHelper.formatFloat(weapon.calculateOptimalRange(),2)+"m";
+        
 		WidgetHelper.drawShadowedString(g2d, "Type:      "+weapon.getTypeString(), 485, 29, Color.white);
 		WidgetHelper.drawShadowedString(g2d, "RoF:       "+WidgetHelper.formatFloat(weapon.calculateRoF(),2)+"s", 485, 45, Color.white);
         WidgetHelper.drawShadowedString(g2d, "DPS:       "+weapon.calculateAggregateDps(), 485, 61, Color.white);
-		WidgetHelper.drawShadowedString(g2d, "Optimal:   "+WidgetHelper.formatFloat(weapon.calculateOptimalRange(),2)+"m", 485, 77, Color.white);
+		WidgetHelper.drawShadowedString(g2d, "Optimal:   "+optimal, 485, 77, Color.white);
 		WidgetHelper.drawShadowedString(g2d, "MTBR:      "+((int)(seconds / 60))+"m "+((int)(seconds % 60))+"s", 485, 93, Color.white);
 	}
 	

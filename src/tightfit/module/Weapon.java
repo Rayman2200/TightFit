@@ -163,10 +163,10 @@ public class Weapon extends Module {
         float range=0;
         if(weaponType != WEAPON_LAUNCHER) {
     		//TODO: ship bonuses
-	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier();
+	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier() * (1+myShip.aggregateAllSlots("maxRangeBonus", "*", true/*, true*/));
     	} else {
             Ammo charge = getCharge(); 
-    		//range = 
+    		range = (Float.parseFloat(charge.getAttribute("maxVelocity", "1.0")) * myShip.pilot.getSkillBonus("12442") * ((Float.parseFloat(charge.getAttribute("explosionDelay", "1.0")) * myShip.pilot.getSkillBonus("12441"))/1000.0f)); 
     	}
         
         return range;
@@ -178,7 +178,7 @@ public class Weapon extends Module {
      *  for the weapon, and finally scaled by the maximum damage of the weapon.
      *  
      *  NOTE: It does not account for traversal or target radius.
-     *  NOTE: In the case of launchers, this depends on the ammo loaded and speed/flight time
+     *  NOTE: In the case of launchers, this depends on the ammo loaded and speed*flight time
      *  
      *  @param x   the distance to target
      */
@@ -191,7 +191,7 @@ public class Weapon extends Module {
     		//TODO: ship bonuses
 	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier())/1000f;
     	} else {
-    		
+            sigma = Float.parseFloat(charge.getAttribute("aoeFalloff", "1.0"))/1000f;
     	}
         
     	return 1.0f / (sigma * Math.sqrt(2*Math.PI) * Math.pow(Math.E, -((x-mu)*(x-mu))/ (2*sigma*sigma)));
@@ -204,7 +204,7 @@ public class Weapon extends Module {
     		//TODO: ship bonuses
 	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier());
     	} else {
-    		
+    		sigma = Float.parseFloat(charge.getAttribute("aoeFalloff", "1.0"));
     	}
         
         return sigma*Math.sqrt(2 * Math.log(.001 * sigma * Math.sqrt(2*Math.PI)));

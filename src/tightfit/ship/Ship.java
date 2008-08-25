@@ -930,7 +930,7 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateScanResolution() {
-    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true);
+    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true) * (1+aggregateAllSlots("scanResolutionBonus", "*", false/*, true*/)/100f);
     }
     
     public float calculateRadius() {
