@@ -6,19 +6,19 @@
 
 0.2.0a - TBD
 * Must be noticibly faster, more responsive
-* Unified bonus calc from modules
+* Unified bonus calc from modules (including drawbacks)
 * Drone damage calculator
 * Skill Plan export for EveMon
 * Skill calculates into all attributes
 * Rack overloading
 * Ship comparisons
 * Ship bonuses
+* Scripts are not modifying attributes
 * Character and fit "quick picker"
 * Finish Show Info Dialog (skill, variations)
 
 0.1.4a - TBD
 * Saving fits
 * Fix stacking in calculations
-* Scan resolution and signature radius aren't calculated properly
 * Save should allow for cancelling loading another ship
 * Skill tree in Show Info

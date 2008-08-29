@@ -113,6 +113,10 @@ public class Item {
     	return attributes.containsKey("chargeSize") || attributes.containsKey("useMissiles"); //FIXME: be more precise
     }
     
+    public boolean isDrone() {
+        return attributes.containsKey("droneBandwidthUsed");
+    }
+    
     /**
      * Retrieves an attribute value from the hash
      * 

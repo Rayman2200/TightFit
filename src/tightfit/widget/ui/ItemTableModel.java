@@ -26,6 +26,7 @@ public class ItemTableModel extends AbstractTableModel {
     private LinkedList items;
     
     public ItemTableModel(int parent, String columns[]) {
+        
         this.columns = columns;
         items = new LinkedList();
         
@@ -41,13 +42,17 @@ public class ItemTableModel extends AbstractTableModel {
         return columns.length;
     }
     
+    public String getColumnName(int c) {
+        return columns[c];
+    }
+    
     public boolean isCellEditable(int r, int c) {
         return false;
     }
     
     public Object getValueAt(int row, int column) {
         Item m = (Item)items.get(row);
-        if(columns[column].equals("name")) {
+        if(columns[column].equalsIgnoreCase("name")) {
             return m.name;
         }
         return m.getAttribute(columns[column], "N/A");

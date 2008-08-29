@@ -247,11 +247,16 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
             ArrayList<String> cols = new ArrayList<String>();
             cols.add("name"); cols.add("volume"); cols.add("metaLevel");
             
-            //TODO: is it ammo, vegetable, or mineral
-            
+            Item type = findTypeBySuperGroup(groupId);
+            if(type.isAmmo()) {
+                cols.add("emDamage"); cols.add("kineticDamage"); cols.add("explosiveDamage"); cols.add("thermalDamage");
+            } else if(type.isShip()) {
+                cols.add("powerOutput"); cols.add("cpuOutput"); cols.add("hiSlots"); cols.add("medSlots"); cols.add("lowSlots"); cols.add("maxVelocity");
+            }
             
             itemTable = new JTable(new ItemTableModel(groupId, (String[])cols.toArray(new String[1])));
-            
+            itemTable.addMouseListener(this);
+            itemTable.setShowHorizontalLines(false);
             
             sp.getViewport().setView(itemTable);
         }
@@ -409,5 +414,24 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                 quickList.insert(new Item(Database.getInstance().getType(in)));
             }
         } catch(Exception e) {}
+    }
+    
+    private Item findTypeBySuperGroup(int parent) {
+        try {
+            LinkedList list = myDb.getMarketGroupByParent(parent);
+        
+            if(list.size() > 0) {
+                Iterator itr = list.iterator();
+                while(itr.hasNext()) {
+                    MarketGroup g = (MarketGroup)itr.next();
+                    return findTypeBySuperGroup(g.groupId);
+                }
+            } else {
+                LinkedList itm = myDb.getTypeByMarketGroup(parent);
+                Iterator itr = itm.iterator();
+                return (Item)itr.next();
+            }
+        } catch(Exception e) {}
+        return new Item();
     }
 }

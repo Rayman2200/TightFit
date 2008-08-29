@@ -6,6 +6,7 @@
 + Fixed Gunnery skill applying to damage instead of RoF
 + Fixed UI contrast somewhat, fonts are easier to read (suggested by Kalliopia)
 + Fixed bombs, scripts, and probes not loading into modules
++ Fixed Scan resolution and signature radius not being calculated properly
 + Added loading ammo to all weapons simultaneously (suggested by DeathsEmbrace)
 + Added DPS/Range graph to DPS tab (suggested by AstroPhobic)
 + Added Cargo bay (suggested by AstroPhobic)
