@@ -82,6 +82,7 @@
 
   <target name="clean" description="Clean up the build directory" >
     <delete dir="${build}"/>
+    <delete dir="${dist}"/>
   </target>
 
   <target name="javadoc" description="Generate Javadoc">

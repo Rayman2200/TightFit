@@ -42,7 +42,12 @@ public class Database {
             factory.setValidating(false);
             SAXParser parser = factory.newSAXParser();
             synchronized(this) {
-                parser.parse(in, new DatabaseParserHandler(this));
+		try {
+                	parser.parse(in, new DatabaseParserHandler(this));
+		} catch(SAXParseException e) {
+			System.err.println("At ["+e.getLineNumber()+":"+e.getColumnNumber()+"]: ");
+			e.printStackTrace();
+		}
             }
             //System.out.println("free "+Runtime.getRuntime().freeMemory());
             in.close();
