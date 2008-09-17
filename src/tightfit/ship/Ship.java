@@ -235,7 +235,10 @@ public class Ship extends Item implements CharacterChangeListener {
     		return false;
     	else if(m.getAttribute("turretFitted", "0").equals("1") && countFreeTurretHardpoints() == 0)
     		return false;
-        
+    	else if(!m.getAttribute("upgradeCost", "-1").equals("-1") && 
+    					Float.parseFloat(m.getAttribute("upgradeCost", "0")) > getRemainingUpgradeCapacity())
+    		return false;
+    	
     	return !hasModule(slotType, slot);
     }
     
@@ -422,30 +425,39 @@ public class Ship extends Item implements CharacterChangeListener {
     	return a;
     }
     
-    public float aggregateAllSlots(String prop, String hasProp, boolean requiresOnline) {
+    public float aggregateAllSlots(String prop, String hasProp, boolean requiresOnline, boolean penalizeStacking) {
     	float a = 0f;
+    	float mod;
     	
+    	mod=1;
     	for(int i=0;i<hiSlots.length;i++) {
     		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || hiSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"));
+    			a +=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"))*mod;
+    			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
     	
+    	mod=1;
     	for(int i=0;i<midSlots.length;i++) {
     		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || midSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"));
+    			a +=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"))*mod;
+    			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
     	
+    	mod=1;
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || lowSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"));
+    			a +=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"))*mod;
+    			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
     	
+    	mod=1;
     	for(int i=0;i<rigSlots.length;i++) {
     		if(rigSlots[i] != null && (hasProp.equals("*") || rigSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"));
+    			a +=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"))*mod;
+    			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
     	
@@ -608,6 +620,18 @@ public class Ship extends Item implements CharacterChangeListener {
     	}
     	
     	return cpuRemain;
+    }
+    
+    public int getRemainingUpgradeCapacity() {
+    	int max = (int)Float.parseFloat(getAttribute("upgradeCapacity", "0"));
+    	
+    	for(int i=0;i<rigSlots.length;i++) {
+    		if(rigSlots[i] != null) {
+    			max -=  Float.parseFloat(rigSlots[i].getAttribute("upgradeCost", "0"));
+    		}
+    	}
+    	
+    	return max;
     }
     
     public float [] getShieldResonance() {
@@ -845,10 +869,10 @@ public class Ship extends Item implements CharacterChangeListener {
     
     public float [] getStructureResonance() {
     	float [] reson = new float[4];
-    	reson[0] = structReson[0] - (1-checkResonance(aggregateAllSlots("hullEmDamageResonance", "*", true)));
-    	reson[1] = structReson[1] - (1-checkResonance(aggregateAllSlots("hullKineticDamageResonance", "*", true)));
-    	reson[2] = structReson[2] - (1-checkResonance(aggregateAllSlots("hullThermalDamageResonance", "*", true)));
-    	reson[3] = structReson[3] - (1-checkResonance(aggregateAllSlots("hullExplosiveDamageResonance", "*", true)));
+    	reson[0] = structReson[0] - (1-checkResonance(aggregateAllSlots("hullEmDamageResonance", "*", true, false)));
+    	reson[1] = structReson[1] - (1-checkResonance(aggregateAllSlots("hullKineticDamageResonance", "*", true, false)));
+    	reson[2] = structReson[2] - (1-checkResonance(aggregateAllSlots("hullThermalDamageResonance", "*", true, false)));
+    	reson[3] = structReson[3] - (1-checkResonance(aggregateAllSlots("hullExplosiveDamageResonance", "*", true, false)));
     	return reson;
     }
     
@@ -930,11 +954,11 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateScanResolution() {
-    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true) * (1+aggregateAllSlots("scanResolutionBonus", "*", false/*, true*/)/100f);
+    	return multiplyAttributeProperty(scanRes, "scanResolutionMultiplier", true) * (1+aggregateAllSlots("scanResolutionBonus", "*", false, true)/100f);
     }
     
     public float calculateRadius() {
-    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", "*", false));
+    	return sigRadius + (aggregateAllSlots("signatureRadiusAdd", "*", false, false));
     }
     
     public float calculateRechargeRate() {
@@ -981,15 +1005,15 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp * (1+pilot.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * (1+pilot.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true, false), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
-    	return armorHp * (1+pilot.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true);
+    	return armorHp * (1+aggregateAllSlots("armorHpBonus", "*", true, true)/100.0f) * (1+pilot.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true, false);
     }
     
     public float calculateMaxStructure() {
-    	return multiplyAttributeProperty(hp * (1+pilot.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true), "structureHPMultiplier", true);
+    	return multiplyAttributeProperty(hp * (1+pilot.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true, false), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {

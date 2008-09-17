@@ -83,15 +83,15 @@ public class Weapon extends Module {
 	}
 	
 	public String getTypeString() {
-		int t = getType();
-		if(t == WEAPON_BLASTER) {
-			return "hybrid";
-		} else if(t == WEAPON_CANNON) {
-			return "projectile";
-		} else if(t == WEAPON_LAUNCHER) {
-			return "launcher";
-		} else if(t == WEAPON_LASER) {
-			return "energy";               //Charge mah lazahs!!!
+		switch(getType()) {
+			case WEAPON_BLASTER:
+				return "hybrid";
+			case WEAPON_CANNON:
+				return "projectile";
+			case WEAPON_LAUNCHER:
+				return "launcher";
+			case WEAPON_LASER:
+				return "energy";               //Charge mah lazahs!!!
 		}
 		
 		return "none";
@@ -133,13 +133,23 @@ public class Weapon extends Module {
         Iterator itr = myShip.findModuleByAttributeAndSort("damageMultiplier", true);
         
         //get the primary skill
-        Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
-        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
-        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
-        
-        skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
-        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
-        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+        if(weaponType != WEAPON_LAUNCHER) {
+	        Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
+	        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+	        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+	        
+	        skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
+	        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+	        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+        } else {
+        	Skill skill = myShip.pilot.getSkill(charge.getAttribute("requiredSkill1", "0"));
+	        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+	        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+	        
+	        skill = myShip.pilot.getSkill(charge.getAttribute("requiredSkill2", "0"));
+	        if(skill != null && skill.hasAttribute("damageMultiplierBonus"))
+	        	bonus = 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+        }
         
         mult *= bonus;
         if(weaponType != WEAPON_LAUNCHER) {
@@ -163,7 +173,7 @@ public class Weapon extends Module {
         float range=0;
         if(weaponType != WEAPON_LAUNCHER) {
     		//TODO: ship bonuses
-	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier() * (1+myShip.aggregateAllSlots("maxRangeBonus", "*", true/*, true*/));
+	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier() * (1+myShip.aggregateAllSlots("maxRangeBonus", "*", true, true));
     	} else {
             Ammo charge = getCharge(); 
     		range = (Float.parseFloat(charge.getAttribute("maxVelocity", "1.0")) * myShip.pilot.getSkillBonus("12442") * ((Float.parseFloat(charge.getAttribute("explosionDelay", "1.0")) * myShip.pilot.getSkillBonus("12441"))/1000.0f)); 
@@ -198,7 +208,7 @@ public class Weapon extends Module {
     }
     
     public double calculateRangeExtent() {
-        float mu = calculateOptimalRange(), sigma = 1;
+        float /*mu = calculateOptimalRange(),*/ sigma = 1;
     	
     	if(weaponType != WEAPON_LAUNCHER) {
     		//TODO: ship bonuses

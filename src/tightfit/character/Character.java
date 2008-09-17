@@ -45,7 +45,7 @@ public class Character {
     
 	public void addSkill(String id, String level) {
 		try {
-			skills.put(id, new Skill(id, Integer.parseInt(level)));
+			skills.put(id, new Skill(id, Integer.parseInt(level == null ? "0" : level)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
