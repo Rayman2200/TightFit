@@ -112,7 +112,7 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
         WidgetHelper.drawShadowedString(g2d, "Total DPS:  " + WidgetHelper.formatFloat(ship.calculateGenericDps(), 2), 45, 17, Color.white);
         WidgetHelper.drawShadowedString(g2d, "Volley:     " + WidgetHelper.formatFloat(ship.calculateGenericVolley(), 2), 45, 29, Color.white);
         WidgetHelper.drawShadowedString(g2d, "Min. Effective Range:  " + WidgetHelper.formatFloat(calculateMinRange(ship), 2), 125, 17, Color.white);
-        WidgetHelper.drawShadowedString(g2d, "Max. Effective Range:  " + WidgetHelper.formatFloat(calculateMaxRange(ship), 2), 125, 29, Color.white);
+        WidgetHelper.drawShadowedString(g2d, "Max. Effective Range:  " + WidgetHelper.formatFloat(calculateMaxRange(ship)*0.8f, 2), 125, 29, Color.white);
         
         //Dimension d = getSize();
         //int spacing = (d.width-(32*ship.totalHiSlots())-60)/(ship.totalHiSlots()*2);
@@ -192,11 +192,13 @@ public class DpsPanel extends JPanel implements TightFitDropTargetPanel, ShipCha
 		ammoType.setVisible(false);
         sp.setVisible(false);
         dpsGraph.setVisible(false);
+        dpsGraph.setSelected(null);
 		if(y >= 50 && y <=82) {
 			selected = (x-30)/42;
 			buildAmmo(memShip.getModule(Module.HI_SLOT, selected));
 			ammoType.setVisible(true);
 			dpsGraph.setVisible(true);
+			dpsGraph.setSelected(memShip.getModule(Module.HI_SLOT, selected));
             repaint();
 		}
 	}

@@ -34,7 +34,7 @@ public class Skill extends Item {
         try {
             String [] key = getAttributeKey("Bonus");
             for(int i = 0;i<key.length;i++)
-            	if(key[i].length() < 28)   //at least the other ones are extremely long...
+            	if(key[i].length() < 28)   //FIXME: at least the other ones are extremely long...
             		return Float.parseFloat(getAttribute(key[i], "0.0"));
         } catch (Exception e) {
         }

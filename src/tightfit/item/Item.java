@@ -193,7 +193,7 @@ public class Item {
     
     public boolean equals(Object b) {
     	if(b instanceof Item) {
-    		return ((Item)b).name.equals(name);
+    		return ((Item)b).typeId == typeId;
     	}
     	return false;
     }

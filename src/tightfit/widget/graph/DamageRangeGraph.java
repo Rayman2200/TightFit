@@ -16,15 +16,14 @@ import java.awt.event.*;
 
 import java.util.LinkedList;
 
-import javax.swing.*;
-
-import tightfit.item.*;
 import tightfit.module.*;
 import tightfit.ship.Ship;
 
 public class DamageRangeGraph extends Graph implements MouseMotionListener {
 
     protected Ship myShip;
+    
+    protected Module selected; 
     
     public DamageRangeGraph() {
         addMouseMotionListener(this);
@@ -44,8 +43,6 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
         Graphics2D g = (Graphics2D)cachedImage.getGraphics();
         
         renderMeter();
-        g.setColor(Color.black);
-        g.drawLine((int)(10*dx),0,(int)(10*dx),d.height);
         
         for(int i=0;i<myShip.totalSlots(Module.HI_SLOT);i++) {
         	Module m = myShip.getModule(Module.HI_SLOT, i);
@@ -54,9 +51,26 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
                 rendered.add(m);
                 g.setColor(green);
                 for(x = 0, gx = -10*dx; x <d.width;x++, gx+=dx) {
-                    g.drawLine(x, (int)(w.calculateAtRange(gx)*myShip.calculateGenericDps()*dy), x, d.height);
+                    g.drawLine(x, (int)((w.calculateAtRange(gx)*myShip.calculateGenericDps())/dy), x, d.height);
                 }
             }
+        }
+        
+        g.setColor(Color.black);
+        g.drawLine((int)(10*dx),0,(int)(10*dx),d.height);
+    }
+    
+    private void renderOutline(Graphics g, Module m) {
+    	Dimension d = getPreferredSize();
+        int x;
+        float dx = (dmax-dmin)/d.width;
+        float dy = (rmax-rmin)/d.height;
+        float gx;
+    	Weapon w = (Weapon)m;
+        g.setColor(Color.black);
+        for(x = 0, gx = -10*dx; x <d.width;x++, gx+=dx) {
+        	int y = (int)((w.calculateAtRange(gx)*myShip.calculateGenericDps())/dy);
+            g.fillRect(x, y, 1, 1);
         }
     }
     
@@ -64,6 +78,10 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
         myShip = ship;
         
         renderGraph();
+    }
+    
+    public void setSelected(Module m) {
+    	selected = m;
     }
     
     public void paintComponent(Graphics g) {
@@ -74,14 +92,28 @@ public class DamageRangeGraph extends Graph implements MouseMotionListener {
         
         if(cachedImage != null)
             g.drawImage(cachedImage, 0, 0, null);
+        
+        if(selected != null) {
+        	renderOutline(g, selected);
+        }
     }
  
     public void mouseMoved(MouseEvent e) {
         Dimension d = getPreferredSize();
         float dx = (dmax-dmin)/d.width;
+        float dy = (rmax-rmin)/d.height;
         float range = (dx*e.getX()-dx*10);
+        float dps = 0.0f;
         
-        setToolTipText("Range: "+range+"m / DPS: "+myShip.calculateGenericDpsAtRange(range));
+        for(int i=0;i<myShip.totalSlots(Module.HI_SLOT);i++) {
+        	Module m = myShip.getModule(Module.HI_SLOT, i);
+        	if(m != null && m instanceof Weapon) {
+                Weapon w = (Weapon)m;
+                dps += w.calculateAtRange(range)*w.calculateAggregateDps();
+        	}
+        }
+        
+        setToolTipText("Range: "+range+"m / DPS: "+dps);
     }
     
     public void mouseDragged(MouseEvent e) {
