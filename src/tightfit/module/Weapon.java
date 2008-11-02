@@ -33,7 +33,7 @@ public class Weapon extends Module {
 		
 		if(type.marketGroupId == 561 || type.marketGroupId == 562 || type.marketGroupId == 563 ||
 				type.marketGroupId == 564 || type.marketGroupId == 565 || type.marketGroupId == 566) {
-			weaponType = WEAPON_BLASTER;
+			weaponType = WEAPON_BLASTER;   //nothin like a good blaster by your side
 		} else if(type.marketGroupId == 567 || type.marketGroupId == 568 || type.marketGroupId == 569 || 
 				type.marketGroupId == 570 || type.marketGroupId == 571  || type.marketGroupId == 572) {
 			weaponType = WEAPON_LASER;   //We'll use a "laser" to heat the Earth's atmosphere...

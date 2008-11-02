@@ -22,9 +22,13 @@ import org.xml.sax.SAXException;
 
 import tightfit.item.Item;
 
+/**
+ * Holds an EVEAPI character, and all skill information
+ *
+ */
 public class Character {
 
-	private HashMap skills = new HashMap();
+	private HashMap<String, Skill> skills = new HashMap<String, Skill>();
 	public String name;
     public String charId;
 	public int sp;
@@ -49,7 +53,7 @@ public class Character {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+}
 	
 	public int getSkillLevel(String id) {
 		if(skills.containsKey(id))
@@ -58,7 +62,13 @@ public class Character {
 	}
 	
 	public Skill getSkill(String id) {
-		return (Skill)skills.get(id);
+		Skill s = (Skill)skills.get(id);
+        try { 
+            return s != null ? s : new Skill(id, -1);
+        } catch(Exception e) {
+        }
+        
+        return null;
 	}
 	
 	/**
@@ -85,6 +95,12 @@ public class Character {
 		return false;
 	}
 	
+    /**
+     * Checks for all required skills specified by the item
+     * 
+     * @param item
+     * @return <code>true</code> if all required skills are known to at least required level, <code>false</code> otherwise
+     */
 	public boolean hasRequiredSkill(Item item) {
 		try {
 			String [] reqSkills = item.getAttributeKey("requiredSkill");
@@ -108,7 +124,7 @@ public class Character {
     
     public int countSkills(int level) {
         int count=0;
-        Iterator itr = skills.keySet().iterator();
+        Iterator<String> itr = skills.keySet().iterator();
         while(itr.hasNext()) {
             Skill s = (Skill)skills.get(itr.next());
             if(s.getLevel() == level) {
@@ -160,7 +176,7 @@ public class Character {
 	}
 	
     public static Character[] parseCharacterList(InputStream s) throws Exception {
-        Vector chars = new Vector();
+        Vector<Character> chars = new Vector<Character>();
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document doc;

@@ -25,12 +25,12 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
+import javax.swing.table.*;
 
 import tightfit.*;
 import tightfit.actions.*;
 import tightfit.item.*;
 import tightfit.module.Module;
-import tightfit.module.Weapon;
 import tightfit.ship.Ship;
 import tightfit.widget.*;
 import tightfit.widget.ui.*;
@@ -254,9 +254,14 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
                 cols.add("powerOutput"); cols.add("cpuOutput"); cols.add("hiSlots"); cols.add("medSlots"); cols.add("lowSlots"); cols.add("maxVelocity");
             }
             
-            itemTable = new JTable(new ItemTableModel(groupId, (String[])cols.toArray(new String[1])));
+            TableModel model = new ItemTableModel(groupId, (String[])cols.toArray(new String[1]));
+            itemTable = new JTable(model);
             itemTable.addMouseListener(this);
             itemTable.setShowHorizontalLines(false);
+            
+            //RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+
+            //itemTable.setRowSorter(sorter);
             
             sp.getViewport().setView(itemTable);
         }

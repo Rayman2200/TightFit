@@ -13,15 +13,17 @@ package tightfit.dialogs;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.tree.*;
 
 import java.util.Iterator;
 import java.util.Vector;
 
 import tightfit.Resources;
+import tightfit.TightFit;
 import tightfit.TightPreferences;
 import tightfit.item.Item;
-import tightfit.widget.CustomListRenderer;
-import tightfit.widget.InfoListEntry;
+import tightfit.widget.*;
+import tightfit.character.Skill;
 
 public class ShowInfoDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -78,6 +80,11 @@ public class ShowInfoDialog extends JDialog {
         scrollPane.getViewport().setView(buildAttributeList());
         pane.addTab("Attributes", scrollPane);
         
+        scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(200, 250));
+        scrollPane.getViewport().setView(buildSkillList());
+        pane.addTab("Req. Skills", scrollPane);
+        
         panel.add(pane, c);
     	add(panel);
 	}
@@ -102,4 +109,29 @@ public class ShowInfoDialog extends JDialog {
         
 		return attribs;
 	}
+    
+    private JTree buildSkillList() {
+       DefaultMutableTreeNode root = new DefaultMutableTreeNode("empty");
+       JTree skills = new JTree(root);
+       String tier[] = {"","Primary", "Secondary", "Tertiary"};
+       
+       skills.setShowsRootHandles(false);
+       skills.setRootVisible(false);
+       
+       for(int i=1;i<=3;i++) {
+           if(myItem.hasAttribute("requiredSkill"+i)) {
+               DefaultMutableTreeNode parent = new DefaultMutableTreeNode(tier[i]+" Skill");
+               root.add(parent);
+               Skill skill = TightFit.getInstance().getChar().getSkill(myItem.getAttribute("requiredSkill1"+i,"0"));
+               parent.add(new SkillTreeNode(skill));
+               while(skill.hasAttribute("requiredSkill1")) {
+                   skill = TightFit.getInstance().getChar().getSkill(skill.getAttribute("requiredSkill1","0"));
+                   parent = (DefaultMutableTreeNode)parent.getChildAt(0);
+                   parent.add(new SkillTreeNode(skill));
+               }
+           }
+       }
+       
+       return skills;
+    }
 }
