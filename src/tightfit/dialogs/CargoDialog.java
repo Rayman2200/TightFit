@@ -13,7 +13,14 @@ public class CargoDialog extends JDialog {
 		super();
 		
 		myShip = ship;
+		setTitle(myShip.name+" cargo bay");
+		
+		init();
 	}
 	
-	
+	private void init() {
+		
+		
+		pack();
+	}
 }

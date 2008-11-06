@@ -21,7 +21,9 @@ import tightfit.ship.Ship;
 
 public class DamageRangeGraph extends Graph implements MouseMotionListener {
 
-    protected Ship myShip;
+	private static final long serialVersionUID = 1L;
+
+	protected Ship myShip;
     
     protected Module selected; 
     

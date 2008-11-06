@@ -40,9 +40,9 @@ public class EFTShipParser {
 				slot=0;
 			} else {
 				String [] parts = lines[i].split(",");
-					if(!parts[0].equals("Empty")) {
+					if(!parts[0].equalsIgnoreCase("Empty") && !parts[0].startsWith("[empty")) {
 						Item itm = Database.getInstance().getType(parts[0]);
-						Module m; 
+						Module m;
 						if(itm.isWeapon())
 							m = new Weapon(itm);
 						else

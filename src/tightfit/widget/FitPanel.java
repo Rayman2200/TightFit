@@ -191,7 +191,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
             slot.setLocation(mountPoints[Module.HI_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
-    		s.addChangeListener(slot);
+    		ship.addChangeListener(slot);
 		}
         
 		//MED
@@ -201,7 +201,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
             slot.setLocation(mountPoints[Module.MID_SLOT][i]);
     		add(slot);
     		slot.addMouseListener(this);
-    		s.addChangeListener(slot);
+    		ship.addChangeListener(slot);
 		}
 		
 		//LOW
@@ -212,7 +212,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     		add(slot);
     		slot.addMouseListener(this);
     		slot.setBorder(new LineBorder(Color.BLACK, 0)); //goofy? ya.
-    		s.addChangeListener(slot);
+    		ship.addChangeListener(slot);
 		}
 		
 		//RIG
@@ -222,7 +222,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 			slot.setLocation(x,450);
 			add(slot);
     		slot.addMouseListener(this);
-    		s.addChangeListener(slot);
+    		ship.addChangeListener(slot);
 		}
 		
 		
@@ -231,10 +231,10 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		cargoSlot.setPreferredSize(new Dimension(139, 31));
 		cargoSlot.setFont(smallFont);
 		add(cargoSlot);
-		cargoSlot.addMouseListener(this);
-		s.addChangeListener(cargoSlot);
+		cargoSlot.addMouseListener(editor);
+		ship.addChangeListener(cargoSlot);
 		
-		s.addChangeListener(this);
+		ship.addChangeListener(this);
 		
 		repaint();
 	}
@@ -610,8 +610,6 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 					menu.show(this, pt.x, pt.y);
 				}
 			}
-		} else if(e.getSource() instanceof CargoSlot) {
-			//TODO: open cargo window
 		}
 	}
 

@@ -202,6 +202,10 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     }
     
     public void mouseClicked(MouseEvent e) {
+    	if(e.getSource() instanceof CargoSlot) {
+ 			CargoDialog d = new CargoDialog(myShip);
+ 			d.setVisible(true);
+ 		}
     }
     
     public void mousePressed(MouseEvent e) {

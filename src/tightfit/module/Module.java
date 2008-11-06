@@ -27,7 +27,7 @@ public class Module extends Item {
     protected Ship myShip;
     
     private boolean bActive = false,
-                bOnline = true;
+                	bOnline = true;
     
     protected Ammo charge = new Ammo();
     
