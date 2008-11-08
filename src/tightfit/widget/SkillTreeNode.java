@@ -9,8 +9,6 @@
  */
 package tightfit.widget;
 
-import java.awt.*;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import tightfit.character.*;
@@ -18,13 +16,24 @@ import tightfit.character.*;
 public class SkillTreeNode extends DefaultMutableTreeNode {
 	private static final long serialVersionUID = 1L;
     
+	private static String level[] = {"", "I", "II", "III", "IV", "V"};
+	
     private Skill skill;
+    private int requiredLevel;
+    private boolean header;
     
-    public SkillTreeNode(Skill s) {
+    public SkillTreeNode(Skill s, int reqLevel) {
         skill = s;
+        requiredLevel = reqLevel;
+    }
+    
+    public SkillTreeNode(Skill s, int reqLevel, boolean h) {
+    	skill = s;
+    	requiredLevel = reqLevel;
+    	header=h;
     }
     
     public String toString() {
-		return skill.name;
+		return skill.name+" "+level[requiredLevel];
 	}
 }

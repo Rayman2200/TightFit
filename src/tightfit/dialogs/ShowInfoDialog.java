@@ -91,16 +91,16 @@ public class ShowInfoDialog extends JDialog {
 	
 	private JList buildAttributeList() {
 		JList attribs = new JList();
-		Vector list = new Vector();
+		Vector<InfoListEntry> list = new Vector<InfoListEntry>();
         attribs.setCellRenderer(new CustomListRenderer());
 		
 		list.add(new InfoListEntry(myItem, "capacity", null));
 		list.add(new InfoListEntry(myItem, "volume", null));
 		list.add(new InfoListEntry(myItem, "mass", null));
 		
-		Iterator itr = myItem.attributes.keySet().iterator();
+		Iterator<String> itr = myItem.attributes.keySet().iterator();
 		while(itr.hasNext()) {
-			String key = (String)itr.next();
+			String key = itr.next();
 			list.add(new InfoListEntry(myItem, key, null));
 		}
 		
@@ -111,27 +111,37 @@ public class ShowInfoDialog extends JDialog {
 	}
     
     private JTree buildSkillList() {
-       DefaultMutableTreeNode root = new DefaultMutableTreeNode("empty");
+       DefaultMutableTreeNode root = new DefaultMutableTreeNode("Required Skills");
        JTree skills = new JTree(root);
        String tier[] = {"","Primary", "Secondary", "Tertiary"};
        
        skills.setShowsRootHandles(false);
-       skills.setRootVisible(false);
+       skills.setRootVisible(true);
        
        for(int i=1;i<=3;i++) {
            if(myItem.hasAttribute("requiredSkill"+i)) {
                DefaultMutableTreeNode parent = new DefaultMutableTreeNode(tier[i]+" Skill");
                root.add(parent);
-               Skill skill = TightFit.getInstance().getChar().getSkill(myItem.getAttribute("requiredSkill1"+i,"0"));
-               parent.add(new SkillTreeNode(skill));
-               while(skill.hasAttribute("requiredSkill1")) {
-                   skill = TightFit.getInstance().getChar().getSkill(skill.getAttribute("requiredSkill1","0"));
-                   parent = (DefaultMutableTreeNode)parent.getChildAt(0);
-                   parent.add(new SkillTreeNode(skill));
-               }
+               Skill skill = TightFit.getInstance().getChar().getSkill(myItem.getAttribute("requiredSkill"+i,"0"));
+               int rl = Integer.parseInt(myItem.getAttribute("requiredSkill"+i+"Level","1"));
+               SkillTreeNode n = new SkillTreeNode(skill, rl);
+               parent.add(n);
+               addChildrenSkills(skills, n, skill);
            }
        }
        
        return skills;
+    }
+    
+    private void addChildrenSkills(JTree t, DefaultMutableTreeNode parent, Skill skill) {
+    	for(int i=1;i<=3;i++) {
+            if(skill.hasAttribute("requiredSkill"+i)) {
+            	Skill mySkill = TightFit.getInstance().getChar().getSkill(skill.getAttribute("requiredSkill"+i,"0"));
+            	int rl = Integer.parseInt(skill.getAttribute("requiredSkill"+i+"Level","1"));
+            	SkillTreeNode n = new SkillTreeNode(mySkill, rl);
+                parent.add(n);
+                addChildrenSkills(t, n, mySkill);
+            }
+        }
     }
 }
