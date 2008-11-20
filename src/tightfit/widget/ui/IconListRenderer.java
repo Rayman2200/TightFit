@@ -7,13 +7,15 @@
  *  (at your option) any later version.
  *
  */
-package tightfit.widget;
+package tightfit.widget.ui;
 
 import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
+import tightfit.widget.ItemIcon;
 
 public class IconListRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;

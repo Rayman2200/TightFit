@@ -258,10 +258,11 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
             itemTable = new JTable(model);
             itemTable.addMouseListener(this);
             itemTable.setShowHorizontalLines(false);
+            itemTable.setAutoCreateColumnsFromModel(false);
+            itemTable.getTableHeader().addMouseListener(this);
             
-            //RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-
-            //itemTable.setRowSorter(sorter);
+            //Java 6 way
+            //itemTable.setAutoCreateRowSorter(true);
             
             sp.getViewport().setView(itemTable);
         }
@@ -338,30 +339,55 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		JList comp = (JList)e.getComponent();
-		Item item;
-		if(comp.getSelectedValue() != null) {
-			if(comp.getSelectedValue() instanceof MarketListEntry) {
-				item = ((MarketListEntry) comp.getSelectedValue()).getItem();
-			} else {
-				item = (Item) comp.getSelectedValue();
-			}
-			
-			if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
-	            //groups.setSelectedIndex(groups.getFirstVisibleIndex() + pt.y/225);
-				
-	            Point rel = comp.getLocation();
-				//buildPopup(item).show(this, pt.x+rel.x+300, pt.y+rel.y);
-				Point pt = MouseInfo.getPointerInfo().getLocation();
-				buildPopup(item).show(this, pt.x, pt.y);
-			} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
-				if(item.getAttribute("lowSlots", "-1").equals("-1")) {
-                    (new FitToShipAction(editor.getShip(), quickList, item)).actionPerformed(null); //yikes- reusability trumps elegance...
+		Object what = e.getComponent();
+		if(what instanceof JList) {
+			JList comp = (JList)what;
+			Item item;
+			if(comp.getSelectedValue() != null) {
+				if(comp.getSelectedValue() instanceof MarketListEntry) {
+					item = ((MarketListEntry) comp.getSelectedValue()).getItem();
 				} else {
-					editor.setShip(new Ship(item));
-	                quickList.remember(item);
+					item = (Item) comp.getSelectedValue();
+				}
+				
+				if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+		            //groups.setSelectedIndex(groups.getFirstVisibleIndex() + pt.y/225);
+					
+		            Point rel = comp.getLocation();
+					//buildPopup(item).show(this, pt.x+rel.x+300, pt.y+rel.y);
+					Point pt = MouseInfo.getPointerInfo().getLocation();
+					buildPopup(item).show(this, pt.x, pt.y);
+				} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+					if(item.getAttribute("lowSlots", "-1").equals("-1")) {
+	                    (new FitToShipAction(editor.getShip(), quickList, item)).actionPerformed(null); //yikes- reusability trumps elegance...
+					} else {
+						editor.setShip(new Ship(item));
+		                quickList.remember(item);
+					}
 				}
 			}
+		} else if(what instanceof JTable) {
+			JTable itemTable = (JTable)what;
+			
+			if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+				ItemTableModel model = (ItemTableModel) itemTable.getModel();
+				
+				Point pt = MouseInfo.getPointerInfo().getLocation();
+				buildPopup(model.getItemAt(itemTable.getSelectedRow())).show(this, pt.x, pt.y);
+			}
+		} else if (what instanceof JTableHeader) {
+			JTableHeader h = (JTableHeader)what;
+			ItemTableModel model = (ItemTableModel) itemTable.getModel();
+			Point pt = new Point(e.getX(), e.getY());
+			int i;
+			
+			for(i = 0; i < model.getColumnCount(); i++) {
+				if(h.getHeaderRect(i).contains(pt)) {
+					break;
+				}
+			}
+			model.sort(i);
+			itemTable.repaint();
 		}
 	}
 
@@ -439,4 +465,5 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         } catch(Exception e) {}
         return new Item();
     }
+
 }

@@ -74,7 +74,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Chan
                     BorderFactory.createTitledBorder("Color"),
                     BorderFactory.createEmptyBorder(0, 5, 5, 5)));
         
-        Color color = Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A"));
+        Color color = Color.decode(TightPreferences.node("prefs").get("bgColor", "#AB3E1F"));
 
         redColor = new JSlider(JSlider.HORIZONTAL, 0, 255, color.getRed()); 
         redColor.addChangeListener(this);

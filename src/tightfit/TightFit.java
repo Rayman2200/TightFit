@@ -55,6 +55,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     
     private static TightFit editor;
     
+    private static SplashDialog sd = new SplashDialog(null);
+    
     public TightFit() {
         appFrame = new JFrame(Resources.getVersionString());
         appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -135,8 +137,6 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private void initDatabase() {
         
         try {
-        	SplashDialog sd = new SplashDialog(appFrame);
-            sd.setVisible(true);
         	Database.getInstance();
         	sd.setVisible(false);
         } catch(Exception e) {
@@ -258,7 +258,12 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
      */
     public static void main(String[] args) {
     	try{
-    		TightFit.getInstance();
+    		sd.setVisible(true);
+    		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                	TightFit.getInstance();
+                }
+            });
     	} catch(Throwable e) {
     		e.printStackTrace();
     	}

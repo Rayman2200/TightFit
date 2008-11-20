@@ -10,10 +10,6 @@
 
 package tightfit.widget.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
 import javax.swing.table.*;
 
 import java.util.*;
@@ -24,6 +20,7 @@ public class ItemTableModel extends AbstractTableModel {
    
     private String [] columns;
     private LinkedList items;
+    private int sortedColumn;
     
     public ItemTableModel(int parent, String columns[]) {
         
@@ -58,6 +55,18 @@ public class ItemTableModel extends AbstractTableModel {
         return m.getAttribute(columns[column], "N/A");
     }
     
+    public Item getItemAt(int row) {
+    	return (Item)items.get(row);
+    }
+    
+    public void sort(int column) {
+    	
+    	Collections.sort(items, new ColumnSorter(columns[column], sortedColumn == column));
+    	if(sortedColumn != column)
+    		sortedColumn = column;
+    	else sortedColumn = 0;
+    }
+    
     private void buildList(int parent) { 
         try {
             Database db = Database.getInstance();
@@ -77,5 +86,60 @@ public class ItemTableModel extends AbstractTableModel {
                 }
             }
         } catch(Exception e) {}
+    }
+    
+    private class ColumnSorter implements Comparator {
+    	private String columnName;
+    	private boolean ascending;
+    	
+    	ColumnSorter(String c, boolean asc) {
+    		columnName = c;
+    		ascending = asc;
+    	}
+    	
+    	public int compare(Object a, Object b) {
+    		Item i1 = (Item)a;
+    		Item i2 = (Item)b;
+    		
+    		Object o1 = i1.getAttribute(columnName, "0");
+    		Object o2 = i2.getAttribute(columnName, "0");
+    		
+    		if (o1 instanceof String && ((String)o1).length() == 0) {
+                o1 = null;
+            }
+            if (o2 instanceof String && ((String)o2).length() == 0) {
+                o2 = null;
+            }
+
+            if(o1 instanceof String && (((String)o1).charAt(0) > '0' && ((String)o1).charAt(0) < '9')) {
+            	o1 = Float.valueOf((String)o1);
+            	o2 = Float.valueOf((String)o2);
+            }
+            
+            if(o2 instanceof String && (((String)o2).charAt(0) > '0' && ((String)o2).charAt(0) < '9')) {
+            	o2 = Float.valueOf((String)o2);
+            	o1 = Float.valueOf((String)o1);
+            }
+            
+            if(o1 == null && o2 == null) {
+            	return 0;
+            } else if(o1 == null) { 
+            	return 1;
+            } else if(o2 == null) {
+            	return -1;
+            } else if(o1 instanceof Comparable) {
+            	if (ascending) {
+                    return ((Comparable)o1).compareTo(o2);
+                } else {
+                    return -((Comparable)o1).compareTo(o2);
+                }
+            } else {
+                if (ascending) {
+                    return o1.toString().compareTo(o2.toString());
+                } else {
+                    return o2.toString().compareTo(o1.toString());
+                }
+            }
+    	}
     }
 }

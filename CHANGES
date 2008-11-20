@@ -1,7 +1,7 @@
 0.1.4a - TBD
 + Fixed heat dissipation amp II giving boost to explosive resist 
   (affected all shield thermal resistance amps) (found by Constance Harme)
-+ Fixed rendering issues, main window now noticibly faster
++ Fixed rendering issues, main window now noticeably faster
 + Fixed some things about SimulatorSlots that were bugging me
 + Fixed Gunnery skill applying to damage instead of RoF
 + Fixed UI contrast somewhat, fonts are easier to read (suggested by Kalliopia)
@@ -9,9 +9,11 @@
 + Fixed Scan resolution and signature radius not being calculated properly
 + Added loading ammo to all like weapons simultaneously (suggested by DeathsEmbrace)
 + Added DPS/Range graph to DPS tab (suggested by AstroPhobic)
-+ Added Cargo bay (suggested by AstroPhobic)
+- Added Cargo bay (suggested by AstroPhobic)
 + Added EVE API Character loading
-- Added Various module sorting capabilities to MarketDialog (suggested by Lubomir Penev)
++ Added Various module sorting capabilities to MarketDialog (suggested by Lubomir Penev)
++ Added Req. Skills tab to Show Info Dialog
++ Changed default color in honor of Quantum Rise
 
 0.1.3a - July 19th, 2008
 + Fixed market window - can no longer be closed
@@ -19,7 +21,7 @@
 + Fixed SimulatorSlots drawing indicator for activation rather than overload
 + Fixed calculations for module cap, cpu, and power usage to include skill
 + Fixed DpsPanel causing slowness
-+ Added Internationalizaton support
++ Added Internationalization support
 + Added quicklist
 + Added market search
 + Added splash screen

@@ -7,7 +7,7 @@
  *  (at your option) any later version.
  *
  */
-package tightfit.widget;
+package tightfit.widget.ui;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -31,6 +31,14 @@ public class SkillTreeNode extends DefaultMutableTreeNode {
     	skill = s;
     	requiredLevel = reqLevel;
     	header=h;
+    }
+    
+    public Skill getSkill() {
+    	return skill;
+    }
+    
+    public int getLevel() {
+    	return requiredLevel;
     }
     
     public String toString() {

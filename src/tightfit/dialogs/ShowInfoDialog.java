@@ -23,6 +23,8 @@ import tightfit.TightFit;
 import tightfit.TightPreferences;
 import tightfit.item.Item;
 import tightfit.widget.*;
+import tightfit.widget.ui.CustomListRenderer;
+import tightfit.widget.ui.SkillTreeNode;
 import tightfit.character.Skill;
 
 public class ShowInfoDialog extends JDialog {
@@ -81,9 +83,8 @@ public class ShowInfoDialog extends JDialog {
         pane.addTab("Attributes", scrollPane);
         
         scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(200, 250));
         scrollPane.getViewport().setView(buildSkillList());
-        pane.addTab("Req. Skills", scrollPane);
+        pane.addTab("Prerequisites", scrollPane);
         
         panel.add(pane, c);
     	add(panel);
@@ -112,7 +113,8 @@ public class ShowInfoDialog extends JDialog {
     
     private JTree buildSkillList() {
        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Required Skills");
-       JTree skills = new JTree(root);
+       SkillTree skills = new SkillTree(root);
+       
        String tier[] = {"","Primary", "Secondary", "Tertiary"};
        
        skills.setShowsRootHandles(false);

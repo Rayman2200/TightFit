@@ -1,13 +1,13 @@
 1.0.0a
 * Create Eve-like L&F for JavaUI
-* Realtime combat simulation
+* Real-time combat simulation
 * Modularity (Boz Well)
 * Market price of modules, ships, entire fits, etc.
 
 0.2.0a - TBD
-* Must be noticibly faster, more responsive
+* Must be noticeably faster, more responsive
 * Unified bonus calc from modules (including drawbacks)
-* Drone damage calculator
+* Drone sim/damage calculator
 * Skill Plan export for EveMon
 * Skill calculates into all attributes
 * Rack overloading
@@ -15,10 +15,7 @@
 * Ship bonuses
 * Scripts are not modifying attributes
 * Character and fit "quick picker"
-* Finish Show Info Dialog (skill, variations)
+* Finish Show Info Dialog (fitting, variations)
 * Saving fits
-* Save should allow for cancelling loading another ship
+* Save should allow for canceling loading another ship
 * Fix stacking in calculations
-
-0.1.4a - TBD
-* Skill tree in Show Info

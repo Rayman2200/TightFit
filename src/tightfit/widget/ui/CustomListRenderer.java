@@ -7,7 +7,7 @@
  *  (at your option) any later version.
  *
  */
-package tightfit.widget;
+package tightfit.widget.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -16,6 +16,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import tightfit.TightPreferences;
+import tightfit.widget.AbstractListEntry;
 
 public class CustomListRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = 1L;

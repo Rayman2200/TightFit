@@ -38,7 +38,7 @@ public final class Resources {
     
     private Hashtable cache;
     
-    // Prevent instanciation
+    // Prevent instantiation
     private Resources() {
     	cache = new Hashtable();
     }
