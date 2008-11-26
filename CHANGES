@@ -1,4 +1,4 @@
-0.1.4a - TBD
+0.1.4a - November 26th, 2008
 + Fixed heat dissipation amp II giving boost to explosive resist 
   (affected all shield thermal resistance amps) (found by Constance Harme)
 + Fixed rendering issues, main window now noticeably faster

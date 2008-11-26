@@ -92,7 +92,7 @@
     <!-- Generate Javadoc -->
     <javadoc
       packagenames="tightfit.*"
-      sourcepath="."
+      sourcepath="src"
       destdir="${javadoc}"
       windowtitle="TightFit"
       />
