@@ -46,6 +46,11 @@
         <include name="dbEve.dtd" />
       </fileset>
     </copy>
+    <copy todir="${build}/tightfit/resources">
+      <fileset dir="data/tightfit/resources">
+        <include name="*.xml" />
+      </fileset>
+    </copy>
   </target>
 
   <target name="test" depends="init" description="Compile the test cases">

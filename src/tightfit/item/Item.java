@@ -72,7 +72,7 @@ public class Item {
     
     
     public boolean accepts(Item a) {
-    	System.out.println("charge wants: "+a.attributes.get("launcherGroup")+" my groupId "+groupId);
+
     	for(int i=1;i<4;i++) {
     		if(attributes.containsKey("chargeGroup"+i)) {
     			if(a.groupId == Integer.parseInt((String)attributes.get("chargeGroup"+i))) {
