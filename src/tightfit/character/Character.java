@@ -47,6 +47,12 @@ public class Character {
 		this.charId = charId;
 	}
     
+    /**
+     * Adds a skill to this character's skill hash
+     * 
+     * @param id
+     * @param level
+     */
 	public void addSkill(String id, String level) {
 		try {
 			if(id != null)
@@ -54,8 +60,15 @@ public class Character {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-}
+	}
 	
+	/**
+	 * Returns the level of the given skill that the character
+	 * possesses.
+	 * 
+	 * @param id the Skill id, as an item id
+	 * @return Current level of character, or 0 if the character does not have the skill
+	 */
 	public int getSkillLevel(String id) {
 		if(skills.containsKey(id))
 			return ((Skill)skills.get(id)).getLevel();
@@ -87,6 +100,12 @@ public class Character {
         return 1f;
     }
     
+	/**
+	 * 
+	 * @param skillId
+	 * @param level
+	 * @return
+	 */
     public boolean hasRequiredSkill(String skillId, int level) {
 		Skill skill = (Skill) skills.get(skillId);
 		if(skill != null) {
@@ -123,6 +142,12 @@ public class Character {
         return skills.size();
     }
     
+    /**
+     * Count the skills at a certain level
+     * 
+     * @param level
+     * @return the number of skills at level <code>level</code>
+     */
     public int countSkills(int level) {
         int count=0;
         Iterator<String> itr = skills.keySet().iterator();
@@ -135,6 +160,12 @@ public class Character {
         return count;
     }
     
+    /**
+     * Parse a character from a valid EveAPI stream.
+     * 
+     * @param s
+     * @throws Exception
+     */
 	public void parse(InputStream s) throws Exception {
         skills.clear();
 		
@@ -169,6 +200,13 @@ public class Character {
         }
     }
     
+	/**
+	 * Parse a character from a file. The file must be valid EveAPI XML.
+	 * 
+	 * @see Character#parse(InputStream)
+	 * @param file
+	 * @throws Exception
+	 */
     public void parse(String file) throws Exception {
 		if(file == null)
 			return;
@@ -176,6 +214,14 @@ public class Character {
 		parse(new FileInputStream(file));
 	}
 	
+    /**
+     * A helper function to parse a list of characters from an EveAPI call response
+     * stream.
+     * 
+     * @param s
+     * @return
+     * @throws Exception
+     */
     public static Character[] parseCharacterList(InputStream s) throws Exception {
         Vector<Character> chars = new Vector<Character>();
         

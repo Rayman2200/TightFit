@@ -14,6 +14,10 @@ import tightfit.character.Skill;
 import tightfit.item.*;
 import tightfit.ship.Ship;
 
+/**
+ * An {@link Item} which may be fitted to a ship.
+ *
+ */
 public class Module extends Item {
 
 	public static int LOW_SLOT = 0;
@@ -69,6 +73,11 @@ public class Module extends Item {
     	charge = a;
     }
     
+    /**
+     * Get the maximum charges that the module can hold.
+     * 
+     * @return
+     */
     public int getChargeCount() {
     	if(charge != null) {
     		float cvol = Float.parseFloat(charge.getAttribute("volume", "1"));
@@ -139,13 +148,21 @@ public class Module extends Item {
         return bOnline;
     }
     
+    /**
+     * Put the module in online status.
+     */
     public void online() {
         bOnline = true;
     }
     
+    /**
+     * Put the module in offline and inactive status.
+     * 
+     * @see Module#deactivate()
+     */
     public void offline() {
         bOnline = false;
-        bActive = false;
+        deactivate();
     }
     
     public boolean isActive() {

@@ -412,6 +412,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
         WidgetHelper.drawShadowedString(g2d, RECHARGE_RATE+"  "+((int)ship.calculateRechargeRate())+" "+SECONDS, 397, 250, statWhite);
         WidgetHelper.drawShadowedStringCentered(g2d, ""+((int)ship.calculateMaxCapacity()), 200, 355, statWhite);
         WidgetHelper.drawShadowedStringCentered(g2d, "( "+((int)ship.calculateCapacitorRechargeRate())+ " "+SECONDS+" )", 200, 368, statWhite);
+        WidgetHelper.drawShadowedStringRight(g2d, ""+ship.calculateMaxSpeed()+" m/s", 670, 421, statWhite);
         
         if(ship.getRemainingCpu() < 0)
         	WidgetHelper.drawShadowedStringCentered(g2d, CPU_STRING+" "+WidgetHelper.formatFloat(ship.getMaxCpu() - ship.getRemainingCpu(), 2)+" / "+WidgetHelper.formatFloat(ship.getMaxCpu(),2), 200, 398, Color.RED);

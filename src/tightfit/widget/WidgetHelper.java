@@ -10,12 +10,20 @@
 
 package tightfit.widget;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 
 public final class WidgetHelper {
 	private static Color shadow = new Color(.1f,.1f,.1f,.85f);
-	 
+	
+	/**
+	 * Draws a string with a drop shadow.
+	 * 
+	 * @param g2d
+	 * @param s
+	 * @param x
+	 * @param y
+	 * @param c
+	 */
 	public static void drawShadowedString(Graphics2D g2d, String s, float x, float y, Color c) {
         g2d.setColor(shadow);
         g2d.drawString(s, x+1, y+1);
@@ -23,8 +31,25 @@ public final class WidgetHelper {
         g2d.drawString(s, x, y);
     }
     
+	/**
+	 * Draws a string centered at (x,y) with a drop shadow.
+	 * 
+	 * @param g2d
+	 * @param s
+	 * @param x
+	 * @param y
+	 * @param c
+	 */
     public static void drawShadowedStringCentered(Graphics2D g2d, String s, float x, float y, Color c) {
     	x -= g2d.getFontMetrics().getStringBounds(s, g2d).getWidth()/2.0f;
+    	g2d.setColor(shadow);
+        g2d.drawString(s, x+1, y+1);
+        g2d.setColor(c);
+        g2d.drawString(s, x, y);
+    }
+    
+    public static void drawShadowedStringRight(Graphics2D g2d, String s, float x, float y, Color c) {
+    	x -= g2d.getFontMetrics().getStringBounds(s, g2d).getWidth();
     	g2d.setColor(shadow);
         g2d.drawString(s, x+1, y+1);
         g2d.setColor(c);

@@ -45,6 +45,7 @@ public class Ship extends Item implements CharacterChangeListener {
     private float scanRes;
     private float sigRadius;
     private float maxRange;
+    private float maxSpeed;
     //private Item myType;
     
     private float [] shieldReson;
@@ -69,6 +70,7 @@ public class Ship extends Item implements CharacterChangeListener {
         attributes.put("maxLockedTargets", "0.0");
         attributes.put("capacity", "0.0");
         title = "Pod";
+        maxSpeed = 400;
         shieldReson = new float[4];
     	shieldReson[0] = 1;
     	shieldReson[1] = 1;
@@ -109,6 +111,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	scanRes = Float.parseFloat(type.getAttribute("scanResolution", "0"));
     	sigRadius = Float.parseFloat(type.getAttribute("signatureRadius", "0"));
     	maxRange = Float.parseFloat(type.getAttribute("maxTargetRange", "0"));
+    	maxSpeed = Float.parseFloat(type.getAttribute("maxVelocity", "0"));
     	
     	shieldHp = Float.parseFloat(type.getAttribute("shieldCapacity", "0"));
     	armorHp = Float.parseFloat(type.getAttribute("armorHP", "0"));
@@ -967,7 +970,7 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateMaxCapacity() {
-    	cap = multiplyAttributeBonus(capMax * (1+pilot.getSkillLevel("3418")*0.05f), "capacitorCapacityBonus", true);
+    	cap = multiplyAttributeBonus(capMax * pilot.getSkillBonus("3418"), "capacitorCapacityBonus", true);
     	
         return multiplyAttributeProperty(cap, "capacitorCapacityMultiplier", true);
     }
@@ -1005,19 +1008,23 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp * (1+pilot.getSkillLevel("3419")*0.05f) + aggregateAllSlots("capacityBonus", "*", true, false), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * pilot.getSkillBonus("3419") + aggregateAllSlots("capacityBonus", "*", true, false), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
-    	return armorHp * (1+aggregateAllSlots("armorHpBonus", "*", true, true)/100.0f) * (1+pilot.getSkillLevel("3394")*0.05f) + aggregateAllSlots("armorHPBonusAdd", "*", true, false);
+    	return armorHp * (1+aggregateAllSlots("armorHpBonus", "*", true, true)/100.0f) * pilot.getSkillBonus("3394") + aggregateAllSlots("armorHPBonusAdd", "*", true, false);
     }
     
     public float calculateMaxStructure() {
-    	return multiplyAttributeProperty(hp * (1+pilot.getSkillLevel("3392")*0.05f) + aggregateAllSlots("hpBonusAdd", "*", true, false), "structureHPMultiplier", true);
+    	return multiplyAttributeProperty(hp * pilot.getSkillBonus("3392") + aggregateAllSlots("hpBonusAdd", "*", true, false), "structureHPMultiplier", true);
     }
     
     public float calculateMaxRange() {
-    	return multiplyAttributeBonus(maxRange * (1+pilot.getSkillLevel("3428")*0.05f), "maxTargetRangeBonus", true);
+    	return multiplyAttributeBonus(maxRange * pilot.getSkillBonus("3428"), "maxTargetRangeBonus", true);
+    }
+    
+    public int calculateMaxSpeed() {
+    	return (int)multiplyAttributeBonus(maxSpeed * pilot.getSkillBonus("3449"), "speedFactor", true);
     }
     
     public float getTotalCargoCapacity() {

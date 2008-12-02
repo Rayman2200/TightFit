@@ -15,9 +15,14 @@ import java.util.*;
 
 import tightfit.Resources;
 
+/**
+ * An Item is a basic type from the Eve database. Everything extends from Item.
+ *
+ */
 public class Item {
     protected Image icon;
     
+    /** attributeNames */
     static public HashMap attributeNames;
     
     public String name;
@@ -57,6 +62,12 @@ public class Item {
     	return -1;
     }
     
+    /**
+     * Does this item need to be activated to be used?
+     * 
+     * @see Item#isWeapon()
+     * @return <code>true</code> if it uses cap or is a weapon, <code>false</code> otherwise
+     */
     public boolean requiresActivation() {
     	return attributes.containsKey("capacitorNeed") || isWeapon();
     }
@@ -70,7 +81,12 @@ public class Item {
     	return false;
     }
     
-    
+    /**
+     * Check to see if this item accepts the given item as a charge.
+     * 
+     * @param an {@link Item}, preferably a charge of some kind (ammo, script, etc.) 
+     * @return <code>true</code> if the given item is an acceptable charge, <code>false</code> otherwise.
+     */
     public boolean accepts(Item a) {
 
     	for(int i=1;i<4;i++) {
@@ -92,6 +108,12 @@ public class Item {
     	return false;
     }
     
+    /**
+     * Is this item "ammo"? More appropriately, is it a charge of some kind
+     * that can be loaded into a module?
+     * 
+     * @return
+     */
     public boolean isAmmo() {
         Iterator keys = attributes.keySet().iterator();
         while(keys.hasNext()) {
@@ -110,6 +132,11 @@ public class Item {
     	return attributes.containsKey("lowSlots");
     }
     
+    /**
+     * Is this item a weapon? If it is a weapon, either it uses charges, or it uses missiles.
+     * 
+     * @return <code>true</code> if it uses charges or missiles, <code>false</code> otherwise.
+     */
     public boolean isWeapon() {
     	return attributes.containsKey("chargeSize") || attributes.containsKey("useMissiles"); //FIXME: be more precise
     }
@@ -122,7 +149,7 @@ public class Item {
      * Retrieves an attribute value from the hash
      * 
      * @param attrib key to value
-     * @param defaultVal if key dne, return this value
+     * @param defaultVal if key DNE, return this value
      * @return the value of the attribute, or the defaultVal if the attribute does not exist
      */
     public String getAttribute(String attrib, String defaultVal) {
