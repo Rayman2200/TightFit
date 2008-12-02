@@ -92,15 +92,15 @@ public class Item {
     	for(int i=1;i<4;i++) {
     		if(attributes.containsKey("chargeGroup"+i)) {
     			if(a.groupId == Integer.parseInt((String)attributes.get("chargeGroup"+i))) {
-    				if(a.attributes.containsKey("launcherGroup")) {
+    				if(a.attributes.containsKey("chargeSize")) {
+    					if(attributes.get("chargeSize").equals(a.attributes.get("chargeSize"))) {
+	    					return true;
+	    				}
+    				} else {
     					if(a.attributes.get("launcherGroup").equals(""+groupId) || 
                                 a.attributes.get("launcherGroup2").equals(""+groupId)) {
     						return true;
     					}
-    				} else {
-	    				if(attributes.get("chargeSize").equals(a.attributes.get("chargeSize"))) {
-	    					return true;
-	    				}
     				}
     			}
     		}
