@@ -277,10 +277,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
     	if(!item.isShip()) {
             menu.add(new JMenuItem(new FitToShipAction(editor.getShip(), quickList, item)));
 		} else {
-			mitem = new JMenuItem(Resources.getString("dialog.market.makeactive"));
-			mitem.addActionListener(this);
-            mitem.setActionCommand("Make Active");
-			menu.add(mitem);
+			menu.add(new JMenuItem(new MakeActiveAction(quickList, item)));
 		}
     	
     	return menu;
@@ -404,30 +401,12 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-        Item item;
 		try {
             if(ae.getActionCommand().equals("search")) {
                 String nom = searchField.getText();
                 if(nom.matches("[\\p{Graph}]+")) {
                     LinkedList list = Database.getInstance().getTypeByName(nom);
                     searchList.setListData(list.toArray());
-                }
-            } else {
-                
-                if(ae.getSource() instanceof JList) {
-                    JList comp = (JList)ae.getSource();
-                    if(comp.getSelectedValue() != null) {
-                        if(comp.getSelectedValue() instanceof MarketListEntry) {
-                            item = ((MarketListEntry) comp.getSelectedValue()).getItem();
-                        } else {
-                            item = (Item) comp.getSelectedValue();
-                        }
-                        
-                        if(ae.getActionCommand().equalsIgnoreCase("make active")) {
-                            editor.setShip(new Ship(Database.getInstance().getType(item.name)));
-                            quickList.remember(item);
-                        }
-                    }
                 }
             }
 		} catch (Exception e) {
