@@ -51,6 +51,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     private static final int APP_WIDTH = 680;
     private static final int APP_HEIGHT = 500;
     
+    private boolean marketHadFocus = true;
+    
     private LinkedList listenerList = new LinkedList();
     
     private static TightFit editor;
@@ -60,13 +62,27 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
     public TightFit() {
         appFrame = new JFrame(Resources.getVersionString());
         appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        //some quick adapters
         appFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
             	if(myShip != null && myShip.totalSlots(Module.LOW_SLOT) != 0) {
                     saveShip(myShip);
                 }
             }
+            
+            public void windowActivated(WindowEvent e) {
+            	if(e.getOppositeWindow() != mdlg && marketHadFocus)
+            		mdlg.transferFocus();
+            }
+            
+            public void windowDeactivated(WindowEvent e) {
+            	if(e.getOppositeWindow() == mdlg)
+            		marketHadFocus = true;
+            	else marketHadFocus = false;
+            }
         });
+        
         appFrame.setContentPane(createContentPane());
         appFrame.setBackground(Color.decode(TightPreferences.node("prefs").get("bgColor", "#30251A")));
         appFrame.setSize(APP_WIDTH, APP_HEIGHT);
@@ -80,6 +96,8 @@ public class TightFit implements MouseListener, MouseMotionListener, KeyListener
             //}
         //}).start();
         
+        
+                
         myShip = new Ship();
         myChar = new Character("Pilot");
         

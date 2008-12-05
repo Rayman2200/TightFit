@@ -63,7 +63,7 @@ public class MarketDialog extends JDialog implements TreeSelectionListener,
         marketTree.setOpaque(true);
         
         try {
-            marketTree.setFont(Font.createFont(Font.TRUETYPE_FONT, Resources.getResource("stan07_57.ttf")).deriveFont(8f));
+            marketTree.setFont(Resources.getFont("bmmini.ttf").deriveFont(8f));
         } catch (FontFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

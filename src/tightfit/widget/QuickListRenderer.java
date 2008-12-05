@@ -11,15 +11,22 @@ package tightfit.widget;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 
 import javax.swing.*;
 
+import tightfit.Resources;
 import tightfit.item.*;
 
 public class QuickListRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
+    private Font big;
     
     public QuickListRenderer() {
+    	try {
+			big = Resources.getFont("agencyr.ttf").deriveFont(Font.BOLD, 14f);
+		} catch (Exception e) {
+		}
     }
     
     public Component getListCellRendererComponent(JList list, Object value,
@@ -34,6 +41,7 @@ public class QuickListRenderer extends DefaultListCellRenderer {
         else setBackground(Color.DARK_GRAY);
         
         setForeground(Color.WHITE);
+        setFont(big);
         
         if (module != null) {
             setIcon(new ImageIcon(module.getImage()));

@@ -105,7 +105,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 		    smallBarImg = bigBarImg.getScaledInstance((int)(bigBarImg.getWidth(null)*0.5f), (int)(bigBarImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
 		    smallBarGlowImg = bigBarGlowImg.getScaledInstance((int)(bigBarGlowImg.getWidth(null)*0.5f), (int)(bigBarGlowImg.getHeight(null)*0.6f), Image.SCALE_SMOOTH);
 	    
-			Font big = Resources.getFont("stan07_57.ttf");
+			Font big = Resources.getFont("bmmini.ttf");
             bigFont = big.deriveFont(8f);
             big = Resources.getFont("agencyr.ttf");
             shipTypeFont = big.deriveFont(Font.ITALIC, 10f);
@@ -610,6 +610,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	
 					menu.show(this, pt.x, pt.y);
 				}
+			} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+				s.unfit();
 			}
 		}
 	}

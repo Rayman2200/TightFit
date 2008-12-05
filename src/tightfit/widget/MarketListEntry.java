@@ -38,7 +38,7 @@ public class MarketListEntry extends AbstractListEntry {
 		try {
 			Font big = Resources.getFont("agencyr.ttf");
 	        bigFont = big.deriveFont(24f);
-			smallFont = Resources.getFont("stan07_55.ttf");
+			smallFont = Resources.getFont("bmmini.ttf");
 	        smallFont = smallFont.deriveFont(8f);
 	        
 			imgPower = Resources.getImage("icon02_07.png").getScaledInstance(22,22,Image.SCALE_SMOOTH);

@@ -11,6 +11,7 @@
 package tightfit.dialogs;
 
 import java.awt.*;
+import java.io.IOException;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -31,11 +32,18 @@ public class ShowInfoDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private Item myItem;
 	
+	private Font big;
+	
 	public ShowInfoDialog(Frame parent, Item item) {
 		super();
 		
 		setTitle(Resources.getString("dialog.showinfo.title")+" - "+item.name);
 		myItem = item;
+		
+		try {
+			big = Resources.getFont("agencyr.ttf").deriveFont(Font.BOLD, 20f);
+		} catch (Exception e) {
+		}
 		
 		init();
 		
@@ -55,6 +63,7 @@ public class ShowInfoDialog extends JDialog {
         panel.add(new JLabel(new ImageIcon(myItem.getImage())), c);
         c.gridx=1;
         JLabel l = new JLabel("   "+myItem.name);
+        l.setFont(big);
         l.setForeground(Color.WHITE);
         panel.add(l, c);
         

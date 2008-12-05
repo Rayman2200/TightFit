@@ -205,8 +205,7 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
     
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equalsIgnoreCase("unfit")) {
-			mounted = null;
-			editor.getShip().removeModule(myType, mySpot);
+			unfit();
 		} else if(e.getActionCommand().contains("Offline")) {
 			mounted.offline();
 			editor.getShip().fireShipChange();
@@ -217,6 +216,11 @@ public class ModuleSlot extends Slot implements ShipChangeListener {
 
 	}
 
+	public void unfit() {
+		mounted = null;
+		editor.getShip().removeModule(myType, mySpot);
+	}
+	
 	public void shipChanged(Ship ship) {
 		mount(ship.getModule(myType, mySpot));
 	}
