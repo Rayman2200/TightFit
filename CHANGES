@@ -1,3 +1,6 @@
+0.1.5a - December 5th, 2008
+ ChangeLog now available at http://evetightfit.org/bugs/changelog_page.php
+
 0.1.4a - November 26th, 2008
 + Fixed heat dissipation amp II giving boost to explosive resist 
   (affected all shield thermal resistance amps) (found by Constance Harme)
