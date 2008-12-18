@@ -1008,7 +1008,7 @@ public class Ship extends Item implements CharacterChangeListener {
     }
     
     public float calculateMaxShields() {
-    	return multiplyAttributeProperty(shieldHp * pilot.getSkillBonus("3419") + aggregateAllSlots("capacityBonus", "*", true, false), "shieldCapacityMultiplier", true);
+    	return multiplyAttributeProperty(shieldHp * pilot.getSkillBonus("3419") * (1 + aggregateAllSlots("shieldCapacityBonus", "*", true, false)/100.0f ) + aggregateAllSlots("capacityBonus", "*", true, false), "shieldCapacityMultiplier", true);
     }
     
     public float calculateMaxArmor() {
