@@ -230,10 +230,9 @@ public class TankPanel extends JPanel implements TightFitDropTargetPanel, ShipCh
 		
 		float bonus = 1+(ship.aggregateAllSlots("repairBonus", "repairBonus", true, true)/100.0f);
 		
-		//FIXME: this doesn't account for skill, or other bonuses (ship, rig, other modules)
 		if(mods != null)
 			for(int i=0;i<mods.length;i++) {
-				total += (Float.parseFloat(mods[i].getAttribute("armorDamageAmount", "0"))/(Float.parseFloat(mods[i].getAttribute("duration", "1"))/1000.0f)) * bonus;
+				total += (mods[i].getModifiedAttribute("armorDamageAmount", null, "0")/(mods[i].getModifiedAttribute("duration", null, "1")/1000.0f)) * bonus;
 			}
 		
 		return total;

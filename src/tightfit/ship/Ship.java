@@ -421,7 +421,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	
     	for(int i=0;i<rack.length;i++) {
     		if(rack[i] != null  && (rack[i].isReady() || !requiresOnline)) {
-    			a +=  Float.parseFloat((String)rack[i].getAttribute(prop, "0"));
+    			a +=  rack[i].getModifiedAttribute(prop, null, "0");
     		}
     	}
     	
@@ -435,7 +435,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	mod=1;
     	for(int i=0;i<hiSlots.length;i++) {
     		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || hiSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"))*mod;
+    			a +=  hiSlots[i].getModifiedAttribute(prop, null, "0")*mod;
     			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
@@ -443,7 +443,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	mod=1;
     	for(int i=0;i<midSlots.length;i++) {
     		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || midSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"))*mod;
+    			a +=  midSlots[i].getModifiedAttribute(prop, null, "0")*mod;
     			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
@@ -451,7 +451,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	mod=1;
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || lowSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"))*mod;
+    			a +=  lowSlots[i].getModifiedAttribute(prop, null, "0")*mod;
     			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
@@ -459,7 +459,7 @@ public class Ship extends Item implements CharacterChangeListener {
     	mod=1;
     	for(int i=0;i<rigSlots.length;i++) {
     		if(rigSlots[i] != null && (hasProp.equals("*") || rigSlots[i].attributes.containsKey(hasProp))) {
-    			a +=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"))*mod;
+    			a +=  rigSlots[i].getModifiedAttribute(prop, null, "0")*mod;
     			mod = penalizeStacking ? mod - 0.33f : mod;
     		}
     	}
@@ -471,25 +471,25 @@ public class Ship extends Item implements CharacterChangeListener {
     	
     	for(int i=0;i<hiSlots.length;i++) {
     		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || hiSlots[i].attributes.containsKey(hasProp))) {
-    			a *=  Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"));
+    			a *=  hiSlots[i].getModifiedAttribute(prop, null, "0");
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
     		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || midSlots[i].attributes.containsKey(hasProp))) {
-    			a *=  Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"));
+    			a *=  midSlots[i].getModifiedAttribute(prop, null, "0");
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline) && (hasProp.equals("*") || lowSlots[i].attributes.containsKey(hasProp))) {
-    			a *=  Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"));
+    			a *=  lowSlots[i].getModifiedAttribute(prop, null, "0");
     		}
     	}
     	
     	for(int i=0;i<rigSlots.length;i++) {
     		if(rigSlots[i] != null && (hasProp.equals("*") || rigSlots[i].attributes.containsKey(hasProp))) {
-    			a *=  Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"));
+    			a *=  rigSlots[i].getModifiedAttribute(prop, null, "0");
     		}
     	}
     	
@@ -528,25 +528,25 @@ public class Ship extends Item implements CharacterChangeListener {
     public float multiplyAttributeBonus(float att, String prop, boolean requiresOnline) {
     	for(int i=0;i<hiSlots.length;i++) {
     		if(hiSlots[i] != null && (hiSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)hiSlots[i].getAttribute(prop, "0"))/100.0f);
+    			att *=  1+(hiSlots[i].getModifiedAttribute(prop, null, "0")/100.0f);
     		}
     	}
     	
     	for(int i=0;i<midSlots.length;i++) {
     		if(midSlots[i] != null && (midSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)midSlots[i].getAttribute(prop, "0"))/100.0f);
+    			att *=  1+(midSlots[i].getModifiedAttribute(prop, null, "0")/100.0f);
     		}
     	}
     	
     	for(int i=0;i<lowSlots.length;i++) {
     		if(lowSlots[i] != null && (lowSlots[i].isReady() || !requiresOnline)) {
-    			att *=  1+(Float.parseFloat((String)lowSlots[i].getAttribute(prop, "0"))/100.0f);
+    			att *=  1+(lowSlots[i].getModifiedAttribute(prop, null, "0")/100.0f);
     		}
     	}
     	
     	for(int i=0;i<rigSlots.length;i++) {
     		if(rigSlots[i] != null) {
-    			att *=  1+(Float.parseFloat((String)rigSlots[i].getAttribute(prop, "0"))/100.0f);
+    			att *=  1+(rigSlots[i].getModifiedAttribute(prop, null, "0")/100.0f);
     		}
     	}
     	return att;

@@ -18,13 +18,15 @@ import tightfit.item.Item;
 public abstract class AbstractListEntry extends JPanel {
 	protected Item myItem;
 	
-	public AbstractListEntry() {}
-	
-	public AbstractListEntry(Item item) {
-		myItem = item;
-		
+	public AbstractListEntry() {
 		setOpaque(true);
 		setLayout(new BorderLayout());
+	}
+	
+	public AbstractListEntry(Item item) {
+		this();
+		
+		myItem = item;
 		
 		setName(item.name);
 		setToolTipText(item.name);

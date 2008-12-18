@@ -10,9 +10,14 @@
 
 package tightfit.module;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import tightfit.character.Skill;
 import tightfit.item.*;
 import tightfit.ship.Ship;
+import tightfit.TightFit;
 
 /**
  * An {@link Item} which may be fitted to a ship.
@@ -20,10 +25,10 @@ import tightfit.ship.Ship;
  */
 public class Module extends Item {
 
-	public static int LOW_SLOT = 0;
-	public static int MID_SLOT = 1;
-	public static int HI_SLOT = 2;
-	public static int RIG_SLOT = 3;
+	public static final int LOW_SLOT = 0;
+	public static final int MID_SLOT = 1;
+	public static final int HI_SLOT = 2;
+	public static final int RIG_SLOT = 3;
 	
     public int slotRequirement;
     public int dups = 0;
@@ -34,6 +39,8 @@ public class Module extends Item {
                 	bOnline = true;
     
     protected Ammo charge = new Ammo();
+    
+    private static HashMap nameNormalizerMap = new HashMap();
     
     public Module() {
     }
@@ -93,42 +100,25 @@ public class Module extends Item {
     }
     
     public float getCpuUsage() {
-    	float cpu = Float.parseFloat(getAttribute("cpu", "0"));
-		Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
-		if(skill != null && skill.hasAttribute("cpuNeedBonus"))
-			cpu *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+    	float cpu = getModifiedAttribute("cpu", null, "0");
 		
-		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
-		if(skill != null && skill.hasAttribute("cpuNeedBonus"))
-			cpu *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
-		
+    	if(myShip != null && myShip.hasAttribute("cpuNeedBonus")) {
+    		//does this role bonus affect this module?
+    		
+    	}
+    	
     	return cpu;
     }
     
     public float getPowerUsage() {
-    	float power = Float.parseFloat(getAttribute("power", "0"));
-		Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
-		if(skill != null && skill.hasAttribute("powerNeedBonus"))
-			power *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
-		
-		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
-		if(skill != null && skill.hasAttribute("powerNeedBonus"))
-			power *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+    	float power = getModifiedAttribute("power", null, "0");
 		
     	return power;
     }
     
     public float getCapNeed() {
     	float dur = (Float.parseFloat(getAttribute("duration", "1000"))/1000.0f);
-    	float need = Float.parseFloat(getAttribute("capacitorNeed", "0"));
-    	
-    	Skill skill = myShip.pilot.getSkill(getAttribute("requiredSkill1", "0"));
-		if(skill != null && skill.hasAttribute("capNeedBonus"))
-			need *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
-		
-		skill = myShip.pilot.getSkill(getAttribute("requiredSkill2", "0"));
-		if(skill != null && skill.hasAttribute("capNeedBonus"))
-			need *= 1+(skill.getLevel() * (skill.getBonus()/100.0f));
+    	float need = getModifiedAttribute("capacitorNeed", null, "0");
     	
     	if(attributes.containsKey("speed")) {
     		dur = (Float.parseFloat(getAttribute("speed", "1000"))/1000.0f);
@@ -140,6 +130,12 @@ public class Module extends Item {
         return !getAttribute("requiredThermoDynamicsSkill", "-1").equals("-1");
     }
     
+    /**
+     * Lets us know whether a module is ready to give bonuses. Either the modules is passive
+     * and does not require activation, or it has been activated.
+     * 
+     * @return <code>true</code> if the modules is "ready", <code>false</code> otherwise
+     */
     public boolean isReady() {
     	return (requiresActivation() && isActive()) || (!requiresActivation() && isOnline());
     }
@@ -180,4 +176,108 @@ public class Module extends Item {
     public void deactivate() {
     	bActive = false;
     }
+    
+    /**
+     * (B*(1+c||c))*(M1, M2, ...)*S
+     * @param att
+     * @param qualifier TODO
+     * @param defaultVal
+     * @return
+     */
+    public float getModifiedAttribute(String att, String qualifier, String defaultVal) {
+    	
+    	float r = Float.parseFloat(defaultVal);
+    	
+    	//base attribute
+    	r = Float.parseFloat(getAttribute(att, defaultVal));
+    	
+    	//normalize the attribute name, some are weird
+    	String normAtt = NameNormalizer.normalize(att);
+    	
+    	//FIXME: These are hacked
+    	if(groupId == 62 && att.equals("duration"))
+    		normAtt = "armorDamageDuration";
+    	
+    	//if on a ship...
+    	if(myShip != null) {
+    		//bonuses from character skills
+    		String nameForSkills = normAtt;
+    		if(att.equals("speed") && isWeapon() && ((Weapon)this).getType() != Weapon.WEAPON_LAUNCHER) {
+    			nameForSkills = "turretSpeed";
+	    	} else if (att.equals("maxRange")) {
+	    		nameForSkills = "rangeSkill";
+	    	}
+    		
+    		LinkedList dups = new LinkedList();
+    		for(int i=1;i<=3;i++) {
+				if(hasAttribute("requiredSkill"+i)) {
+					Skill skill = TightFit.getInstance().getChar().getSkill(getAttribute("requiredSkill"+i,"0"));
+					Iterator itr = skill.buildSkillTree().iterator();
+					while(itr.hasNext()) {
+						Skill s = (Skill) itr.next();
+						if(!dups.contains(""+s.typeId)) {
+							dups.add(""+s.typeId);
+							if(s.hasAttribute(nameForSkills+"Bonus")) {
+								r *= 1+(Float.parseFloat(s.getAttribute(nameForSkills+"Bonus", "0"))*s.getLevel()/100.0f);
+							}
+							
+							if(s.hasAttribute(nameForSkills+"Multiplier")) {
+								r *= Float.parseFloat(s.getAttribute(nameForSkills+"Multiplier", "1"))*s.getLevel();
+							}
+						}
+					}
+				}
+    		}
+    		
+    		//get any module bonuses, accounting for stacking penalties 
+    		HashMap penalties = new HashMap();
+    		for(int i = 0; i<4; i++) {
+    			for(int j = 0; j < 8; j++) {
+    				Module m = myShip.getModule(i, j);
+    				if(m != null && m.isReady()) {
+    					if(!penalties.containsKey(""+m.groupId)) {
+    						penalties.put(""+m.groupId, new Float(1));
+    					}
+    					
+    					float mod = ((Float)penalties.get(""+m.groupId)).floatValue();
+    					
+	    				if(m.hasAttribute(normAtt+"Bonus")) {
+	    					r *= 1.0f+((m.getModifiedAttribute(normAtt+"Bonus", qualifier, "0")*mod)/100.0);
+	    				}
+	
+	    				if(m.hasAttribute(normAtt+"Multiplier")) {
+	    					r *= m.getModifiedAttribute(normAtt+"Multiplier", qualifier, "1")*mod;
+	    				}
+	    				
+	    				if(m.hasAttribute("stack")) {
+    						penalties.put(""+m.groupId, 
+    								new Float(((Float)penalties.get(""+m.groupId)).floatValue() - .33f));
+    					}
+    				}
+    			}
+    		}
+    		
+    		//bonuses & multipliers from the ship itself
+    		
+    	}
+    	
+    	//bonus from charge
+    	r *= 1.0f+(Float.parseFloat(getCharge().getAttribute(normAtt+"Bonus", "0"))/100.0);
+    	//...or multiplier from charge
+    	r *= Float.parseFloat(getCharge().getAttribute(normAtt+"Multiplier", "1"));
+    	
+    	return r;
+    }
+    
+    private static final class NameNormalizer {
+    	public static String normalize(String n) {
+    		if(n.equals("power")) {
+    			return "powerNeed";
+    		} else if(n.equals("capacitorNeed")) {
+    			return "capNeed";
+    		}
+    		
+    		return n;
+    	}	
+    };
 }

@@ -13,28 +13,60 @@ import java.awt.*;
 
 import tightfit.Resources;
 
-import tightfit.item.Database;
 import tightfit.item.Item;
 
 public class InfoListEntry extends AbstractListEntry {
 	private static final long serialVersionUID = 1L;
-	private String attribute;
+	private String attribute, title;
 	private Image icon;
 	private Color headerGrey;
     private Font bigFont;
     
 	public InfoListEntry(Item item, String attribute, Image icon) {
 		super(item);
-		this.attribute = attribute;
+		this.title = this.attribute = attribute;
 		this.icon = icon;
 		
 		setPreferredSize(new Dimension(150, 27));
         headerGrey = new Color(.75f,.75f,.75f,.75f);
 		
         try {
-			Font big = Resources.getFont("uni05_53.ttf");
+			Font big = Resources.getFont("bmmini.ttf");
             bigFont = big.deriveFont(8f);
         } catch (Exception e) {}
+	}
+	
+	public InfoListEntry(Item item, String attribute, String title, Image icon) {
+		super(item);
+		this.attribute = attribute;
+		this.title = title;
+		this.icon = icon;
+		
+		setPreferredSize(new Dimension(150, 27));
+        headerGrey = new Color(.75f,.75f,.75f,.75f);
+		
+        try {
+			Font big = Resources.getFont("bmmini.ttf");
+            bigFont = big.deriveFont(8f);
+        } catch (Exception e) {}
+	}
+	
+	public InfoListEntry(String data, String title, Image icon) {
+		super();
+		this.attribute = data;
+		this.title = title;
+		this.icon = icon;
+		
+		setPreferredSize(new Dimension(150, 27));
+        headerGrey = new Color(.75f,.75f,.75f,.75f);
+		
+        try {
+			Font big = Resources.getFont("bmmini.ttf");
+            bigFont = big.deriveFont(8f);
+        } catch (Exception e) {}
+		
+		setName(title);
+		setToolTipText(title);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -59,13 +91,13 @@ public class InfoListEntry extends AbstractListEntry {
 		g2d.drawLine(0, size.height-1, size.width, size.height-1);
 		
         g2d.setFont(bigFont);
-		try {
-			dispName = Database.getInstance().getAttributeDisplayName(attribute);
-		} catch (Exception e) {
+		
+		WidgetHelper.drawShadowedString(g2d, title, 23, 9, headerGrey);
+		if(myItem == null) {
+			WidgetHelper.drawShadowedString(g2d, attribute, 25, 19, Color.WHITE);
+		} else {
+			WidgetHelper.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
 		}
-		dispName = dispName != null ? dispName : attribute;
-		WidgetHelper.drawShadowedString(g2d, dispName, 23, 9, headerGrey);
-		WidgetHelper.drawShadowedString(g2d, myItem.getAttribute(attribute, "0"), 25, 19, Color.WHITE);
 		
 		//g2d.scale(.25, .25);
 		g2d.drawImage(icon, 0, 0, null);

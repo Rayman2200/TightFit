@@ -17,6 +17,7 @@ import tightfit.dialogs.ShowInfoDialog;
 import tightfit.item.Item;
 
 public class ShowInfoAction extends AbstractItemAction {
+	private static final long serialVersionUID = 1L;
 	private Frame parent;
 	
 	public ShowInfoAction(Frame parent, Item item) {

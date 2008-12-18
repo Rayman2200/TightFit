@@ -69,7 +69,7 @@ public class Item {
      * @return <code>true</code> if it uses cap or is a weapon, <code>false</code> otherwise
      */
     public boolean requiresActivation() {
-    	return attributes.containsKey("capacitorNeed") || isWeapon();
+    	return attributes.containsKey("capacitorNeed") || attributes.containsKey("consumptionQuantity") || isWeapon();
     }
     
     public boolean acceptsCharges() {
@@ -143,6 +143,10 @@ public class Item {
     
     public boolean isDrone() {
         return attributes.containsKey("droneBandwidthUsed");
+    }
+    
+    public boolean isFittable() {
+    	return attributes.containsKey("power") || attributes.containsKey("rigSlot");
     }
     
     /**

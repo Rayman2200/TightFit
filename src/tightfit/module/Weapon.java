@@ -10,9 +10,6 @@
 
 package tightfit.module;
 
-import java.util.Iterator;
-
-import tightfit.character.Skill;
 import tightfit.item.Ammo;
 import tightfit.item.Item;
 
@@ -39,10 +36,10 @@ public class Weapon extends Module {
 			weaponType = WEAPON_LASER;   //We'll use a "laser" to heat the Earth's atmosphere...
 		} else if(type.marketGroupId == 639 || type.marketGroupId == 643 || type.marketGroupId == 640  || 
 				type.marketGroupId == 642  || type.marketGroupId == 641 || type.marketGroupId == 644) {
-			weaponType = WEAPON_LAUNCHER;
+			weaponType = WEAPON_LAUNCHER;   //fire zee missiles!
 		} else if(type.marketGroupId == 574 || type.marketGroupId == 575 || type.marketGroupId == 576  || 
 				type.marketGroupId == 577 || type.marketGroupId == 578  || type.marketGroupId == 579) {
-			weaponType = WEAPON_CANNON;
+			weaponType = WEAPON_CANNON;   //what may one say about cannon?
 		}
 	}
 	
@@ -59,25 +56,15 @@ public class Weapon extends Module {
 	}
 	
 	public float calculateRoF() {
-		float skillBonus, rof, mod=1.0f;
 		String prop = getTypeString()+"WeaponSpeedMultiply";
-		Iterator itr = myShip.findModuleByAttributeAndSort("speedMultiplier", true);
 		
-		if(weaponType != WEAPON_LAUNCHER)
-			skillBonus = myShip.pilot.getSkillBonus("3310");
-		else skillBonus = myShip.pilot.getSkillBonus("3319");
-		
-        rof = Float.parseFloat(((String)getAttribute("speed", "1.0"))) 
-        				* (getCharge().getSpeedMultiplier() * myShip.pilot.getSkillBonus(getCharge().getAttribute("requiredSkill1", "0")))
-        				* skillBonus * myShip.pilot.getSkillBonus("3300");
+        float rof = getModifiedAttribute("speed", prop, "1.0");
         
-        while(itr.hasNext()) {
-            Module m = (Module)itr.next();
-            if(m.hasAttribute(prop)) {
-                rof *= Float.parseFloat(m.getAttribute("speedMultiplier", "1.0")) * (1+(1-mod));
-                mod *= .655f;
-            }
-        }
+        if(weaponType != WEAPON_LAUNCHER) {
+    		rof *= myShip.pilot.getSkillBonus("3310");
+		} else {
+			rof *= myShip.pilot.getSkillBonus("21071");
+		}
         
         return rof/1000.0f;
 	}
@@ -126,8 +113,14 @@ public class Weapon extends Module {
 	}
 	
 	public float calculateDamageMultiplier() {
-		float mult = Float.parseFloat(getAttribute("damageMultiplier", "1.0"));
-		float bonus = 1.0f;
+		float mult = getModifiedAttribute("damageMultiplier", getTypeString()+"WeaponDamageMultiply", "1.0");
+		
+		if(weaponType != WEAPON_LAUNCHER) {
+    		mult *= myShip.pilot.getSkillBonus("3315");
+		} else {
+			mult *= myShip.pilot.getSkillBonus("3319") * myShip.pilot.getSkillBonus("20315");
+		}
+		/*float bonus = 1.0f;
         float mod = 1.0f;
         String prop = getTypeString()+"WeaponDamageMultiply";
         Iterator itr = myShip.findModuleByAttributeAndSort("damageMultiplier", true);
@@ -164,7 +157,7 @@ public class Weapon extends Module {
                 mult *= (Float.parseFloat(m.getAttribute("damageMultiplier", "1.0")) * mod);
                 mod *= .655f;
             }
-        }
+        }*/
         
         return mult;
 	}
@@ -172,8 +165,7 @@ public class Weapon extends Module {
     public float calculateOptimalRange() {
         float range=0;
         if(weaponType != WEAPON_LAUNCHER) {
-    		//TODO: ship bonuses
-	        range = Float.parseFloat(getAttribute("maxRange", "0")) * myShip.pilot.getSkillBonus("3311") * charge.getRangeMultiplier() * (1+myShip.aggregateAllSlots("maxRangeBonus", "*", true, true));
+	        range = getModifiedAttribute("maxRange", null, "0") * myShip.pilot.getSkillBonus("3311");
     	} else {
             Ammo charge = getCharge(); 
     		range = (Float.parseFloat(charge.getAttribute("maxVelocity", "1.0")) * myShip.pilot.getSkillBonus("12442") * ((Float.parseFloat(charge.getAttribute("explosionDelay", "1.0")) * myShip.pilot.getSkillBonus("12441"))/1000.0f)); 
@@ -198,8 +190,7 @@ public class Weapon extends Module {
         x /= 1000f;
         
     	if(weaponType != WEAPON_LAUNCHER) {
-    		//TODO: ship bonuses
-	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier())/1000f;
+	        sigma = getModifiedAttribute("falloff", null, "1.0")/1000f;
     	} else {
             sigma = Float.parseFloat(charge.getAttribute("aoeFalloff", "1.0"))/1000f;
     	}
@@ -211,8 +202,7 @@ public class Weapon extends Module {
         float /*mu = calculateOptimalRange(),*/ sigma = 1;
     	
     	if(weaponType != WEAPON_LAUNCHER) {
-    		//TODO: ship bonuses
-	        sigma = (Float.parseFloat(getAttribute("falloff", "1.0")) * myShip.pilot.getSkillBonus("3317") * charge.getFalloffMultiplier());
+	        sigma = getModifiedAttribute("falloff", null, "1.0");
     	} else {
     		sigma = Float.parseFloat(charge.getAttribute("aoeFalloff", "1.0"));
     	}

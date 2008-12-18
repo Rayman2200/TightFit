@@ -10,8 +10,10 @@
 
 package tightfit.character;
 
+import tightfit.TightFit;
 import tightfit.item.Database;
 import tightfit.item.Item;
+import tightfit.util.MultinaryTree;
 
 public class Skill extends Item {
 
@@ -39,5 +41,28 @@ public class Skill extends Item {
         } catch (Exception e) {
         }
         return 1.0f;
+    }
+    
+    public MultinaryTree buildSkillTree() {
+    	MultinaryTree tree = new MultinaryTree();
+    	
+    	for(int i=1;i<=3;i++) {
+            if(hasAttribute("requiredSkill"+i)) {
+            	MultinaryTree.MultinaryTreeNode n = tree.addChild(TightFit.getInstance().getChar().getSkill(getAttribute("requiredSkill"+i,"0")));
+            	addChildren(tree, n);
+            }
+    	}
+    	
+    	return tree;
+    }
+    
+    private void addChildren(MultinaryTree t, MultinaryTree.MultinaryTreeNode n) {
+    	Skill s = (Skill) n.data;
+    	for(int i=1;i<=3;i++) {
+            if(s.hasAttribute("requiredSkill"+i)) {
+            	MultinaryTree.MultinaryTreeNode m = t.addChild(n, TightFit.getInstance().getChar().getSkill(s.getAttribute("requiredSkill"+i,"0")));
+            	addChildren(t, m);
+            }
+    	}
     }
 }

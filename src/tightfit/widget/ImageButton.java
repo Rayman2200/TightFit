@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -69,14 +70,19 @@ class ImageButton extends JButton implements MouseListener {
         
         g2d.setComposite(AlphaComposite.SrcAtop);
     	
+        ImageIcon i = ((ImageIcon)getIcon());
+        
+        if(i == null)
+        	return;
+        
         if(bAnimated) {
 	        if(isSelected()) {
 		        g2d.setColor(new Color(1,1,1,.3f));
 		    	g2d.fillRect(1, 0, size.width, size.height-1);
 	        }
-	    	g2d.drawImage(((ImageIcon)getIcon()).getImage(), 0, offset, null);
+	    	g2d.drawImage(i.getImage(), 0, offset, null);
         } else {
-        	g2d.drawImage(((ImageIcon)getIcon()).getImage(), 0, 0, null);
+        	g2d.drawImage(i.getImage(), 0, 0, null);
         }
     }
 

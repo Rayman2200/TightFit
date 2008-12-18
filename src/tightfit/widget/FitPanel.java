@@ -113,6 +113,7 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 			smallFont = Resources.getFont("uni05_53.ttf");
             smallFont = smallFont.deriveFont(6f);
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(editor.appFrame, e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
         
@@ -156,9 +157,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
 	        closeButton.addActionListener(editor);
 	        closeButton.setLocation(660, 0);
 	        infoButton = new ImageButton("showinfo.png");
-	        infoButton.setActionCommand("showinfo");
+	        infoButton.setAction(new ShowInfoAction(editor.appFrame, ship));
 	        infoButton.setToolTipText("Show Info");
-	        infoButton.addActionListener(editor);
 	        infoButton.setLocation(311, 47);
 	        exportButton = new ImageButton(new ImageIcon(Resources.getImage("export.png").getScaledInstance(24, 24, Image.SCALE_SMOOTH)), true);
 	        exportButton.setActionCommand("export");
@@ -173,6 +173,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
             
             addButtons();
         } catch(IOException ioe) {
+        	JOptionPane.showMessageDialog(editor.appFrame, ioe.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        	ioe.printStackTrace();
         }
 	}
 	
@@ -395,6 +397,8 @@ public class FitPanel extends JPanel implements TightFitDropTargetPanel, MouseLi
     	add(infoButton);
         add(exportButton);
         add(importButton);
+        
+        infoButton.setAction(new ShowInfoAction(editor.appFrame, ship));
     }
     
     private void drawShipSpecs(Graphics2D g2d) {

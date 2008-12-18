@@ -100,6 +100,10 @@ public class Character {
         return 1f;
     }
     
+	public Iterator<Skill> getSkillList() {
+		return skills.values().iterator();
+	}
+	
 	/**
 	 * 
 	 * @param skillId
